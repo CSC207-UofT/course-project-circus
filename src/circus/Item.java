@@ -55,4 +55,12 @@ public class Item {
                 ", description='" + description + '\'' +
                 '}';
     }
+
+    /**
+     * Getter method for id.
+     * @return id private variable
+     */
+    public UUID getId() {
+        return id;
+    }
 }
