@@ -1,5 +1,4 @@
 package circus;
-import java.util.*;
 
 /**
  * Abstract class for pathfinders that discovers the "optimal" path for packages.
@@ -7,7 +6,6 @@ import java.util.*;
  * Classes that extend this one will have to implement the methods we choose here.
  */
 public abstract class Pathfinder {
-
     /**
      * Returns the optimal path for packages. This method will differ based on the type of pathifnder we use.
      *
