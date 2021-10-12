@@ -1,5 +1,6 @@
-package circus;
+package circus.inventory;
 
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -31,6 +32,16 @@ public class Item {
         this(name, description, UUID.randomUUID());
     }
 
+    /**
+     * Copy constructor for the Item class.
+     * @param item The item to copy.
+     */
+    public Item(Item item) {
+        id = item.id;
+        name = item.name;
+        description = item.description;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -54,5 +65,19 @@ public class Item {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return Objects.equals(id, item.id) && Objects.equals(name, item.name) &&
+                Objects.equals(description, item.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description);
     }
 }
