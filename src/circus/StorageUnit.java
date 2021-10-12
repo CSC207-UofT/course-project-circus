@@ -5,6 +5,9 @@ import circus.query.Query;
 
 import java.util.List;
 
+/**
+ * A unit in the warehouse that can store items.
+ */
 public abstract class StorageUnit implements Receivable, Distributable {
     /**
      * Add an item to this StorageUnit.
