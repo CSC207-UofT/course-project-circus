@@ -5,7 +5,7 @@ import circus.query.Query;
 import circus.query.Queryable;
 
 /**
- * Provides a service for classes that can distribute items.
+ * Provides a transaction for distributing items.
  */
 public interface Distributable extends Queryable<Item> {
     /**

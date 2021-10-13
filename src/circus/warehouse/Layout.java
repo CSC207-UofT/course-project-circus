@@ -47,7 +47,7 @@ public class Layout {
      * @param y The vertical coordinate of the tile.
      * @return True if the coordinate is within range (not out of bounds), and False otherwise.
      */
-    public Boolean isTileCoordinateInRange(int x, int y) {
+    public boolean isTileCoordinateInRange(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
     }
 }

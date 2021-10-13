@@ -16,16 +16,16 @@ public abstract class StorageUnit implements Receivable, Distributable {
      * @param item The item to add.
      * @return True if the Item could be added, False otherwise.
      */
-    public abstract Boolean addItem (Item item);
+    public abstract boolean addItem (Item item);
     /**
      * Remove the given Item from this StorageUnit.
      * @param item The item to remove.
      * @return True if the Item could be removed, False otherwise.
      */
-    public abstract Boolean removeItem(Item item);
+    public abstract boolean removeItem(Item item);
 
     @Override
-    public Boolean receiveItem(Item item) {
+    public boolean receiveItem(Item item) {
         return addItem(item);
     }
 

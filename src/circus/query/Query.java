@@ -10,5 +10,5 @@ public interface Query<T> {
      * @param value The value to check.
      * @return True if the value satisfies this Query, and False otherwise.
      */
-    Boolean satisfies(T value);
+    boolean satisfies(T value);
 }

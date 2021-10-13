@@ -47,12 +47,12 @@ public class Rack extends StorageUnit {
      * Return whether this Rack has infinite capacity.
      * @return True if the Rack has infinite capacity, or False otherwise.
      */
-    public Boolean hasInfiniteCapacity() {
+    public boolean hasInfiniteCapacity() {
         return capacity < 0;
     }
 
     @Override
-    public Boolean addItem(Item item) {
+    public boolean addItem(Item item) {
         if (currentItem == null) {
             currentItem = new Item(item);
         }
@@ -66,7 +66,7 @@ public class Rack extends StorageUnit {
     }
 
     @Override
-    public Boolean removeItem(Item item) {
+    public boolean removeItem(Item item) {
         if (item.equals(currentItem) && size > 0) {
             size -= 1;
             if (size == 0) {

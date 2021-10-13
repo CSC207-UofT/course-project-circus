@@ -36,7 +36,7 @@ public class Depot extends StorageUnit {
      * @param item The item to add.
      * @return True if the Item could be added, False otherwise.
      */
-    public Boolean addItem(Item item) {
+    public boolean addItem(Item item) {
         if (hasInfiniteCapacity() || getSize() < capacity) {
             int newQuantity = items.getOrDefault(item, 0) + 1;
             items.put(item, newQuantity);
@@ -51,7 +51,7 @@ public class Depot extends StorageUnit {
      * @param item The item to remove.
      * @return True if the Item could be removed, False otherwise.
      */
-    public Boolean removeItem(Item item) {
+    public boolean removeItem(Item item) {
         if (items.containsKey(item) && items.get(item) > 0) {
             int newQuantity = items.get(item) - 1;
             items.put(item, newQuantity);
@@ -73,7 +73,7 @@ public class Depot extends StorageUnit {
      * Return whether this Depot has infinite capacity.
      * @return True if the Depot has infinite capacity, or False otherwise.
      */
-    public Boolean hasInfiniteCapacity() {
+    public boolean hasInfiniteCapacity() {
         return capacity < 0;
     }
 

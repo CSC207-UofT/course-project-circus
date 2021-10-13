@@ -16,7 +16,7 @@ public class AndQuery<T> implements Query<T> {
     }
 
     @Override
-    public Boolean satisfies(T value) {
+    public boolean satisfies(T value) {
         for (Query<T> query : queries) {
             if (!query.satisfies(value)) {
                 return false;
