@@ -23,7 +23,7 @@ public class Rack extends StorageUnit {
      * Construct a Rack with a capacity.
      * @param capacity The capacity of this Rack. If negative, then the Rack has infinite capacity.
      */
-    Rack(int capacity) {
+    public Rack(int capacity) {
         this.capacity = capacity;
         currentItem = null;
     }
@@ -31,7 +31,7 @@ public class Rack extends StorageUnit {
     /**
      * Construct a Rack with infinite capacity.
      */
-    Rack() {
+    public Rack() {
         this(-1);
     }
 
