@@ -1,4 +1,6 @@
 package circus;
+import circus.inventory.Item;
+
 import java.util.*;
 
 /**
