@@ -2,6 +2,8 @@ package circus;
 
 import circus.inventory.Item;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,16 +38,16 @@ public class Rack extends StorageUnit {
     }
 
     /**
-     * Get the capacity of this Depot. If negative, then the capacity is infinite.
-     * @return The capacity of this Depot.
+     * Get the capacity of this Rack. If negative, then the capacity is infinite.
+     * @return The capacity of this Rack.
      */
     public int getCapacity() {
         return capacity;
     }
 
     /**
-     * Return whether this Depot has infinite capacity.
-     * @return True if the Depot has infinite capacity, or False otherwise.
+     * Return whether this Rack has infinite capacity.
+     * @return True if the Rack has infinite capacity, or False otherwise.
      */
     public Boolean hasInfiniteCapacity() {
         return capacity < 0;
