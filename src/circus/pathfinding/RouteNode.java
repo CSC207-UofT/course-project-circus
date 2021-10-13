@@ -1,6 +1,8 @@
-package circus;
+package circus.pathfinding;
 
-public class RouteNode <T extends Item> implements Comparable<RouteNode> {
+import circus.inventory.Item;
+
+public class RouteNode <T extends Item> implements Comparable<RouteNode<T>> {
     private final T current;
     private T previous;
     private double routeScore;

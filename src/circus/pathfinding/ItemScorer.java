@@ -1,4 +1,4 @@
-package circus;
+package circus.pathfinding;
 
 public class ItemScorer implements Scorer<Item> {
 

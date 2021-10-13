@@ -1,4 +1,4 @@
-package circus;
+package circus.pathfinding;
 import java.util.*;
 
 /**
