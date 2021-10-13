@@ -1,7 +1,8 @@
 package circus;
 
 import circus.inventory.Item;
-import circus.query.Query;
+import circus.warehouse.Depot;
+import circus.warehouse.Rack;
 
 public class Main {
     public static void main(String[] args) {

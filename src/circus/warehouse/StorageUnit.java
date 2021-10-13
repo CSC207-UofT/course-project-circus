@@ -1,7 +1,9 @@
-package circus;
+package circus.warehouse;
 
 import circus.inventory.Item;
 import circus.query.Query;
+import circus.Distributable;
+import circus.Receivable;
 
 import java.util.List;
 

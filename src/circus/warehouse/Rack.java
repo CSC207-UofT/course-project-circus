@@ -1,4 +1,4 @@
-package circus;
+package circus.warehouse;
 
 import circus.inventory.Item;
 
