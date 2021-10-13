@@ -48,6 +48,6 @@ public class Layout {
      * @return True if the coordinate is within range (not out of bounds), and False otherwise.
      */
     public Boolean isTileCoordinateInRange(int x, int y) {
-        return x >= 0 && x < width && y >= && y < height;
+        return x >= 0 && x < width && y >= 0 && y < height;
     }
 }
