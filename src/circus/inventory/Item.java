@@ -80,4 +80,12 @@ public class Item {
     public int hashCode() {
         return Objects.hash(id, name, description);
     }
+
+    /**
+     * Getter method for id.
+     * @return id private variable
+     */
+    public UUID getId() {
+        return id;
+    }
 }
