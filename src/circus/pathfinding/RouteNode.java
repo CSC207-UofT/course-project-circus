@@ -24,13 +24,7 @@ public class RouteNode <T extends Item> implements Comparable<RouteNode<T>> {
 
     @Override
     public int compareTo(RouteNode other) {
-        if (this.estimatedScore > other.estimatedScore) {
-            return 1;
-        } else if (this.estimatedScore < other.estimatedScore) {
-            return -1;
-        } else {
-            return 0;
-        }
+        return Double.compare(this.estimatedScore, other.estimatedScore);
     }
 
     /**
