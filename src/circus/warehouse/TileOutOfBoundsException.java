@@ -5,7 +5,7 @@ package circus.warehouse;
  */
 public class TileOutOfBoundsException extends Exception {
     /**
-     * Constuct a TileOutOfBoundsException with coordinates and bounds.
+     * Construct a TileOutOfBoundsException with coordinates and bounds.
      * @param x The horizontal coordinate of the tile.
      * @param y The vertical coordinate of the tile.
      * @param width The upper bound on the horizontal coordinate.
