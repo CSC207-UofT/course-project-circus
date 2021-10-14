@@ -1,6 +1,8 @@
-package circus;
+package circus.pathfinding;
 
-public class RouteNode <T extends Item> implements Comparable<RouteNode> {
+import circus.inventory.Item;
+
+public class RouteNode <T extends Item> implements Comparable<RouteNode<T>> {
     private final T current;
     private T previous;
     private double routeScore;
@@ -22,13 +24,7 @@ public class RouteNode <T extends Item> implements Comparable<RouteNode> {
 
     @Override
     public int compareTo(RouteNode other) {
-        if (this.estimatedScore > other.estimatedScore) {
-            return 1;
-        } else if (this.estimatedScore < other.estimatedScore) {
-            return -1;
-        } else {
-            return 0;
-        }
+        return Double.compare(this.estimatedScore, other.estimatedScore);
     }
 
     /**

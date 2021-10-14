@@ -1,4 +1,4 @@
-package circus;
+package circus.pathfinding;
 import circus.inventory.Item;
 
 import java.util.*;
