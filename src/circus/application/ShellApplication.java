@@ -1,16 +1,26 @@
 package circus.application;
 
+import circus.application.commands.ExitCommand;
+import circus.application.commands.ShellCommand;
+import circus.application.commands.ShellCommandExecutor;
+
+import java.util.Scanner;
+
 /**
  * Driver class for the shell application.
  */
 public class ShellApplication {
     private boolean isRunning;
+    private final ShellCommandExecutor commandExecutor;
 
     /**
      * Construct a ShellApplication.
      */
     public ShellApplication() {
         isRunning = false;
+        commandExecutor = new ShellCommandExecutor(this, new ShellCommand[]{
+                new ExitCommand()
+        });
     }
 
     /**
@@ -18,13 +28,19 @@ public class ShellApplication {
      */
     private void run() {
         isRunning = true;
+        Scanner in = new Scanner(System.in);
         while (isRunning) {
-            System.out.println("> ");
-//            String input = ...read line from stdin...
-//            if (input.trim().equals("exit")) {
-//              stop();
-//            }
+            // Read input
+            System.out.print("> ");
+            String input = in.nextLine();
+            // Execute commands
+            String output = commandExecutor.execute(input);
+            // Display output
+            if (output != null && !output.isEmpty()) {
+                System.out.println(output);
+            }
         }
+        in.close();
     }
 
     /**
