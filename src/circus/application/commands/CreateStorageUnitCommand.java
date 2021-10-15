@@ -6,7 +6,6 @@ import circus.application.commands.framework.ShellCommand;
 import circus.application.commands.framework.ShellCommandArg;
 import circus.application.commands.framework.ShellCommandArgContainer;
 import circus.application.commands.framework.ShellCommandSpec;
-import circus.inventory.Item;
 import circus.warehouse.*;
 
 class CreateStorageUnitArgContainer extends ShellCommandArgContainer {
@@ -43,10 +42,10 @@ public class CreateStorageUnitCommand extends ShellCommand{
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
         StorageUnit s = null;
         CreateStorageUnitArgContainer args = (CreateStorageUnitArgContainer) argContainer;
-        if (args.getType() == "Depot"){
+        if (args.getType().equals("Depot")){
             s= new Depot(args.getCapacity() );
         }
-        else if (args.getType() == "Rack") {
+        else if (args.getType().equals("Rack")) {
             s= new Rack(args.getCapacity());
         }
         else {
