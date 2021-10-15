@@ -23,8 +23,8 @@ public class WareHouseController {
      */
     public WareHouseController(Layout l, StorageUnit s)
     {
-        layout = l;
-        storageunit = s;
+        this.layout = l;
+        this.storageunit = s;
     }
 
 //    public boolean addItem(Item i) {
