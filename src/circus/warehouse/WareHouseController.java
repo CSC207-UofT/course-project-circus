@@ -27,16 +27,23 @@ public class WareHouseController {
         storageunit = s;
     }
 
-//    public boolean addItem(Item i) {
-//    {
-//        if (i != null) {
-//
-//            rack.addItem(i);
-//            reurn True;
-//        }
-//        return False;
-//    }
+    /**
+     * Adds an item into a storage unit in the layout.
+     * @param i The item being added.
+     * @return True if the item was succesfully added, otherwise, false.
+     */
+    public boolean addItem(Item i) {
+        {
+            if (i != null) {
+                StorageUnit s = layout.findStorageUnit();
+                if (s == null)
+                    return false;
+                s.addItem(i);
+                return true;
+            }
+            return false;
+        }
 
-
+    }
 
 }
