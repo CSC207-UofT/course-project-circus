@@ -24,8 +24,8 @@ public class DepotTest {
     public void testGetCapacity(){
         d1 = new Depot(5,5,6);
         d2 = new  Depot(0,6,7);
-        assertTrue(5, d1.getCapacity());
-        assertFalse(0, d2.getCapacity());
+        assertEquals(5,d1.getCapacity());
+        assertEquals(0, d2.getCapacity());
     }
 
     @Test

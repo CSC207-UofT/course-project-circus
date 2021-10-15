@@ -1,5 +1,6 @@
 package circus.application;
 
+import circus.application.commands.EchoCommand;
 import circus.application.commands.ExitCommand;
 import circus.application.commands.ShellCommand;
 import circus.application.commands.ShellCommandExecutor;

@@ -5,33 +5,41 @@ import circus.application.ShellApplication;
 /**
  * A shell command.
  */
-public interface ShellCommand {
+public abstract class ShellCommand {
     /**
-     * Execute the command. Optionally mutate the application.
-     * @param application The application state.
-     * @return the output of the command. This can be null.
+     * Create the arg container for this command.
+     * @return a ShellCommandArgContainer instance.
      */
-    String execute(ShellApplication application);
-
-    /**
-     * Check whether the given ShellCommand has a ShellCommandSpec.
-     * @return True if it has a spec, and False otherwise.
-     */
-    static boolean hasSpec(ShellCommand command) {
-        return command.getClass().isAnnotationPresent(ShellCommandSpec.class);
+    public ShellCommandArgContainer createArgContainer() {
+        return new ShellCommandArgContainer();
     }
 
     /**
-     * Get the ShellCommandSpec for the given ShellCommand.
-     * @param command The command whose spec to retrieve.
+     * Execute the command. Optionally mutate the application.
+     * @param application The application state.
+     * @param args the arguments to this ShellCommand.
+     * @return the output of the command. This can be null.
+     */
+    public abstract String execute(ShellApplication application, ShellCommandArgContainer args);
+
+    /**
+     * Check whether this ShellCommand has a ShellCommandSpec.
+     * @return True if it has a spec, and False otherwise.
+     */
+    public boolean hasSpec() {
+        return this.getClass().isAnnotationPresent(ShellCommandSpec.class);
+    }
+
+    /**
+     * Get the ShellCommandSpec for this ShellCommand.
      * @return the command spec.
      * @throws ShellCommandSpecNotFoundException thrown when the command does not have a ShellCommandSpec annotation.
      */
-    static ShellCommandSpec getSpec(ShellCommand command) throws ShellCommandSpecNotFoundException {
-        if (!hasSpec(command)) {
-            throw new ShellCommandSpecNotFoundException(command.getClass().getSimpleName());
+    public ShellCommandSpec getSpec() throws ShellCommandSpecNotFoundException {
+        if (!hasSpec()) {
+            throw new ShellCommandSpecNotFoundException(this.getClass().getSimpleName());
         } else {
-            return command.getClass().getAnnotation(ShellCommandSpec.class);
+            return this.getClass().getAnnotation(ShellCommandSpec.class);
         }
     }
 }

@@ -11,7 +11,22 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ShellCommandArg {
-    String[] names() default {};
-    boolean optional() default false;
+    /**
+     * Alias for this argument. If empty, then the field name is used instead.
+     */
+    String name() default "";
+    /**
+     * Whether this argument is positional. If false, it is a keyword argument.
+     */
+    boolean isPositional() default true;
+    /**
+     * An integer value used to specify the order of this argument relative to the others. The positional arguments are
+     * sorted by index, in ascending order.
+     */
+    int positionalIndex() default 0;
+
+    /**
+     * The description of this argument.
+     */
     String description() default "";
 }
