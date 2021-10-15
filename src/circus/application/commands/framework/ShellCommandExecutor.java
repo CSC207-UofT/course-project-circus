@@ -1,4 +1,4 @@
-package circus.application.commands;
+package circus.application.commands.framework;
 
 import circus.application.ShellApplication;
 

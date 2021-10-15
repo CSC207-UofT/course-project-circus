@@ -1,9 +1,8 @@
 package circus.application;
 
-import circus.application.commands.EchoCommand;
 import circus.application.commands.ExitCommand;
-import circus.application.commands.ShellCommand;
-import circus.application.commands.ShellCommandExecutor;
+import circus.application.commands.framework.ShellCommand;
+import circus.application.commands.framework.ShellCommandExecutor;
 
 import java.util.Scanner;
 

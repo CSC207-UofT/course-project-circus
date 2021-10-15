@@ -1,4 +1,4 @@
-package circus.application.commands;
+package circus.application.commands.framework;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

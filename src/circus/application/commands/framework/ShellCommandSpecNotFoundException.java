@@ -1,4 +1,4 @@
-package circus.application.commands;
+package circus.application.commands.framework;
 
 /**
  * An exception that is thrown when the ShellCommandSpec annotation is not found.
