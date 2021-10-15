@@ -7,7 +7,7 @@ import java.util.UUID;
  * An item in the Inventory.
  */
 public class Item {
-    private final UUID id;
+    private final String id;
     private String name;
     private String description;
 
@@ -17,7 +17,7 @@ public class Item {
      * @param description The description of this Item.
      * @param id The UUID of this item.
      */
-    public Item(String name, String description, UUID id) {
+    public Item(String name, String description, String id) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -29,7 +29,7 @@ public class Item {
      * @param description The description of this Item.
      */
     public Item(String name, String description) {
-        this(name, description, UUID.randomUUID());
+        this(name, description, UUID.randomUUID().toString());
     }
 
     /**
@@ -85,7 +85,7 @@ public class Item {
      * Getter method for id.
      * @return id private variable
      */
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 }

@@ -13,7 +13,7 @@ public class Warehouse {
 
     /**
      * Construct an empty layout with the given width and height.
-     * @param width The width of the layout, in number of cells.
+     * @param width  The width of the layout, in number of cells.
      * @param height The height of the layout, in number of cells.
      */
     public Warehouse(int width, int height) {
@@ -48,10 +48,8 @@ public class Warehouse {
      * @return a Tile object with no StorageUnit attached to it, or null if no such Tile exists.
      */
     public Tile findEmptyTile() {
-        for (int y = 0; y < height; y ++)
-        {
-            for (int x = 0; x < width; x++)
-            {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                 if (tiles[x][y].isEmpty()) {
                     return tiles[x][y];
                 }
@@ -61,39 +59,21 @@ public class Warehouse {
     }
 
     /**
-     * Find a Tile with an empty StorageUnit.
-     * @return a Tile object with an empty StorageUnit attached to it, or null if no such Tile exists.
+     * Find an available Rack for the given Item.
+     * @return a Tile object with a Rack that can contain the given Item.
      */
-//    public Tile findEmptyStorageUnitOfType(Class<? extends StorageUnit> type) {
-//        for (int y = 0; y < height; y ++)
-//        {
-//            for (int x = 0; x < width; x++)
-//            {
-//                if (!tiles[x][y].isEmpty()) {
-//                    StorageUnit storageUnit = tiles[x][y].getStorageUnit();
-//                    if (storageUnit.getClass().isAssignableFrom(type) && storageUnit.getSize() == 0) {
-//                        return tiles[x][y];
-//                    }
-//            }
-//        }
-//        return null;
-//    }
-
-        /**
-         * Find an available Rack for the given Item.
-         */
-        public Tile findRackFor(Item item) {
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
-                    Tile tile = tiles[x][y];
-                    if (tile.isEmpty() || !(tile.getStorageUnit() instanceof Rack rack)) continue;
-                    if (rack.canAddItem(item)) {
-                        return tile;
-                    }
+    public Tile findRackFor(Item item) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Tile tile = tiles[x][y];
+                if (tile.isEmpty() || !(tile.getStorageUnit() instanceof Rack rack)) continue;
+                if (rack.canAddItem(item)) {
+                    return tile;
                 }
             }
-            return null;
         }
+        return null;
+    }
 
     /**
      * Check whether the given tile coordinate is out of bounds.
@@ -103,5 +83,21 @@ public class Warehouse {
      */
     public boolean isTileCoordinateInRange(int x, int y) {
         return x >= 0 && x < width && y >= 0 && y < height;
+    }
+
+    /**
+     * Get the width of this Warehouse.
+     * @return an integer specifying the width of this Warehouse, in number of tiles.
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * Get the height of this Warehouse.
+     * @return an integer specifying the height of this Warehouse, in number of tiles.
+     */
+    public int getHeight() {
+        return height;
     }
 }

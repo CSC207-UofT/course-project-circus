@@ -1,8 +1,13 @@
 package circus.application;
 
+import circus.application.commands.CreateItemCommand;
+import circus.application.commands.DisplayWarehouseCommand;
 import circus.application.commands.ExitCommand;
 import circus.application.commands.framework.ShellCommand;
 import circus.application.commands.framework.ShellCommandExecutor;
+import circus.inventory.InventoryCatalogue;
+import circus.warehouse.Warehouse;
+import circus.warehouse.WarehouseController;
 
 import java.util.Scanner;
 
@@ -12,6 +17,7 @@ import java.util.Scanner;
 public class ShellApplication {
     private boolean isRunning;
     private final ShellCommandExecutor commandExecutor;
+    private final WarehouseController warehouseController;
 
     /**
      * Construct a ShellApplication.
@@ -19,8 +25,17 @@ public class ShellApplication {
     public ShellApplication() {
         isRunning = false;
         commandExecutor = new ShellCommandExecutor(this, new ShellCommand[]{
-                new ExitCommand()
+                new ExitCommand(),
+                new DisplayWarehouseCommand(),
+                new CreateItemCommand()
         });
+        // TODO: Should the warehouse controller be made here?!
+        // TODO: Replace empty warehouse with file loading or something
+        // TODO: Don't hardcode warehouse dimensions
+        warehouseController = new WarehouseController(
+                new Warehouse(10, 10),
+                new InventoryCatalogue()
+        );
     }
 
     /**
@@ -48,6 +63,14 @@ public class ShellApplication {
      */
     public void stop() {
         isRunning = false;
+    }
+
+    /**
+     * Get the WarehouseController for this application.
+     * @return the WarehouseController instance.
+     */
+    public WarehouseController getWarehouseController() {
+        return warehouseController;
     }
 
     /**

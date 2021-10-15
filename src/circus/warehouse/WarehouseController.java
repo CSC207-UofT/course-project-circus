@@ -1,6 +1,7 @@
 package circus.warehouse;
 
 
+import circus.inventory.InventoryCatalogue;
 import circus.inventory.Item;
 
 /**
@@ -12,13 +13,18 @@ public class WarehouseController {
      * The Warehouse to manage.
      */
     private final Warehouse warehouse;
+    /**
+     * Available items serviced by the Warehouse.
+     */
+    private final InventoryCatalogue inventoryCatalogue;
 
     /**
-     * Constructs an instance of the WareHouseController
+     * Constructs an instance of the WarehouseController.
      */
-    public WarehouseController(Warehouse warehouse)
+    public WarehouseController(Warehouse warehouse, InventoryCatalogue inventoryCatalogue)
     {
         this.warehouse = warehouse;
+        this.inventoryCatalogue = inventoryCatalogue;
     }
 
     /**
@@ -35,5 +41,13 @@ public class WarehouseController {
             tile.getStorageUnit().addItem(item);
             return true;
         }
+    }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public InventoryCatalogue getInventoryCatalogue() {
+        return inventoryCatalogue;
     }
 }
