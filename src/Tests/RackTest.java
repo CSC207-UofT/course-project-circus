@@ -14,15 +14,15 @@ public class RackTest {
     @Test
     public void testCapacity()
     {
-        Rack r = new Rack();
+        Rack r = new Rack(0, 0);
         assertEquals(-1, r.getCapacity());
     }
 
     @Test
     public void testInfiniteCapacity()
     {
-        Rack r = new Rack();
-        Rack r2 = new Rack(100);
+        Rack r = new Rack(0, 0);
+        Rack r2 = new Rack(100, 0, 0);
 
         assertTrue(r.hasInfiniteCapacity());
         assertFalse(r2.hasInfiniteCapacity());
@@ -30,7 +30,7 @@ public class RackTest {
     @Test
     public void addItemBasicTests()
     {
-        Rack r = new Rack(3);
+        Rack r = new Rack(3, 0, 0);
         Item i = new Item("Artem", "Smart student whose first language is Python.");
         assertTrue(r.addItem(i));
         assertEquals(1, r.getSize());
@@ -44,7 +44,7 @@ public class RackTest {
     @Test
     public void removeItemBasicTests()
     {
-        Rack r = new Rack(3);
+        Rack r = new Rack(3, 0, 0);
         Item i = new Item("Leon", "Polish \"left wing\" nationalist.");
         r.addItem(i);
         r.addItem(i);
@@ -58,13 +58,13 @@ public class RackTest {
     @Test
     public void getQueryItemsBasicTests()
     {
-        Rack r = new Rack(3);
+        Rack r = new Rack(3, 0, 0);
         Item i = new Item("Mr. Martin", "Best TA from STA130");
         r.addItem(i);
         List<Item> l = new ArrayList<>();
         l.add(i);
         assertEquals(l, r.getQueryItems());
-        Rack r2 = new Rack();
+        Rack r2 = new Rack(0, 0);
         assertNotEquals(l, r2.getQueryItems());
     }
 }

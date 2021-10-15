@@ -19,7 +19,8 @@ public class Depot extends StorageUnit {
      * Construct a Depot with a capacity.
      * @param maxCapacity The maximum capacity of this Depot. If negative, then the capacity is infinite.
      */
-    public Depot(int maxCapacity) {
+    public Depot(int maxCapacity, int x, int y) {
+        super(x, y);
         this.items = new HashMap<>();
         this.capacity = maxCapacity;
     }
@@ -27,8 +28,8 @@ public class Depot extends StorageUnit {
     /**
      * Construct a Depot with infinite capacity.
      */
-    public Depot() {
-        this(-1);
+    public Depot(int x, int y) {
+        this(-1, x, y);
     }
 
     /**
