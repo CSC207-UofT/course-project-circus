@@ -1,5 +1,5 @@
 package circus.warehouse;
-
+import circus.warehouse.Rack;
 /**
  * An empty tile in the warehouse.
  */
@@ -16,4 +16,5 @@ public class Tile {
         this.x = x;
         this.y = y;
     }
+
 }
