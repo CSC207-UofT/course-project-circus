@@ -18,7 +18,6 @@ class CreateStorageUnitArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg
     private int y;
 
-
     public int getX() {
         return x;
     }

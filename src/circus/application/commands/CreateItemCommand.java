@@ -7,6 +7,9 @@ import circus.application.commands.framework.ShellCommandArgContainer;
 import circus.application.commands.framework.ShellCommandSpec;
 import circus.inventory.Item;
 
+/**
+ * Argument container for CreateItemCommand.
+ */
 class CreateItemCommandArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg
     private String id;
