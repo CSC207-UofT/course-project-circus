@@ -47,6 +47,7 @@ public class Rack extends StorageUnit {
      * Get the size of this Rack. In other words how many items are in this rack.
      * @return The size of this Rack.
      */
+    @Override
     public int getSize() {
         return size;
     }
@@ -59,13 +60,22 @@ public class Rack extends StorageUnit {
         return capacity < 0;
     }
 
+    /**
+     * Check whether an Item can be added into this Rack.
+     * @param item The Item to check.
+     * @return True if the Item can be added, and False otherwise.
+     */
+    public boolean canAddItem(Item item) {
+        return item.equals(currentItem) && (hasInfiniteCapacity() || size < capacity);
+    }
+
     @Override
     public boolean addItem(Item item) {
         if (currentItem == null) {
             currentItem = new Item(item);
         }
 
-        if (item.equals(currentItem) && (hasInfiniteCapacity() || size < capacity)) {
+        if (canAddItem(item)) {
             size += 1;
             return true;
         } else {

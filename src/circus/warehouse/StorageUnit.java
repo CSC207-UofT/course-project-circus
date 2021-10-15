@@ -24,6 +24,12 @@ public abstract class StorageUnit implements Receivable, Distributable {
      */
     public abstract boolean removeItem(Item item);
 
+    /**
+     * Get the size (number of items stored) of this StorageUnit.
+     * @return the number of items stored in this StorageUnit.
+     */
+    public abstract int getSize();
+
     @Override
     public boolean receiveItem(Item item) {
         return addItem(item);

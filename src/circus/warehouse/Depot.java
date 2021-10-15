@@ -82,6 +82,7 @@ public class Depot extends StorageUnit {
      * Get the size of this Depot, which is the sum of quantities for each Item type.
      * @return The size of this Depot.
      */
+    @Override
     public int getSize() {
         int size = 0;
         for (int quantity : items.values()) {

@@ -1,5 +1,5 @@
 package circus.warehouse;
-import circus.warehouse.Rack;
+
 /**
  * An empty tile in the warehouse.
  */
@@ -9,39 +9,24 @@ public class Tile {
     private StorageUnit storageUnit;
 
     /**
+     * Construct a WarehouseCell with the given position and StorageUnit.
+     * @param x The horizontal position of the cell.
+     * @param y The vertical position of the cell.
+     * @param storageUnit Storage unit attached to this tile.
+     */
+    public Tile(int x, int y, StorageUnit storageUnit) {
+        this.x = x;
+        this.y = y;
+        this.storageUnit = storageUnit;
+    }
+
+    /**
      * Construct a WarehouseCell with the given position.
      * @param x The horizontal position of the cell.
      * @param y The vertical position of the cell.
      */
     public Tile(int x, int y) {
-        this.x = x;
-        this.y = y;
-        storageUnit = null;
-    }
-
-    /**
-     * Construct a WarehouseCell with the given position.
-     * @param x The horizontal position of the cell.
-     * @param y The vertical position of the cell.
-     */
-    public Tile(StorageUnit su, int x, int y) {
-        this(x, y);
-        storageUnit = su;
-    }
-
-    /**
-     * Adds a StorageUnit into the tile.
-     * @param s the storage unit being added.
-     * @return True if the storageUnit was successfully added, otherwise false.
-     */
-    public boolean addStorageUnit(StorageUnit s)
-    {
-        if(storageUnit != null)
-        {
-            storageUnit = s;
-            return true;
-        }
-        return false;
+        this(x,y, null);
     }
 
     /**
@@ -62,4 +47,11 @@ public class Tile {
         return storageUnit;
     }
 
+    /**
+     * Set the StorageUnit on this Tile. If a StorageUnit is already on this Tile, it will be OVERWRITTEN!
+     * @param storageUnit the storage unit being added.
+     */
+    public void setStorageUnit(StorageUnit storageUnit) {
+        this.storageUnit = storageUnit;
+    }
 }
