@@ -1,6 +1,7 @@
 package circus.inventory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +30,14 @@ public class InventoryCatalogue {
             items.put(item.getId(), item);
             return true;
         }
+    }
+
+    /**
+     * Get the Items in this InventoryCatalogue.
+     * @return a List of Items.
+     */
+    public List<Item> getItems() {
+        return items.values().stream().toList();
     }
 
     /**

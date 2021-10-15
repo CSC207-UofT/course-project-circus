@@ -70,7 +70,7 @@ public class ShellCommandExecutor {
     public String execute(String input) {
         String commandName = input.split(" ")[0];
         if (!commands.containsKey(commandName)) {
-            System.out.printf("%s: command not found%n", commandName);
+            System.out.printf("%s: command not found\n", commandName);
             return null;
         } else {
             // TODO: Parse args

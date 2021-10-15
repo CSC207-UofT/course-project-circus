@@ -15,16 +15,16 @@ class CreateItemCommandArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg
     private String description;
 
+    public String getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
 
     public String getDescription() {
         return description;
-    }
-
-    public String getId() {
-        return id;
     }
 }
 
@@ -40,9 +40,9 @@ public class CreateItemCommand extends ShellCommand {
         // Add it to the catalogue.
         boolean result = application.getWarehouseController().getInventoryCatalogue().addItem(item);
         if (result) {
-            return String.format("Added %s", item);
+            return String.format("Created %s and added it to the inventory catalogue.", item);
         } else {
-            return String.format("Could not add %s", item);
+            return "Error - Item with same id already exists!";
         }
     }
 
