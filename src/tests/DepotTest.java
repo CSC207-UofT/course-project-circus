@@ -30,7 +30,8 @@ public class DepotTest {
 
     @Test
     public void testHasInfiniteCapacity(){
-        d2 = new  Depot(0);
+
+        d2 = new Depot(0);
         d3 = new Depot(-1);
         assertTrue(d3.hasInfiniteCapacity());
         assertFalse(d2.hasInfiniteCapacity());
