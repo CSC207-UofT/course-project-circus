@@ -13,11 +13,11 @@ public class Item {
 
     /**
      * Construct an Item with a name and description.
+     * @param id The UUID of this item.
      * @param name The name of this Item.
      * @param description The description of this Item.
-     * @param id The UUID of this item.
      */
-    public Item(String name, String description, String id) {
+    public Item(String id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
