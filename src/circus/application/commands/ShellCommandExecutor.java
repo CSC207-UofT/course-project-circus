@@ -2,8 +2,7 @@ package circus.application.commands;
 
 import circus.application.ShellApplication;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Executes shell commands.
@@ -47,7 +46,7 @@ public class ShellCommandExecutor {
      * @param overwrite Whether to overwrite the registry if a command of the same name already exists.
      */
     public void register(ShellCommand command, boolean overwrite) throws ShellCommandSpecNotFoundException {
-        ShellCommandSpec commandSpec = ShellCommand.getSpec(command);
+        ShellCommandSpec commandSpec = command.getSpec();
         // Convert command names to lowercase if case-sensitive.
         String commandName = isCaseSensitive ? commandSpec.name() : commandSpec.name().toLowerCase();
         if (!commands.containsKey(commandName) || overwrite) {
@@ -66,17 +65,24 @@ public class ShellCommandExecutor {
     /**
      * Parse and execute a command string.
      * @param input command string of the form "command_name arg1 arg2 arg3 ..."
-     * @return The output of the command, or null if the command wasn't found.
+     * @return The output of the command, or null if there was an error.
      */
     public String execute(String input) {
-        String[] parts = input.split(" ");
-        String commandName = parts[0];
+        String commandName = input.split(" ")[0];
         if (!commands.containsKey(commandName)) {
             System.out.printf("%s: command not found%n", commandName);
             return null;
         } else {
             // TODO: Parse args
-            return commands.get(commandName).execute(application);
+            ShellCommand command = commands.get(commandName);
+            ShellCommandArgContainer argContainer = command.createArgContainer();
+            try {
+                argContainer.populate(argContainer.parse(input.replaceFirst(commandName, "").strip()));
+            } catch (MissingPositionalArgsException e) {
+                System.out.println(e.getMessage());
+                return null;
+            }
+            return command.execute(application, argContainer);
         }
     }
 }

@@ -1,5 +1,6 @@
 package circus.application;
 
+import circus.application.commands.EchoCommand;
 import circus.application.commands.ExitCommand;
 import circus.application.commands.ShellCommand;
 import circus.application.commands.ShellCommandExecutor;
@@ -19,7 +20,8 @@ public class ShellApplication {
     public ShellApplication() {
         isRunning = false;
         commandExecutor = new ShellCommandExecutor(this, new ShellCommand[]{
-                new ExitCommand()
+                new ExitCommand(),
+                new EchoCommand()
         });
     }
 
