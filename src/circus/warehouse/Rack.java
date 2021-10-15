@@ -23,7 +23,8 @@ public class Rack extends StorageUnit {
      * Construct a Rack with a capacity.
      * @param capacity The capacity of this Rack. If negative, then the Rack has infinite capacity.
      */
-    public Rack(int capacity) {
+    public Rack(int capacity, int x, int y) {
+        super(x, y);
         this.capacity = capacity;
         currentItem = null;
     }
@@ -31,8 +32,8 @@ public class Rack extends StorageUnit {
     /**
      * Construct a Rack with infinite capacity.
      */
-    public Rack() {
-        this(-1);
+    public Rack(int x, int y) {
+        this(-1, x, y);
     }
 
     /**
@@ -41,6 +42,14 @@ public class Rack extends StorageUnit {
      */
     public int getCapacity() {
         return capacity;
+    }
+
+    /**
+     * Get the size of this Rack. In other words how many items are in this rack.
+     * @return The size of this Rack.
+     */
+    public int getSize() {
+        return size;
     }
 
     /**
@@ -78,8 +87,12 @@ public class Rack extends StorageUnit {
         }
     }
 
+    /**
+     * Returns a List of one element, which is currentItem, if currentItem exists, otherwise, an empty list.
+     * @return a List of Query Items
+     */
     @Override
-    public Iterable<Item> getQueryItems() {
+    public List<Item> getQueryItems() {
         if (currentItem == null) {
             return Collections.emptyList();
         } else {

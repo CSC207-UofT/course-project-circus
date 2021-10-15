@@ -10,7 +10,17 @@ import java.util.List;
 /**
  * A unit in the warehouse that can store items.
  */
-public abstract class StorageUnit implements Receivable, Distributable {
+public abstract class StorageUnit extends Tile implements Receivable, Distributable {
+    /**
+     * Construct a WarehouseCell with the given position.
+     *
+     * @param x The horizontal position of the cell.
+     * @param y The vertical position of the cell.
+     */
+    public StorageUnit(int x, int y) {
+        super(x, y);
+    }
+
     /**
      * Add an item to this StorageUnit.
      * @param item The item to add.
