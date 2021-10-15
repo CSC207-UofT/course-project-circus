@@ -20,8 +20,7 @@ public class ShellApplication {
     public ShellApplication() {
         isRunning = false;
         commandExecutor = new ShellCommandExecutor(this, new ShellCommand[]{
-                new ExitCommand(),
-                new EchoCommand()
+                new ExitCommand()
         });
     }
 
