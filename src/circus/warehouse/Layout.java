@@ -41,23 +41,23 @@ public class Layout {
         }
     }
 
-    /**
-     * Very simple method that finds a storage unit in the layout and returns it. If there is no storage unit in the
-     * layout, the method returns null.
-     * @return the first storage unit in the layout, if there aren't any return null
-     */
-    public StorageUnit findStorageUnit()
-    {
-        for (int i = 0; i < height; i ++)
-        {
-            for (int j = 0; j < width; j++)
-            {
-                if (tiles[i][j] instanceof StorageUnit)
-                    return tiles[i][j].getStorageUnit();
-            }
-        }
-        return null;
-    }
+//    /**
+//     * Very simple method that finds a storage unit in the layout and returns it. If there is no storage unit in the
+//     * layout, the method returns null.
+//     * @return the first storage unit in the layout, if there aren't any return null
+//     */
+//    public <T extends Tile> T findTileOfType()
+//    {
+//        for (int i = 0; i < height; i ++)
+//        {
+//            for (int j = 0; j < width; j++)
+//            {
+//                if (tiles[i][j] instanceof T)
+//                    return tiles[i][j].getStorageUnit();
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * Check whether the given tile coordinate is out of bounds.

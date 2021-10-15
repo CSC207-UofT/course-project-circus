@@ -1,8 +1,6 @@
 package circus.warehouse;
 
 
-import circus.inventory.Item;
-
 /**
  * This class will be in charge of the WareHouse as a whole and will be the class that the User interacts with
  * rather than other more basic classes.
@@ -32,18 +30,18 @@ public class WareHouseController {
      * @param i The item being added.
      * @return True if the item was succesfully added, otherwise, false.
      */
-    public boolean addItem(Item i) {
-        {
-            if (i != null) {
-                StorageUnit s = layout.findStorageUnit();
-                if (s == null)
-                    return false;
-                s.addItem(i);
-                return true;
-            }
-            return false;
-        }
-
-    }
+//    public boolean addItem(Item i) {
+//        {
+//            if (i != null) {
+//                StorageUnit s = layout.findTileOfType();
+//                if (s == null)
+//                    return false;
+//                s.addItem(i);
+//                return true;
+//            }
+//            return false;
+//        }
+//
+//    }
 
 }

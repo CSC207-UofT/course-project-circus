@@ -14,7 +14,7 @@ public class Main {
         System.out.println(item2);
 
         Rack rack = new Rack(0, 0);
-        Depot depot = new Depot(0, 0);
+        Depot depot = new Depot();
 
         // Rack demo 1: order matters
         System.out.println("Rack demo 1: order matters; item1 is added first, then item2 is added second\n" +
