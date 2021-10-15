@@ -8,15 +8,12 @@ import circus.application.commands.framework.ShellCommandSpec;
 import circus.inventory.Item;
 
 class CreateItemCommandArgContainer extends ShellCommandArgContainer {
-    @ShellCommandArg (positionalIndex = 0)
+    @ShellCommandArg
     private String id;
-    @ShellCommandArg (positionalIndex = 1)
+    @ShellCommandArg
     private String name;
-    @ShellCommandArg (positionalIndex = 2)
+    @ShellCommandArg
     private String description;
-
-    CreateItemCommandArgContainer() {
-    }
 
     public String getName() {
         return name;
