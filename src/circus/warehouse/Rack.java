@@ -44,6 +44,14 @@ public class Rack extends StorageUnit {
     }
 
     /**
+     * Get the size of this Rack. In other words how many items are in this rack.
+     * @return The size of this Rack.
+     */
+    public int getSize() {
+        return size;
+    }
+
+    /**
      * Return whether this Rack has infinite capacity.
      * @return True if the Rack has infinite capacity, or False otherwise.
      */
@@ -78,8 +86,12 @@ public class Rack extends StorageUnit {
         }
     }
 
+    /**
+     * Returns a List of one element, which is currentItem, if currentItem exists, otherwise, an empty list.
+     * @return a List of Query Items
+     */
     @Override
-    public Iterable<Item> getQueryItems() {
+    public List<Item> getQueryItems() {
         if (currentItem == null) {
             return Collections.emptyList();
         } else {
