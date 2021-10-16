@@ -1,6 +1,5 @@
 package circus.application.commands;
 
-
 import circus.application.ShellApplication;
 import circus.application.commands.framework.ShellCommand;
 import circus.application.commands.framework.ShellCommandArg;
@@ -8,11 +7,12 @@ import circus.application.commands.framework.ShellCommandArgContainer;
 import circus.application.commands.framework.ShellCommandSpec;
 import circus.inventory.InventoryCatalogue;
 import circus.inventory.Item;
-import circus.warehouse.*;
+import circus.warehouse.WarehouseController;
 
-import java.util.Map;
-
-class InsertItemCommandContainer extends ShellCommandArgContainer {
+/**
+ * Argument container for InsertItemCommand.
+ */
+class InsertItemCommandArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg
     private String id;
 
@@ -21,20 +21,30 @@ class InsertItemCommandContainer extends ShellCommandArgContainer {
     }
 }
 
-@ShellCommandSpec(name = "insert-item", description = "Inserts an item into the available Storage Unit.")
+/**
+ * A command to insert an Item into an available Rack.
+ */
+@ShellCommandSpec(name = "insert-item", description = "Inserts an item into the available Rack.")
 public class InsertItemCommand extends ShellCommand{
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
-        InsertItemCommandContainer args = (InsertItemCommandContainer) argContainer;
-        WarehouseController wc = application.getWarehouseController();
-        InventoryCatalogue catalogue = wc.getInventoryCatalogue();
-        wc.insertItem(catalogue.getItemById(args.getId()));
-
-        return "Great Success!";
+        InsertItemCommandArgContainer args = (InsertItemCommandArgContainer) argContainer;
+        WarehouseController warehouseController = application.getWarehouseController();
+        InventoryCatalogue inventoryCatalogue = warehouseController.getInventoryCatalogue();
+        Item item = inventoryCatalogue.getItemById(args.getId());
+        if (item == null) {
+            return String.format("Could not find item with id \"%s\" in the inventory catalogue!", args.getId());
+        } else {
+            if (warehouseController.insertItem(item)) {
+                return "Great Success! Inserted %s into Rack";
+            } else {
+                return String.format("Could not insert %s into the warehouse!", item);
+            }
+        }
     }
     @Override
     public ShellCommandArgContainer createArgContainer() {
-        return new InsertItemCommandContainer();
+        return new InsertItemCommandArgContainer();
     }
 }
 
