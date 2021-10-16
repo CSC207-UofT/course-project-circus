@@ -2,21 +2,18 @@ plugins {
     id 'java'
 }
 
-group 'circus'
+group 'team.circus'
 version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src']
-        }
-    }
-}
 
 dependencies {
-    implementation 'junit:junit:4.13.2'
-    implementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
 }
