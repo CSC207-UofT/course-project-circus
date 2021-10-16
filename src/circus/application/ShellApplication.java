@@ -27,7 +27,8 @@ public class ShellApplication {
                 new DisplayWarehouseCommand(),
                 new CreateItemCommand(),
                 new CreateStorageUnitCommand(),
-                new InsertItemCommand()
+                new InsertItemCommand(),
+                new HelpCommand()
         });
         // TODO: Should the warehouse controller be made here?!
         // TODO: Replace empty warehouse with file loading or something
@@ -71,6 +72,14 @@ public class ShellApplication {
      */
     public WarehouseController getWarehouseController() {
         return warehouseController;
+    }
+
+    /**
+     * Get the ShellCommandExecutor for this application.
+     * @return the ShellCommandExecutor instance.
+     */
+    public ShellCommandExecutor getCommandExecutor() {
+        return commandExecutor;
     }
 
     /**

@@ -85,4 +85,13 @@ public class ShellCommandExecutor {
             return command.execute(application, argContainer);
         }
     }
+
+    /**
+     * Get the ShellCommand with the given name.
+     * @param name The name of the command.
+     * @return the ShellCommand with the given name, or null if no such command exists.
+     */
+    public ShellCommand getCommandByName(String name) {
+        return commands.getOrDefault(name, null);
+    }
 }
