@@ -66,9 +66,8 @@ public class Warehouse {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 Tile tile = tiles[x][y];
-                StorageUnit storageUnit = tile.getStorageUnit();
-                if (tile.isEmpty() || !(storageUnit instanceof Rack)) continue;
-                if (((Rack) storageUnit).canAddItem(item)) {
+                if (tile.isEmpty() || !(tile.getStorageUnit() instanceof Rack rack)) continue;
+                if (rack.canAddItem(item)) {
                     return tile;
                 }
             }
