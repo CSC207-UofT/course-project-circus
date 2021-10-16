@@ -34,7 +34,7 @@ public class InsertItemCommand extends ShellCommand{
     }
     @Override
     public ShellCommandArgContainer createArgContainer() {
-        return new CreateStorageUnitArgContainer();
+        return new InsertItemCommandContainer();
     }
 }
 
