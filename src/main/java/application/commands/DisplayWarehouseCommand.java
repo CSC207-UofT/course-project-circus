@@ -15,8 +15,6 @@ import java.util.Map;
  */
 @ShellCommandSpec(name = "display-warehouse", description = "Display the layout of the warehouse.")
 public class DisplayWarehouseCommand extends ShellCommand {
-    private final Character EMPTY_TILE_SYMBOL = 'X';
-    private final Character UNKNOWN_STORAGE_UNIT_SYMBOL = '?';
     private final static Map<Class<? extends StorageUnit>, Character> STORAGE_UNIT_SYMBOLS = new HashMap<>();
 
     static {
@@ -42,9 +40,11 @@ public class DisplayWarehouseCommand extends ShellCommand {
                     Tile tile = warehouse.getTileAt(x, y);
                     stringBuilder.append(' ');
                     if (tile.isEmpty()) {
+                        Character EMPTY_TILE_SYMBOL = 'X';
                         stringBuilder.append(EMPTY_TILE_SYMBOL);
                     } else {
                         Class<?> clazz = tile.getStorageUnit().getClass();
+                        Character UNKNOWN_STORAGE_UNIT_SYMBOL = '?';
                         stringBuilder.append(STORAGE_UNIT_SYMBOLS.getOrDefault(clazz,
                                 UNKNOWN_STORAGE_UNIT_SYMBOL));
                     }

@@ -10,14 +10,14 @@ public class Graph <T extends Item> {
     private final Map<String, Set<String>> connections;
 
     /**
-     * Creates an instance of the Graph class. Not sure if it's in use yet, but it's set up just in case.
-     * @param n
-     * @param c
+     * Creates an instance of the Graph class.
+     * @param nodes Nodes of this graph.
+     * @param connections Connections (edges) between nodes.
      */
-    public Graph(Set<T> n, Map<String, Set<String>> c)
+    public Graph(Set<T> nodes, Map<String, Set<String>> connections)
     {
-        nodes = n;
-        connections = c;
+        this.nodes = nodes;
+        this.connections = connections;
     }
 
     public T getNode(String id) {
@@ -28,7 +28,7 @@ public class Graph <T extends Item> {
     }
 
     public Set<T> getConnections(T node) {
-        return connections.get(node.getId().toString()).stream()
+        return connections.get(node.getId()).stream()
                 .map(this::getNode)
                 .collect(Collectors.toSet());
     }

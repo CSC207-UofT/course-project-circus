@@ -16,19 +16,19 @@ public abstract class Pathfinder<T extends Item> {
 
     /**
      * Creates an instance of the Pathfinder class. Not sure if it's in use yet, but it's set up just in case.
-     * @param g
-     * @param next
-     * @param target
+     * @param graph The graph to perform pathfinding on.
+     * @param nextNodeScorer The next node scorer.
+     * @param targetNodeScorer The target nodeScorer.
      */
-    public Pathfinder(Graph<T> g, Scorer<T> next, Scorer<T> target)
+    public Pathfinder(Graph<T> graph, Scorer<T> nextNodeScorer, Scorer<T> targetNodeScorer)
     {
-        graph = g;
-        nextNodeScorer = next;
-        targetScorer = target;
+        this.graph = graph;
+        this.nextNodeScorer = nextNodeScorer;
+        targetScorer = targetNodeScorer;
     }
 
     /**
-     * Returns the optimal path for packages. This method will differ based on the type of pathifnder we use.
+     * Returns the optimal path for packages. This method will differ based on the type of pathfinder we use.
      *
      * This is where the A* algorithm comes into play. We have the graph that we are finding the routes across, and
      * our two scorers – one for the exact score for the next node, and one for the estimated score to our destination.
@@ -45,11 +45,11 @@ public abstract class Pathfinder<T extends Item> {
      * for this node and see if it's cheaper than what we had so far. If it is then we update it to match this new route
      * and add it to the open set for consideration next time around.
      *
-     * @return an array of strings representing the order of whcih packages it visits.
+     * @return an array of strings representing the order of which packages it visits.
      */
     public List<T> findPath(T from, T to)
     {
-        Queue<RouteNode> openSet = new PriorityQueue<>();
+        Queue<RouteNode<T>> openSet = new PriorityQueue<>();
         Map<T, RouteNode<T>> allNodes = new HashMap<>();
 
         RouteNode<T> start = new RouteNode<>(from, null, 0d, targetScorer.computeCost(from, to));
@@ -79,9 +79,8 @@ public abstract class Pathfinder<T extends Item> {
                     openSet.add(nextNode);
                 }
             });
-            throw new IllegalStateException("No route found");
         }
-        return new ArrayList<>();
+        throw new IllegalStateException("No route found");
     }
 
 }

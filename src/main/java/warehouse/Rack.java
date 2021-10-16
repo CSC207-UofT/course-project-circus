@@ -31,7 +31,7 @@ public class Rack extends StorageUnit {
     /**
      * Construct a Rack with infinite capacity.
      */
-    public Rack(int x, int y) {
+    public Rack() {
         this(-1);
     }
 

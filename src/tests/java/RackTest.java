@@ -14,14 +14,14 @@ public class RackTest {
     @Test
     public void testCapacity()
     {
-        Rack r = new Rack(0, 0);
+        Rack r = new Rack();
         assertEquals(-1, r.getCapacity());
     }
 
     @Test
     public void testInfiniteCapacity()
     {
-        Rack r = new Rack(0, 0);
+        Rack r = new Rack();
         Rack r2 = new Rack(100);
 
         assertTrue(r.hasInfiniteCapacity());
@@ -64,7 +64,7 @@ public class RackTest {
         List<Item> l = new ArrayList<>();
         l.add(i);
         assertEquals(l, r.getQueryItems());
-        Rack r2 = new Rack(0, 0);
+        Rack r2 = new Rack();
         assertNotEquals(l, r2.getQueryItems());
     }
 }
