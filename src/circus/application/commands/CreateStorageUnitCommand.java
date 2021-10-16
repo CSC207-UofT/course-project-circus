@@ -8,6 +8,9 @@ import circus.application.commands.framework.ShellCommandArgContainer;
 import circus.application.commands.framework.ShellCommandSpec;
 import circus.warehouse.*;
 
+/**
+ * Argument container for CreateStorageUnitCommand.
+ */
 class CreateStorageUnitArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg
     private String type;
@@ -35,31 +38,43 @@ class CreateStorageUnitArgContainer extends ShellCommandArgContainer {
     }
 }
 
-@ShellCommandSpec(name = "create-storage-unit", description = "Create a Storage Unit and add it to the Warehouse.")
+/**
+ * A command to create a StorageUnit and add it to the Warehouse.
+ */
+@ShellCommandSpec(name = "create-storage-unit", description = "Create a StorageUnit and add it to the Warehouse.")
 public class CreateStorageUnitCommand extends ShellCommand{
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
-        StorageUnit s = null;
         CreateStorageUnitArgContainer args = (CreateStorageUnitArgContainer) argContainer;
-        if (args.getType().equals("Depot")){
-            s= new Depot(args.getCapacity() );
+        String type = args.getType().toLowerCase();
+        StorageUnit storageUnitToAdd;
+        if (type.equals("depot")){
+            storageUnitToAdd = new Depot(args.getCapacity() );
         }
-        else if (args.getType().equals("Rack")) {
-            s= new Rack(args.getCapacity());
+        else if (type.equals("rack")) {
+            storageUnitToAdd = new Rack(args.getCapacity());
         }
         else {
-            return String.format("Storage Unit type %s - unknown", args.getType());
+            return String.format("Unknown StorageUnit type \"%s\"", type);
         }
-        Warehouse w = application.getWarehouseController().getWarehouse();
 
+        Warehouse warehouse = application.getWarehouseController().getWarehouse();
         try {
-            Tile tile = w.getTileAt(args.getX(), args.getY());
-            tile.setStorageUnit(s);
+            Tile tile = warehouse.getTileAt(args.getX(), args.getY());
+            if (!tile.isEmpty()) {
+                return String.format("Cannot add %s at (%d, %d) since the tile already has a storage unit",
+                        type,
+                        args.getX(),
+                        args.getY());
+            } else {
+                tile.setStorageUnit(storageUnitToAdd);
+                return String.format("Created %s at (%d, %d)", type, args.getX(), args.getY());
+            }
         } catch (TileOutOfBoundsException e) {
-            e.printStackTrace();
+            return e.getMessage();
         }
-        return "Success";
     }
+
     @Override
     public ShellCommandArgContainer createArgContainer() {
         return new CreateStorageUnitArgContainer();
