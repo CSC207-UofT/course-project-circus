@@ -15,26 +15,26 @@ class CreateStorageUnitArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg
     private String type;
     @ShellCommandArg
-    private int capacity;
-    @ShellCommandArg
     private int x;
     @ShellCommandArg
     private int y;
+    @ShellCommandArg
+    private int capacity;
+
+    public String getType() {
+        return type;
+    }
 
     public int getX() {
         return x;
-    }
-
-    public int getCapacity() {
-        return capacity;
     }
 
     public int getY() {
         return y;
     }
 
-    public String getType() {
-        return type;
+    public int getCapacity() {
+        return capacity;
     }
 }
 
