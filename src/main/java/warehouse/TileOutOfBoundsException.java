@@ -1,4 +1,4 @@
-package main.java.warehouse;
+package warehouse;
 
 /**
  * An exception that is thrown when a tile coordinate is out of bounds.

@@ -1,8 +1,8 @@
-package main.java.warehouse;
+package warehouse;
 
 
-import main.java.inventory.Item;
-import main.java.inventory.InventoryCatalogue;
+import inventory.InventoryCatalogue;
+import inventory.Item;
 
 /**
  * This class will be in charge of the WareHouse as a whole and will be the class that the User interacts with

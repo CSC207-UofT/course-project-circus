@@ -1,7 +1,7 @@
 package tests.java;
 
-import main.java.inventory.Item;
-import main.java.warehouse.Depot;
+import inventory.Item;
+import warehouse.Depot;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

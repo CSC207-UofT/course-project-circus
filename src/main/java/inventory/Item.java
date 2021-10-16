@@ -1,4 +1,4 @@
-package main.java.inventory;
+package inventory;
 
 import java.util.Objects;
 import java.util.UUID;

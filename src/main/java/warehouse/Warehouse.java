@@ -1,6 +1,6 @@
-package main.java.warehouse;
+package warehouse;
 
-import main.java.inventory.Item;
+import inventory.Item;
 
 /**
  * A stateless 2D representation of the layout of a warehouse. A layout is a 2D grid of cells, where each cell can

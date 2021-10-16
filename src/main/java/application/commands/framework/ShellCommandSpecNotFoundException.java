@@ -1,4 +1,4 @@
-package main.java.application.commands.framework;
+package application.commands.framework;
 
 /**
  * An exception that is thrown when the ShellCommandSpec annotation is not found.

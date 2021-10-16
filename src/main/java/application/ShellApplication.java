@@ -1,11 +1,11 @@
-package main.java.application;
+package application;
 
-import main.java.application.commands.*;
-import main.java.application.commands.framework.ShellCommand;
-import main.java.application.commands.framework.ShellCommandExecutor;
-import main.java.inventory.InventoryCatalogue;
-import main.java.warehouse.Warehouse;
-import main.java.warehouse.WarehouseController;
+import application.commands.*;
+import application.commands.framework.ShellCommand;
+import application.commands.framework.ShellCommandExecutor;
+import inventory.InventoryCatalogue;
+import warehouse.Warehouse;
+import warehouse.WarehouseController;
 
 import java.util.Scanner;
 

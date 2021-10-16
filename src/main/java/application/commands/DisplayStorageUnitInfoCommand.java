@@ -1,15 +1,15 @@
-package main.java.application.commands;
+package application.commands;
 
 
-import main.java.application.ShellApplication;
-import main.java.application.commands.framework.ShellCommand;
-import main.java.application.commands.framework.ShellCommandSpec;
-import main.java.warehouse.StorageUnit;
-import main.java.warehouse.Tile;
-import main.java.warehouse.TileOutOfBoundsException;
-import main.java.warehouse.Warehouse;
-import main.java.application.commands.framework.ShellCommandArg;
-import main.java.application.commands.framework.ShellCommandArgContainer;
+import application.ShellApplication;
+import application.commands.framework.ShellCommand;
+import application.commands.framework.ShellCommandArg;
+import application.commands.framework.ShellCommandArgContainer;
+import application.commands.framework.ShellCommandSpec;
+import warehouse.StorageUnit;
+import warehouse.Tile;
+import warehouse.TileOutOfBoundsException;
+import warehouse.Warehouse;
 
 /**
  * Argument container for the DisplayStorageUnitInfoCommand.

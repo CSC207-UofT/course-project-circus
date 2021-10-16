@@ -1,8 +1,8 @@
-package main.java;
+package warehouse;
 
-import main.java.inventory.Item;
-import main.java.query.Query;
-import main.java.query.Queryable;
+import inventory.Item;
+import query.Query;
+import query.Queryable;
 
 /**
  * Provides a transaction for distributing items.

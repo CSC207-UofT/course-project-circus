@@ -1,11 +1,11 @@
-package main.java.application.commands;
+package application.commands;
 
-import main.java.application.ShellApplication;
-import main.java.application.commands.framework.ShellCommand;
-import main.java.application.commands.framework.ShellCommandArg;
-import main.java.application.commands.framework.ShellCommandArgContainer;
-import main.java.application.commands.framework.ShellCommandSpec;
-import main.java.warehouse.*;
+import application.ShellApplication;
+import application.commands.framework.ShellCommand;
+import application.commands.framework.ShellCommandArg;
+import application.commands.framework.ShellCommandArgContainer;
+import application.commands.framework.ShellCommandSpec;
+import warehouse.*;
 
 /**
  * Argument container for CreateStorageUnitCommand.

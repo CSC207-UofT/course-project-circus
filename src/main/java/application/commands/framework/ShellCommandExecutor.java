@@ -1,8 +1,9 @@
-package main.java.application.commands.framework;
+package application.commands.framework;
 
-import main.java.application.ShellApplication;
+import application.ShellApplication;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Executes shell commands.

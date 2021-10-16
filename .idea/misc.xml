@@ -3,6 +3,7 @@
   <component name="EntryPointsManager">
     <writeAnnotations>
       <writeAnnotation name="main.java.application.commands.framework.ShellCommandArg" />
+      <writeAnnotation name="application.commands.framework.ShellCommandArg" />
     </writeAnnotations>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />

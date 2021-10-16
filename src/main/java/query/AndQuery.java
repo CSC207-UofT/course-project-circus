@@ -1,4 +1,4 @@
-package main.java.query;
+package query;
 
 /**
  * A query chaining multiple other queries together with an AND operation.

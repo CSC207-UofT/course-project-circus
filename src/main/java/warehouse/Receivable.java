@@ -1,6 +1,6 @@
-package main.java;
+package warehouse;
 
-import main.java.inventory.Item;
+import inventory.Item;
 
 /**
  * Provides a transaction for receiving items.

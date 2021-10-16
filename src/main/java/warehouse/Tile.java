@@ -1,4 +1,4 @@
-package main.java.warehouse;
+package warehouse;
 
 /**
  * An empty tile in the warehouse.

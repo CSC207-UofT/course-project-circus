@@ -1,11 +1,12 @@
-package main.java.pathfinding;
-import main.java.inventory.Item;
+package pathfinding;
+
+import inventory.Item;
 
 import java.util.*;
 
 /**
  * Abstract class for pathfinders that discovers the "optimal" path for packages.
- *
+ * <p>
  * Classes that extend this one will have to implement the methods we choose here.
  */
 public abstract class Pathfinder<T extends Item> {
@@ -31,7 +32,7 @@ public abstract class Pathfinder<T extends Item> {
      * Returns the optimal path for packages. This method will differ based on the type of pathfinder we use.
      *
      * This is where the A* algorithm comes into play. We have the graph that we are finding the routes across, and
-     * our two scorers – one for the exact score for the next node, and one for the estimated score to our destination.
+     * our two scorers one for the exact score for the next node, and one for the estimated score to our destination.
      * We've also got a method that will take a start and end node and compute the best route between the two.
      *
      * The use of a PriorityQueue for the open set means that we automatically get the best entry off of it, based on
@@ -41,7 +42,7 @@ public abstract class Pathfinder<T extends Item> {
      * reach our starting point.
      *
      * If the algorithm doesn't reach its destination, we iterate over the connected nodes from our graph. For each of
-     * these, we get the RouteNode that we have for it – creating a new one if needed. Then, we compute the new score
+     * these, we get the RouteNode that we have for it creating a new one if needed. Then, we compute the new score
      * for this node and see if it's cheaper than what we had so far. If it is then we update it to match this new route
      * and add it to the open set for consideration next time around.
      *

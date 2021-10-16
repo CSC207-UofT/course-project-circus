@@ -1,4 +1,4 @@
-package main.java.query;
+package query;
 
 /**
  * An interface representing a query for a Queryable.

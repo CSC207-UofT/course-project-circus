@@ -1,11 +1,12 @@
-package main.java.pathfinding;
-import main.java.inventory.Item;
+package pathfinding;
+
+import inventory.Item;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Graph <T extends Item> {
+public class Graph<T extends Item> {
     private final Set<T> nodes;
     private final Map<String, Set<String>> connections;
 

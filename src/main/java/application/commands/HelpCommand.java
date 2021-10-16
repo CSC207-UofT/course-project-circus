@@ -1,7 +1,7 @@
-package main.java.application.commands;
+package application.commands;
 
-import main.java.application.ShellApplication;
-import main.java.application.commands.framework.*;
+import application.ShellApplication;
+import application.commands.framework.*;
 
 class HelpCommandArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg

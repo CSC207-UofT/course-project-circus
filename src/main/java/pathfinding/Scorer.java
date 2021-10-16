@@ -1,6 +1,6 @@
-package main.java.pathfinding;
+package pathfinding;
 
-import main.java.inventory.Item;
+import inventory.Item;
 
 public interface Scorer<T extends Item> {
     double computeCost(T from, T to);

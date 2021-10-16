@@ -1,6 +1,6 @@
-package main.java.warehouse;
+package warehouse;
 
-import main.java.inventory.Item;
+import inventory.Item;
 
 import java.util.Collections;
 import java.util.List;

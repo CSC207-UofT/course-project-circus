@@ -1,4 +1,4 @@
-package main.java.application.commands.framework;
+package application.commands.framework;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

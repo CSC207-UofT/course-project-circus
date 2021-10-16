@@ -1,6 +1,6 @@
-package main.java.pathfinding;
+package pathfinding;
 
-import main.java.inventory.Item;
+import inventory.Item;
 
 public class ItemScorer implements Scorer<Item> {
 

@@ -1,8 +1,8 @@
 package tests.java;
 
 
-import main.java.inventory.Item;
-import main.java.warehouse.Rack;
+import inventory.Item;
+import warehouse.Rack;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

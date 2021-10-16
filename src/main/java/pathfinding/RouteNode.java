@@ -1,6 +1,6 @@
-package main.java.pathfinding;
+package pathfinding;
 
-import main.java.inventory.Item;
+import inventory.Item;
 
 public class RouteNode <T extends Item> implements Comparable<RouteNode<T>> {
     private final T current;

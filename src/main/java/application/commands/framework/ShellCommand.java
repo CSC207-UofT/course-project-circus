@@ -1,6 +1,6 @@
-package main.java.application.commands.framework;
+package application.commands.framework;
 
-import main.java.application.ShellApplication;
+import application.ShellApplication;
 
 /**
  * A shell command.

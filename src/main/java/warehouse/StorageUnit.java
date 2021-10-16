@@ -1,9 +1,7 @@
-package main.java.warehouse;
+package warehouse;
 
-import main.java.inventory.Item;
-import main.java.query.Query;
-import main.java.Distributable;
-import main.java.Receivable;
+import inventory.Item;
+import query.Query;
 
 import java.util.List;
 
