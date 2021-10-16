@@ -1,9 +1,6 @@
 package circus.application;
 
-import circus.application.commands.CreateItemCommand;
-import circus.application.commands.CreateStorageUnitCommand;
-import circus.application.commands.DisplayWarehouseCommand;
-import circus.application.commands.ExitCommand;
+import circus.application.commands.*;
 import circus.application.commands.framework.ShellCommand;
 import circus.application.commands.framework.ShellCommandExecutor;
 import circus.inventory.InventoryCatalogue;
@@ -29,7 +26,8 @@ public class ShellApplication {
                 new ExitCommand(),
                 new DisplayWarehouseCommand(),
                 new CreateItemCommand(),
-                new CreateStorageUnitCommand()
+                new CreateStorageUnitCommand(),
+                new InsertItemCommand()
         });
         // TODO: Should the warehouse controller be made here?!
         // TODO: Replace empty warehouse with file loading or something
