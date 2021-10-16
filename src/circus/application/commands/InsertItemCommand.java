@@ -30,7 +30,7 @@ public class InsertItemCommand extends ShellCommand{
         InventoryCatalogue catalogue = wc.getInventoryCatalogue();
         wc.insertItem(catalogue.getItemById(args.getId()));
 
-        return "Success";
+        return "Great Success!";
     }
     @Override
     public ShellCommandArgContainer createArgContainer() {
