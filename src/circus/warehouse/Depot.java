@@ -95,4 +95,12 @@ public class Depot extends StorageUnit {
     public Iterable<Item> getQueryItems() {
         return items.keySet();
     }
+
+    @Override
+    public String toString() {
+        return "Depot{" +
+                "items=" + items +
+                ", capacity=" + capacity +
+                '}';
+    }
 }

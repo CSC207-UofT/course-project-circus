@@ -23,12 +23,14 @@ public class ShellApplication {
     public ShellApplication() {
         isRunning = false;
         commandExecutor = new ShellCommandExecutor(this, new ShellCommand[]{
-                new ExitCommand(),
-                new DisplayWarehouseCommand(),
                 new CreateItemCommand(),
                 new CreateStorageUnitCommand(),
                 new InsertItemCommand(),
-                new HelpCommand()
+                new DisplayWarehouseCommand(),
+                new DisplayStorageUnitInfoCommand(),
+                new DisplayInventoryCommand(),
+                new HelpCommand(),
+                new ExitCommand(),
         });
         // TODO: Should the warehouse controller be made here?!
         // TODO: Replace empty warehouse with file loading or something

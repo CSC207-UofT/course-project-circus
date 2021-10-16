@@ -30,16 +30,16 @@ public class WarehouseController {
     /**
      * Insert an Item into the Warehouse into an available Rack.
      * @param item The Item to insert.
-     * @return True if the Item could be inserted, and False otherwise.
+     * @return the Tile containing the StorageUnit that the item was inserted into, or null if it could not be inserted.
      */
-    public boolean insertItem(Item item) {
+    public Tile insertItem(Item item) {
         Tile tile = warehouse.findRackFor(item);
         if (tile == null) {
             // Can't insert this item!
-            return false;
+            return null;
         } else {
             tile.getStorageUnit().addItem(item);
-            return true;
+            return tile;
         }
     }
 

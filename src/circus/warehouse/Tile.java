@@ -54,4 +54,12 @@ public class Tile {
     public void setStorageUnit(StorageUnit storageUnit) {
         this.storageUnit = storageUnit;
     }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

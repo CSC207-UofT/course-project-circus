@@ -7,6 +7,7 @@ import circus.application.commands.framework.ShellCommandArgContainer;
 import circus.application.commands.framework.ShellCommandSpec;
 import circus.inventory.InventoryCatalogue;
 import circus.inventory.Item;
+import circus.warehouse.Tile;
 import circus.warehouse.WarehouseController;
 
 /**
@@ -35,8 +36,12 @@ public class InsertItemCommand extends ShellCommand{
         if (item == null) {
             return String.format("Could not find item with id \"%s\" in the inventory catalogue!", args.getId());
         } else {
-            if (warehouseController.insertItem(item)) {
-                return "Great Success! Inserted %s into Rack";
+            Tile tile = warehouseController.insertItem(item);
+            if (tile != null) {
+                return String.format("Great Success! Inserted item into %s at (%d, %d)",
+                        tile.getStorageUnit().getClass().getSimpleName(),
+                        tile.getX(),
+                        tile.getY());
             } else {
                 return String.format("Could not insert %s into the warehouse!", item);
             }

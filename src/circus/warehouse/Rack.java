@@ -66,7 +66,7 @@ public class Rack extends StorageUnit {
      * @return True if the Item can be added, and False otherwise.
      */
     public boolean canAddItem(Item item) {
-        return item.equals(currentItem) && (hasInfiniteCapacity() || size < capacity);
+        return currentItem == null || (item.equals(currentItem) && (hasInfiniteCapacity() || size < capacity));
     }
 
     @Override
@@ -107,5 +107,14 @@ public class Rack extends StorageUnit {
         } else {
             return List.of(currentItem);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Rack{" +
+                "capacity=" + capacity +
+                ", currentItem=" + currentItem +
+                ", size=" + size +
+                '}';
     }
 }
