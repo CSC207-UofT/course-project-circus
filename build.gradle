@@ -17,7 +17,3 @@ dependencies {
 test {
     useJUnitPlatform()
 }
-
-apply plugin: 'java'
-sourceCompatibility = 1.16
-targetCompatibility = 1.16
