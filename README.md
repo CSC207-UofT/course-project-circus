@@ -48,4 +48,4 @@ Created rack at (5, 0)
  > insert-item 1
  Great Success! Inserted item into Rack at (5, 0)
  > display-storage-unit-info 5 0
-Rack{capacity=3, currentItem=Item{id=1, name="Mango", description="A delectable fruit"}, size=1}
+Rack{capacity=3, currentItem=Item{id=1, name='Mango', description='A delectable fruit'}, size=1}
