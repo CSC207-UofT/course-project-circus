@@ -12,6 +12,7 @@ Runinng the project opens a command-line interface, which contains an _empty_ wa
 - ``create-storage-unit <type> <x> <y> <capacity>``: Creates a storage unit (of the given type; one of ``rack`` or ``depot``) at the given tile coordinates. If the tile at the given coordinates is non-empty, then no storage unit is created.
 - ``display-inventory``: Display the inventory catalogue of the warehouse.
 - ``display-warehouse``: Display the warehouse layout.
+- ``display-storage-unit-info <x> <y>``: Display info about a storage unit at the given location.
 - ``insert-item <id>``: Insert the item with the given id into an available rack in the warehouse. If there is no item with the given id, or no rack is available, then no item is inserted.
 - ``help <name>``: Provides help information for the command with the given name.
 
@@ -46,3 +47,5 @@ Created rack at (5, 0)
  Great Success! Inserted item into Rack at (0, 0) 
  > insert-item 1
  Great Success! Inserted item into Rack at (0, 5)
+ > display-storage-unit-info 0 5
+Rack{capacity=3, currentItem=Item{id=1, name="Mango", description="A delectable fruit"}, size=1}
