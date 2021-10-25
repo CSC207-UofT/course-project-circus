@@ -13,7 +13,7 @@ public class DepotTest {
 
     @Test
     public void testAddItem() {
-        d1 = new Depot(5);
+        d1 = new Depot(7);
         d2 = new  Depot(0);
         Item item1 = new Item("Mango", "A delectable fruit");
         assertTrue(d1.addItem(item1));
