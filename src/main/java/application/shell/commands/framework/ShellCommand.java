@@ -1,6 +1,6 @@
-package application.commands.framework;
+package application.shell.commands.framework;
 
-import application.ShellApplication;
+import application.shell.ShellApplication;
 
 /**
  * A shell command.

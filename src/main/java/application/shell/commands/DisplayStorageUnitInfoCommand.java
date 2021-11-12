@@ -1,11 +1,11 @@
-package application.commands;
+package application.shell.commands;
 
 
-import application.ShellApplication;
-import application.commands.framework.ShellCommand;
-import application.commands.framework.ShellCommandArg;
-import application.commands.framework.ShellCommandArgContainer;
-import application.commands.framework.ShellCommandSpec;
+import application.shell.ShellApplication;
+import application.shell.commands.framework.ShellCommand;
+import application.shell.commands.framework.ShellCommandArg;
+import application.shell.commands.framework.ShellCommandArgContainer;
+import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.StorageUnit;
 import warehouse.Tile;
 import warehouse.TileOutOfBoundsException;

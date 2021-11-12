@@ -1,4 +1,4 @@
-package application.commands.framework;
+package application.shell.commands.framework;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

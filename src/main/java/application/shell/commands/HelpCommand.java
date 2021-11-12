@@ -1,7 +1,7 @@
-package application.commands;
+package application.shell.commands;
 
-import application.ShellApplication;
-import application.commands.framework.*;
+import application.shell.ShellApplication;
+import application.shell.commands.framework.*;
 
 class HelpCommandArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg

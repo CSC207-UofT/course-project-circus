@@ -1,8 +1,8 @@
-package application;
+package application.shell;
 
-import application.commands.*;
-import application.commands.framework.ShellCommand;
-import application.commands.framework.ShellCommandExecutor;
+import application.shell.commands.*;
+import application.shell.commands.framework.ShellCommand;
+import application.shell.commands.framework.ShellCommandExecutor;
 import inventory.InventoryCatalogue;
 import warehouse.Warehouse;
 import warehouse.WarehouseController;
