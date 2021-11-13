@@ -101,18 +101,16 @@ public class WarehouseLayoutCanvas extends Component {
         ImVec2 canvasTopLeft = ImGui.getCursorScreenPos();
         ImVec2 canvasSize = ImGui.getContentRegionAvail();
 
-        ImGui.invisibleButton("canvas", canvasSize.x, canvasSize.y,
-                ImGuiButtonFlags.MouseButtonLeft | ImGuiButtonFlags.MouseButtonRight);
+        ImGui.invisibleButton("canvas", canvasSize.x, canvasSize.y, ImGuiButtonFlags.MouseButtonLeft |
+                ImGuiButtonFlags.MouseButtonRight);
         boolean isHovered = ImGui.isItemHovered();
         boolean isActive = ImGui.isItemActive();
+        if(isHovered && ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
+            ImGui.setWindowFocus();
+        }
 
         ImVec2 origin = new ImVec2(canvasTopLeft.x + scrollOffset.x, canvasTopLeft.y + scrollOffset.y);
         ImVec2 mousePosition = new ImVec2(io.getMousePos().x - origin.x, io.getMousePos().y - origin.y);
-
-        // Check if mouse position is in bounds
-        if (mousePosition.x < 0 || mousePosition.x > canvasSize.x || mousePosition.y < 0 || mousePosition.y > canvasSize.y) {
-            return;
-        }
 
 //        // Add first and second point
 //        if (isHovered && !adding_line && ImGui.isMouseClicked(ImGuiMouseButton.Left))
@@ -131,14 +129,14 @@ public class WarehouseLayoutCanvas extends Component {
 
         // Pan (we use a zero mouse threshold when there's no context menu)
         // You may decide to make that threshold dynamic based on whether the mouse is hovering something etc.
-        if (isActive && ImGui.isMouseDragging(ImGuiMouseButton.Right, -1))
+        if (isHovered && ImGui.isMouseDragging(ImGuiMouseButton.Right, -1))
         {
             scrollOffset.x += io.getMouseDelta().x;
             scrollOffset.y += io.getMouseDelta().y;
         }
 
         // Zoom
-        if (ImGui.isWindowFocused()) {
+        if (isHovered) {
             zoom += Math.signum(io.getMouseWheel()) * zoomStep;
             zoom = Math.max(Math.min(zoom, maxZoom), minZoom);
         }
@@ -147,11 +145,6 @@ public class WarehouseLayoutCanvas extends Component {
         ImVec2 dragDelta = ImGui.getMouseDragDelta(ImGuiMouseButton.Right);
         if (ImGui.isMouseReleased(ImGuiMouseButton.Right) && dragDelta.x == 0.0f && dragDelta.y == 0.0f) {
             ImGui.openPopupOnItemClick("context");
-        }
-
-        dragDelta = ImGui.getMouseDragDelta(ImGuiMouseButton.Left);
-        if (ImGui.isMouseReleased(ImGuiMouseButton.Left) && dragDelta.x == 0.0f && dragDelta.y == 0.0f) {
-            ImGui.setWindowFocus();
         }
 
         if (ImGui.beginPopup("context"))
