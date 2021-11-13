@@ -46,7 +46,6 @@ public class MenuItem extends Component {
         if (previousSelected != selected) {
             onSelectedEvent.execute(this, application);
         }
-        // Draw children of this component
         super.onDraw(application);
     }
 

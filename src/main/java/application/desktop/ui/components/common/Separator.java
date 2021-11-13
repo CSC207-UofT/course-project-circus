@@ -7,8 +7,11 @@ import imgui.ImGui;
  * Separator component.
  */
 public class Separator extends Component {
+    /**
+     * Draw the separator line.
+     */
     @Override
-    public void draw(DesktopApplication application) {
+    public void onDraw(DesktopApplication application) {
         ImGui.separator();
     }
 }
