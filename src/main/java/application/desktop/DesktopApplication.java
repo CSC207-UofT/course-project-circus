@@ -1,7 +1,7 @@
 package application.desktop;
 
 import application.desktop.ui.FontAwesomeIcons;
-import application.desktop.ui.components.WarehouseLayoutCanvas;
+import application.desktop.ui.components.Sidebar;
 import application.desktop.ui.components.WarehouseLayoutEditor;
 import application.desktop.ui.components.common.*;
 import application.desktop.ui.components.common.Toolbar;
@@ -9,7 +9,9 @@ import imgui.*;
 import imgui.app.Application;
 import imgui.app.Configuration;
 import imgui.flag.*;
+import imgui.internal.flag.ImGuiDockNodeFlags;
 import imgui.type.ImBoolean;
+import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
 
@@ -38,6 +40,7 @@ public class DesktopApplication extends Application {
     private final static float DEFAULT_FONT_SIZE = 16.0f;
 
     private final List<UIComponent> components;
+    private boolean hasInitialisedDockspaceLayout;
 
     /**
      * Construct a DesktopApplication.
@@ -45,7 +48,9 @@ public class DesktopApplication extends Application {
     public DesktopApplication() {
         components = new ArrayList<>();
         components.add(new Toolbar());
-        components.add(new WarehouseLayoutEditor());
+        WarehouseLayoutEditor warehouseLayoutEditor = new WarehouseLayoutEditor();
+        components.add(warehouseLayoutEditor);
+        components.add(new Sidebar());
     }
 
     @Override
@@ -114,20 +119,36 @@ public class DesktopApplication extends Application {
 
         Pair<Integer, Integer> appWindowSize = getAppWindowSize();
         ImGui.setNextWindowSize(appWindowSize.getFirst(), appWindowSize.getSecond());
+
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
+
         // Setup dock space window so that it is behind every other window, and so that it doesn't
         // react to interaction.
         windowFlags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse |
                 ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove |
                 ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus;
         // Start window
-        final String DOCKSPACE_NAME = "dockspace_window";
-        ImGui.begin(DOCKSPACE_NAME, new ImBoolean(true), windowFlags);
+        ImGui.begin("Dockspace Content Root", new ImBoolean(true), windowFlags);
         ImGui.popStyleVar(2);
 
-        // Initialise dockspace
-        ImGui.dockSpace(ImGui.getID(DOCKSPACE_NAME));
+        // Create dock layout
+        final int dockspaceId = ImGui.getID("Dockspace");
+        if (!hasInitialisedDockspaceLayout) {
+            hasInitialisedDockspaceLayout = true;
+            imgui.internal.ImGui.dockBuilderRemoveNode(dockspaceId);
+            imgui.internal.ImGui.dockBuilderAddNode(dockspaceId, ImGuiDockNodeFlags.DockSpace);
+            imgui.internal.ImGui.dockBuilderSetNodeSize(dockspaceId, appWindowSize.getFirst(), appWindowSize.getSecond());
+
+            ImInt dockMainId = new ImInt(dockspaceId);
+            int dockIdLeft = imgui.internal.ImGui.dockBuilderSplitNode(dockMainId.get(), ImGuiDir.Left,
+                    0.20f, null, dockMainId);
+
+            imgui.internal.ImGui.dockBuilderDockWindow("Sidebar", dockIdLeft);
+            imgui.internal.ImGui.dockBuilderDockWindow("Warehouse Layout", dockMainId.get());
+            imgui.internal.ImGui.dockBuilderFinish(dockspaceId);
+        }
+        ImGui.dockSpace(dockspaceId, 0.0f, 0.0f);
     }
 
     /**
