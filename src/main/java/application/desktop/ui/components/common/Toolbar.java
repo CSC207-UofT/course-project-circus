@@ -1,8 +1,6 @@
 package application.desktop.ui.components.common;
 
-import application.desktop.DesktopApplication;
 import application.desktop.ui.callbacks.ExitCallback;
-import application.desktop.ui.callbacks.UICallback;
 
 /**
  * Main toolbar component for the DesktopApplication.
