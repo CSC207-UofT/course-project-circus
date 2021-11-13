@@ -102,11 +102,6 @@ public class WarehouseCanvas extends Component {
         ImDrawList drawList = ImGui.getWindowDrawList();
         drawBackground(drawList);
         drawGrid(drawList);
-//        for (int n = 0; n < points.size(); n += 2) {
-//            draw_list.addLine(origin.x + points.get(n).x, origin.y + points.get(n).y,
-//                    origin.x + points.get(n + 1).x, origin.y + points.get(n + 1).y,
-//                    ImGui.getColorU32(255, 255, 0, 255), 2.0f);
-//        }
     }
 
     /**
