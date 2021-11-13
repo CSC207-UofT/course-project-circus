@@ -22,7 +22,6 @@ public class WarehouseEditorPanel extends Panel {
         addChild(canvas);
     }
 
-
     public WarehouseCanvas getCanvas() {
         return canvas;
     }

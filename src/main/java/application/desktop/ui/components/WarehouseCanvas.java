@@ -80,12 +80,9 @@ public class WarehouseCanvas extends Component {
 
     @Override
     public void drawContent(DesktopApplication application) {
-        ImVec2 contentAvailable = ImGui.getContentRegionAvail();
-        size = new ImVec2(Math.max(contentAvailable.x, minSizeX),
-                Math.max(contentAvailable.y, minSizeY));
-        topLeft = ImGui.getCursorScreenPos();
-
+        updateTransform();
         handleInteraction();
+
         ImDrawList drawList = ImGui.getWindowDrawList();
         drawBackground(drawList);
         drawGrid(drawList);
@@ -95,6 +92,16 @@ public class WarehouseCanvas extends Component {
 //                    origin.x + points.get(n + 1).x, origin.y + points.get(n + 1).y,
 //                    ImGui.getColorU32(255, 255, 0, 255), 2.0f);
 //        }
+    }
+
+    /**
+     * Update transform information such as size and position.
+     */
+    private void updateTransform() {
+        ImVec2 contentAvailable = ImGui.getContentRegionAvail();
+        size = new ImVec2(Math.max(contentAvailable.x, minSizeX),
+                Math.max(contentAvailable.y, minSizeY));
+        topLeft = ImGui.getCursorScreenPos();
     }
 
     /**
