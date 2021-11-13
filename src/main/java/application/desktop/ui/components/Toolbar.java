@@ -31,16 +31,12 @@ public class Toolbar extends MenuBar {
         ));
         // Register event listeners
         // TODO: Implement New File callback
-        System.out.println(newMenuItem.getParent());
         newMenuItem.getOnSelectedEvent().addListener((source) -> {});
         newMenuItem.getOnStartMouseHoverEvent().addListener((source) -> {
             newMenuItem.setLabel("Hovering");
-            newMenuItem.setVisible(false);
         });
         newMenuItem.getOnStopMouseHoverEvent().addListener((source) -> {
             newMenuItem.setLabel("New");
-            System.out.println("stop");
-            newMenuItem.setVisible(true);
         });
         // TODO: Implement Open File callback
         openMenuItem.getOnSelectedEvent().addListener((source) -> {});
