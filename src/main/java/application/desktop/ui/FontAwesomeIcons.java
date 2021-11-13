@@ -1,4 +1,4 @@
-package application.desktop;
+package application.desktop.ui;
 
 /**
  * Font Awesome icons codepoints, can be used to render icons with imgui in any place where text can be rendered.

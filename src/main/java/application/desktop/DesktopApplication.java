@@ -1,12 +1,12 @@
 package application.desktop;
 
+import application.desktop.ui.FontAwesomeIcons;
+import application.desktop.ui.components.common.*;
+import application.desktop.ui.components.common.Toolbar;
 import imgui.*;
 import imgui.app.Application;
 import imgui.app.Configuration;
-import imgui.flag.ImGuiCond;
-import imgui.flag.ImGuiConfigFlags;
-import imgui.flag.ImGuiStyleVar;
-import imgui.flag.ImGuiWindowFlags;
+import imgui.flag.*;
 import imgui.type.ImBoolean;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
@@ -16,6 +16,8 @@ import java.net.URISyntaxException;
 import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -32,6 +34,16 @@ public class DesktopApplication extends Application {
      * The size of the default font.
      */
     private final static float DEFAULT_FONT_SIZE = 16.0f;
+
+    private final List<UIComponent> components;
+
+    /**
+     * Construct a DesktopApplication.
+     */
+    public DesktopApplication() {
+        components = new ArrayList<>();
+        components.add(new Toolbar());
+    }
 
     @Override
     protected void configure(Configuration config) {
@@ -82,12 +94,12 @@ public class DesktopApplication extends Application {
     @Override
     public void process() {
         initDockspace();
-
-        ImGui.begin("test");
-        ImGui.text("test");
+        // Render components
+        for (UIComponent component : components) {
+            component.render(this);
+        }
+        // End dockspace window
         ImGui.end();
-
-        ImGui.end();  // End dockspace window
     }
 
     /**
@@ -113,6 +125,15 @@ public class DesktopApplication extends Application {
 
         // Initialise dockspace
         ImGui.dockSpace(ImGui.getID(DOCKSPACE_NAME));
+    }
+
+    /**
+     * Exit the application.
+     */
+    public void exit() {
+        long window = glfwGetCurrentContext();
+        glfwSetWindowShouldClose(window, true);
+        System.exit(0);
     }
 
     /**
