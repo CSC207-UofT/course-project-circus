@@ -4,6 +4,7 @@ import application.desktop.DesktopApplication;
 import application.desktop.ui.events.Event;
 import imgui.ImGui;
 import imgui.flag.ImGuiStyleVar;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 
 /**
@@ -13,7 +14,16 @@ public class Panel extends Component {
     private String title;
     private float paddingX;
     private float paddingY;
-    private boolean canClose;
+
+    private boolean showTitleBar = true;
+    private boolean showScrollbar = true;
+    private boolean showMenuBar = false;
+    private boolean movable = true;
+    private boolean resizable = true;
+    private boolean closeable = true;
+    private boolean collapsable = true;
+    private boolean showBackground = true;
+    private boolean bringToFrontOnFocus = true;
 
     private boolean previousIsOpen;
     private final ImBoolean isOpen;
@@ -27,7 +37,7 @@ public class Panel extends Component {
      * @param title The title of the panel.
      */
     public Panel(String title) {
-        this(title, 10.0f, 10.0f, true, true);
+        this(title, 10.0f, 10.0f, true);
     }
 
     /**
@@ -35,14 +45,12 @@ public class Panel extends Component {
      * @param title The title of the panel.
      * @param paddingX Horizontal padding applied to (both sides of) contents in this Panel.
      * @param paddingY Vertical padding applied to (both sides of) contents in this Panel.
-     * @param canClose Whether this Panel is closeable.
      * @param isOpen Whether the panel should be open or not.
      */
-    public Panel(String title, float paddingX, float paddingY, boolean canClose, boolean isOpen) {
+    public Panel(String title, float paddingX, float paddingY, boolean isOpen) {
         this.title = title;
         this.paddingX = paddingX;
         this.paddingY = paddingY;
-        this.canClose = canClose;
 
         // State management
         this.isOpen = new ImBoolean(isOpen);
@@ -53,27 +61,58 @@ public class Panel extends Component {
         onClosedEvent = new Event();
     }
 
-    /**
-     * Draw this panel.
-     * @param application The application instance.
-     */
     @Override
-    protected void onDraw(DesktopApplication application) {
-        if(isOpen.get()) {
-            ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, paddingX, paddingY);
+    protected boolean preDraw(DesktopApplication application) {
+        if (!isOpen.get()) return false;
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, paddingX, paddingY);
 
-            boolean drawContents;
-            if (canClose) {
-                drawContents =ImGui.begin(title, isOpen);
-            } else {
-                drawContents = ImGui.begin(title);
-            }
-            ImGui.popStyleVar();
-            if (drawContents) {
-                super.onDraw(application);
-                ImGui.end();
-            }
+        boolean draw;
+        int windowFlags = buildWindowFlags();
+        if (closeable) {
+            draw = ImGui.begin(title, isOpen, windowFlags);
+        } else {
+            draw = ImGui.begin(title, windowFlags);
         }
+
+        ImGui.popStyleVar();
+        return draw;
+    }
+
+    @Override
+    protected void postDraw(DesktopApplication application) {
+        ImGui.end();
+    }
+
+    /**
+     * Get the window flags for this Panel.
+     */
+    private int buildWindowFlags() {
+        int flags = 0;
+        if (!showTitleBar) {
+            flags |= ImGuiWindowFlags.NoTitleBar;
+        }
+        if (!showScrollbar) {
+            flags |= ImGuiWindowFlags.NoScrollbar;
+        }
+        if (showMenuBar) {
+            flags |= ImGuiWindowFlags.MenuBar;
+        }
+        if (!movable) {
+            flags |= ImGuiWindowFlags.NoMove;
+        }
+        if (!resizable) {
+            flags |= ImGuiWindowFlags.NoResize;
+        }
+        if (!collapsable) {
+            flags |= ImGuiWindowFlags.NoCollapse;
+        }
+        if (!showBackground) {
+            flags |= ImGuiWindowFlags.NoBackground;
+        }
+        if (!bringToFrontOnFocus) {
+            flags |= ImGuiWindowFlags.NoBringToFrontOnFocus;
+        }
+        return flags;
     }
 
     /**
@@ -121,12 +160,76 @@ public class Panel extends Component {
         this.paddingY = paddingY;
     }
 
-    public boolean isCanClose() {
-        return canClose;
+    public boolean isShowTitleBar() {
+        return showTitleBar;
     }
 
-    public void setCanClose(boolean canClose) {
-        this.canClose = canClose;
+    public void setShowTitleBar(boolean showTitleBar) {
+        this.showTitleBar = showTitleBar;
+    }
+
+    public boolean isShowScrollbar() {
+        return showScrollbar;
+    }
+
+    public void setShowScrollbar(boolean showScrollbar) {
+        this.showScrollbar = showScrollbar;
+    }
+
+    public boolean isShowMenuBar() {
+        return showMenuBar;
+    }
+
+    public void setShowMenuBar(boolean showMenuBar) {
+        this.showMenuBar = showMenuBar;
+    }
+
+    public boolean isMovable() {
+        return movable;
+    }
+
+    public void setMovable(boolean movable) {
+        this.movable = movable;
+    }
+
+    public boolean isResizable() {
+        return resizable;
+    }
+
+    public void setResizable(boolean resizable) {
+        this.resizable = resizable;
+    }
+
+    public boolean isCloseable() {
+        return closeable;
+    }
+
+    public void setCloseable(boolean closeable) {
+        this.closeable = closeable;
+    }
+
+    public boolean isCollapsable() {
+        return collapsable;
+    }
+
+    public void setCollapsable(boolean collapsable) {
+        this.collapsable = collapsable;
+    }
+
+    public boolean isShowBackground() {
+        return showBackground;
+    }
+
+    public void setShowBackground(boolean showBackground) {
+        this.showBackground = showBackground;
+    }
+
+    public boolean isBringToFrontOnFocus() {
+        return bringToFrontOnFocus;
+    }
+
+    public void setBringToFrontOnFocus(boolean bringToFrontOnFocus) {
+        this.bringToFrontOnFocus = bringToFrontOnFocus;
     }
 
     public boolean isOpen() {

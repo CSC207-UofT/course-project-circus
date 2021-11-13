@@ -4,9 +4,9 @@ import imgui.ImGui;
 import imgui.ImVec4;
 
 /**
- * Colour scheme of the WarehouseLayoutCanvas.
+ * Colour scheme of the WarehouseCanvas.
  */
-public class WarehouseLayoutCanvasColourScheme {
+public class WarehouseCanvasColourScheme {
     /**
      * Default border colour of the canvas.
      */
@@ -32,9 +32,9 @@ public class WarehouseLayoutCanvasColourScheme {
             0.15686275f);
 
     /**
-     * Default colour scheme for the WarehouseLayoutCanvas.
+     * Default colour scheme for the WarehouseCanvas.
      */
-    public static final WarehouseLayoutCanvasColourScheme DEFAULT = new WarehouseLayoutCanvasColourScheme(
+    public static final WarehouseCanvasColourScheme DEFAULT = new WarehouseCanvasColourScheme(
             DEFAULT_BORDER_COLOUR, DEFAULT_BACKGROUND_COLOUR, DEFAULT_GRID_LINE_COLOUR);
 
     private ImVec4 borderColour;
@@ -42,12 +42,12 @@ public class WarehouseLayoutCanvasColourScheme {
     private ImVec4 gridLineColour;
 
     /**
-     * Construct a new WarehouseLayoutCanvas with a custom colour scheme.
+     * Construct a new WarehouseCanvas with a custom colour scheme.
      * @param borderColour The colour of the canvas border, given as a float RGBA vector.
      * @param backgroundColour The colour of the canvas background, given as a float RGBA vector.
      * @param gridLineColour The colour of the canvas grid lines, given as a float RGBA vector.
      */
-    public WarehouseLayoutCanvasColourScheme(ImVec4 borderColour, ImVec4 backgroundColour, ImVec4 gridLineColour) {
+    public WarehouseCanvasColourScheme(ImVec4 borderColour, ImVec4 backgroundColour, ImVec4 gridLineColour) {
         this.borderColour = borderColour;
         this.backgroundColour = backgroundColour;
         this.gridLineColour = gridLineColour;

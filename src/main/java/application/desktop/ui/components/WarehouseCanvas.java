@@ -2,12 +2,18 @@ package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Component;
+import application.desktop.ui.components.common.Menu;
+import application.desktop.ui.components.common.MenuBar;
 import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
+import imgui.type.ImBoolean;
 
-public class WarehouseLayoutCanvas extends Component {
-    private WarehouseLayoutCanvasColourScheme colourScheme;
+/**
+ * A canvas that visualizes the Warehouse.
+ */
+public class WarehouseCanvas extends Component {
+    private WarehouseCanvasColourScheme colourScheme;
     private float cellSize;
     private float minSizeX;
     private float minSizeY;
@@ -30,23 +36,19 @@ public class WarehouseLayoutCanvas extends Component {
     private float zoom;
 
     /**
-     * Construct a new WarehouseLayoutCanvas with a default colour scheme.
+     * Construct a new WarehouseCanvas with a default colour scheme.
      */
-    public WarehouseLayoutCanvas() {
-        this(WarehouseLayoutCanvasColourScheme.DEFAULT,
+    public WarehouseCanvas() {
+        this(WarehouseCanvasColourScheme.DEFAULT,
                 64.0f,
                 100.0f,
                 100.0f, 0.05f,3.0f, 0.1f,
                 true);
-
-        getOnStartMouseHoverEvent().addListener((source, application) -> {
-            System.out.println("On start mouse hover");
-        });
     }
 
     /**
-     * Construct a new WarehouseLayoutCanvas with a custom colour scheme.
-     * @param colourScheme The colour scheme of this WarehouseLayoutCanvas.
+     * Construct a new WarehouseCanvas with a custom colour scheme.
+     * @param colourScheme The colour scheme of this WarehouseCanvas.
      * @param cellSize The size of a grid cell in screen coordinates.
      * @param minSizeX The minimum horizontal size of the canvas, in pixels.
      * @param minSizeY The minimum vertical size of the canvas, in pixels.
@@ -55,11 +57,11 @@ public class WarehouseLayoutCanvas extends Component {
      * @param zoomStep The amount to step when zooming.
      * @param showGrid Whether to show the grid.
      */
-    public WarehouseLayoutCanvas(WarehouseLayoutCanvasColourScheme colourScheme,
-                                 float cellSize,
-                                 float minSizeX, float minSizeY,
-                                 float minZoom, float maxZoom, float zoomStep,
-                                 boolean showGrid) {
+    public WarehouseCanvas(WarehouseCanvasColourScheme colourScheme,
+                           float cellSize,
+                           float minSizeX, float minSizeY,
+                           float minZoom, float maxZoom, float zoomStep,
+                           boolean showGrid) {
         this.colourScheme = colourScheme;
         this.cellSize = cellSize;
         this.minSizeX = minSizeX;
@@ -77,7 +79,7 @@ public class WarehouseLayoutCanvas extends Component {
     }
 
     @Override
-    public void onDraw(DesktopApplication application) {
+    public void drawContent(DesktopApplication application) {
         ImVec2 contentAvailable = ImGui.getContentRegionAvail();
         size = new ImVec2(Math.max(contentAvailable.x, minSizeX),
                 Math.max(contentAvailable.y, minSizeY));
@@ -100,7 +102,6 @@ public class WarehouseLayoutCanvas extends Component {
      */
     private void handleInteraction() {
         ImGuiIO io = ImGui.getIO();
-
         ImGui.invisibleButton("canvas", size.x, size.y, ImGuiButtonFlags.MouseButtonLeft |
                 ImGuiButtonFlags.MouseButtonRight);
         boolean isHovered = ImGui.isItemHovered();
@@ -159,9 +160,9 @@ public class WarehouseLayoutCanvas extends Component {
      */
     private void drawBackground(ImDrawList drawList) {
         ImVec2 bottomRight = getBottomRightCoordinate();
-        final int borderColour = WarehouseLayoutCanvasColourScheme.toU32Colour(colourScheme.getBorderColour());
+        final int borderColour = WarehouseCanvasColourScheme.toU32Colour(colourScheme.getBorderColour());
         drawList.addRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, borderColour);
-        final int backgroundColour = WarehouseLayoutCanvasColourScheme.toU32Colour(colourScheme.getBackgroundColour());
+        final int backgroundColour = WarehouseCanvasColourScheme.toU32Colour(colourScheme.getBackgroundColour());
         drawList.addRectFilled(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, backgroundColour);
     }
 
@@ -175,7 +176,7 @@ public class WarehouseLayoutCanvas extends Component {
 
         ImVec2 bottomRight = getBottomRightCoordinate();
         drawList.pushClipRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, true);
-        final int gridLineColour = WarehouseLayoutCanvasColourScheme.toU32Colour(colourScheme.getGridLineColour());
+        final int gridLineColour = WarehouseCanvasColourScheme.toU32Colour(colourScheme.getGridLineColour());
         float gridStep = cellSize * zoom;
 
         // Draw horizontal lines
@@ -202,11 +203,11 @@ public class WarehouseLayoutCanvas extends Component {
         return new ImVec2(topLeft.x + size.x, topLeft.y + size.y);
     }
 
-    public WarehouseLayoutCanvasColourScheme getColourScheme() {
+    public WarehouseCanvasColourScheme getColourScheme() {
         return colourScheme;
     }
 
-    public void setColourScheme(WarehouseLayoutCanvasColourScheme colourScheme) {
+    public void setColourScheme(WarehouseCanvasColourScheme colourScheme) {
         this.colourScheme = colourScheme;
     }
 

@@ -94,15 +94,36 @@ public class Component {
      */
     public void draw(DesktopApplication application) {
         if (!isVisible()) return;
-        onDraw(application);
+        if (preDraw(application)) {
+            drawContent(application);
+            postDraw(application);
+        }
         handleEvents(application);
     }
+
+    /**
+     * Called before drawContent.
+     * @return A boolean indicating whether to continue drawing.
+     */
+    protected boolean preDraw(DesktopApplication application) { return true; }
+
+    /**
+     * Called after drawContent if and only if preDraw returns True.
+     */
+    protected void postDraw(DesktopApplication application) { }
 
     /**
      * Internal lifecycle method for drawing the component.
      * By default, draws the children of this component.
      */
-    protected void onDraw(DesktopApplication application) {
+    protected void drawContent(DesktopApplication application) {
+        drawChildren(application);
+    }
+
+    /**
+     * Draw child Components.
+     */
+    protected final void drawChildren(DesktopApplication application) {
         for (Component child : children) {
             child.draw(application);
         }

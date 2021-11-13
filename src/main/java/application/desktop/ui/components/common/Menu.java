@@ -25,11 +25,13 @@ public class Menu extends Component {
     }
 
     @Override
-    protected void onDraw(DesktopApplication application) {
-        if (ImGui.beginMenu(label, isEnabled())) {
-            super.onDraw(application);
-            ImGui.endMenu();
-        }
+    protected boolean preDraw(DesktopApplication application) {
+        return ImGui.beginMenu(label, isEnabled());
+    }
+
+    @Override
+    protected void postDraw(DesktopApplication application) {
+        ImGui.endMenu();
     }
 
     public String getLabel() {
