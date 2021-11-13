@@ -2,6 +2,9 @@ package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Panel;
+import application.desktop.ui.components.common.SameLine;
+import application.desktop.ui.components.common.Separator;
+import application.desktop.ui.components.common.Text;
 import imgui.ImGui;
 
 /**
@@ -16,9 +19,12 @@ public class WarehouseEditorPanel extends Panel {
     public WarehouseEditorPanel() {
         super("Warehouse Layout");
         setCloseable(false);
-        setShowMenuBar(true);
 
         canvas = new WarehouseCanvas();
+        addChild(new SameLine(
+                new Text("Hello World"),
+                new Text("Test")
+        ));
         addChild(canvas);
     }
 
