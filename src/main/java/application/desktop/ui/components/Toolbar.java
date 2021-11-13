@@ -27,28 +27,9 @@ public class Toolbar extends MenuBar {
                 exitMenuItem
         ));
 
-        Panel panel = new Panel("Hello World");
-        panel.getOnOpenedEvent().addListener((source, application) -> {
-            panel.setTitle("Opened!");
-            System.out.println("Panel opened");
-        });
-        panel.getOnClosedEvent().addListener((source, application) -> {
-            panel.setTitle("Closed!");
-            System.out.println("Panel closed");
-        });
-        addChild(panel);
-
         // Register event listeners
         // TODO: Implement New File callback
-        newMenuItem.getOnClickedEvent().addListener((source, application) -> {
-            panel.setOpen(true);
-        });
-        newMenuItem.getOnStartMouseHoverEvent().addListener((source, application) -> {
-            newMenuItem.setLabel("Hovering");
-        });
-        newMenuItem.getOnStopMouseHoverEvent().addListener((source, application) -> {
-            newMenuItem.setLabel("New");
-        });
+        newMenuItem.getOnClickedEvent().addListener((source, application) -> {});
         // TODO: Implement Open File callback
         openMenuItem.getOnClickedEvent().addListener((source, application) -> {});
         // TODO: Implement Save File callback
