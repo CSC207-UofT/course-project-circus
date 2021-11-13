@@ -20,4 +20,8 @@ public class WarehouseLayoutEditor extends UIComponent {
         canvas.render(application);
         ImGui.end();
     }
+
+    public WarehouseLayoutCanvas getCanvas() {
+        return canvas;
+    }
 }

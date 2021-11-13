@@ -50,7 +50,7 @@ public class DesktopApplication extends Application {
         components.add(new Toolbar());
         WarehouseLayoutEditor warehouseLayoutEditor = new WarehouseLayoutEditor();
         components.add(warehouseLayoutEditor);
-        components.add(new Sidebar());
+        components.add(new Sidebar(warehouseLayoutEditor));
     }
 
     @Override
@@ -142,7 +142,7 @@ public class DesktopApplication extends Application {
 
             ImInt dockMainId = new ImInt(dockspaceId);
             int dockIdLeft = imgui.internal.ImGui.dockBuilderSplitNode(dockMainId.get(), ImGuiDir.Left,
-                    0.20f, null, dockMainId);
+                    0.33f, null, dockMainId);
 
             imgui.internal.ImGui.dockBuilderDockWindow("Sidebar", dockIdLeft);
             imgui.internal.ImGui.dockBuilderDockWindow("Warehouse Layout", dockMainId.get());
