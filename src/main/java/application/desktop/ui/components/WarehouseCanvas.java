@@ -5,6 +5,7 @@ import application.desktop.ui.components.common.Component;
 import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
+import imgui.flag.ImGuiStyleVar;
 import warehouse.Warehouse;
 
 /**
@@ -242,17 +243,27 @@ public class WarehouseCanvas extends Component {
         float gridStep = getGridStep();
 
         // Colours
+        int WORLD_BORDER_COLOUR = ImGui.getColorU32(0, 0, 0, 1);
         int FLOOR_TILE_COLOUR = ImGui.getColorU32(101 / 255.0f, 101 / 255.0f, 101 / 255.0f, 0.5f);
 
+        float centreOffsetX = -(float)Math.floor(warehouse.getWidth() / 2.0f);
+        float centreOffsetY = -(float)Math.floor(warehouse.getHeight() / 2.0f);
+
+        // Draw tiles
         for (int y = 0; y < warehouse.getHeight(); y++) {
             for (int x = 0; x < warehouse.getWidth(); x++) {
-                float x1 = origin.x + gridStep * (x - (float)Math.floor(warehouse.getWidth() / 2.0f));
-                float y1 = origin.y + gridStep * (y - (float)Math.floor(warehouse.getHeight() / 2.0f));
+                float x1 = origin.x + gridStep * (x + centreOffsetX);
+                float y1 = origin.y + gridStep * (y + centreOffsetY);
                 float x2 = x1 + gridStep;
                 float y2 = y1 + gridStep;
                 drawList.addRectFilled(x1, y1, x2, y2, FLOOR_TILE_COLOUR);
             }
         }
+
+        // Draw border
+        drawList.addRect(origin.x + gridStep * centreOffsetX, origin.y + gridStep * centreOffsetY,
+                origin.x + gridStep * (warehouse.getWidth() + centreOffsetX), origin.y + gridStep * (warehouse.getHeight() + centreOffsetY),
+                WORLD_BORDER_COLOUR, 0, 0, 2.0f);
     }
 
     /**
