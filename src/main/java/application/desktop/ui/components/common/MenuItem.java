@@ -32,22 +32,22 @@ public class MenuItem extends Component {
     public MenuItem(String label, String shortcut, boolean enabled) {
         this.label = label;
         this.shortcut = shortcut;
-        this.enabled = enabled;
         this.onSelectedEvent = new Event();
+        setEnabled(enabled);
     }
 
     /**
      * Render this MenuItem.
      */
     @Override
-    public void draw(DesktopApplication application) {
+    public void onDraw(DesktopApplication application) {
         boolean previousSelected = selected;
-        selected = ImGui.menuItem(label, shortcut, selected, enabled);
+        selected = ImGui.menuItem(label, shortcut, selected, isEnabled());
         if (previousSelected != selected) {
             onSelectedEvent.execute(this);
         }
         // Draw children of this component
-        super.draw(application);
+        super.onDraw(application);
     }
 
     public String getLabel() {
@@ -66,11 +66,10 @@ public class MenuItem extends Component {
         this.shortcut = shortcut;
     }
 
+    /**
+     * This event is called when this MenuItem is selected.
+     */
     public Event getOnSelectedEvent() {
         return onSelectedEvent;
-    }
-
-    public boolean isSelected() {
-        return selected;
     }
 }

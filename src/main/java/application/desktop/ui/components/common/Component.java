@@ -3,7 +3,6 @@ package application.desktop.ui.components.common;
 import application.desktop.DesktopApplication;
 import application.desktop.ui.events.Event;
 import imgui.ImGui;
-import imgui.flag.ImGuiMouseButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,33 +11,41 @@ import java.util.List;
  * A basic ImGui component.
  */
 public class Component {
-    protected boolean enabled;
-    protected List<Component> children;
+    private Component parent;
+    private final List<Component> children;
+    private boolean visible;
+    private boolean enabled;
+    private boolean inheritParentState;
 
     private final Event onStartMouseHoverEvent;
     private final Event onStopMouseHoverEvent;
     private final Event whileMouseHoverEvent;
 
-    /**
-     * Current hover state.
-     */
-    private boolean isHovering;
+    protected ComponentState state;
 
     /**
-     * Construct a new Component with no children and that is enabled.
+     * Construct a new Component that is visible and enabled with no parent or children.
      */
     public Component() {
-        this(true, new ArrayList<>());
+        this(null, new ArrayList<>(), true, true);
     }
 
     /**
      * Construct a new Component.
-     * @param enabled Whether this Component is enabled.
+     * @param parent Parent of this Component.
      * @param children Children of this Component.
+     * @param visible Whether to draw this Component.
+     * @param enabled Whether this Component is enabled.
      */
-    public Component(boolean enabled, List<Component> children) {
+    public Component(Component parent, List<Component> children, boolean visible, boolean enabled) {
+        this.parent = parent;
+        this.children = new ArrayList<>();
+        for (Component child : children) {
+            addChild(child);
+        }
+        this.visible = visible;
         this.enabled = enabled;
-        this.children = children;
+        this.state = ComponentState.DEFAULT;
 
         // Events
         this.onStartMouseHoverEvent = new Event();
@@ -47,10 +54,38 @@ public class Component {
     }
 
     /**
+     * Set the parent of this Component.
+     * @param component The new parent of this Component.
+     */
+    public void setParent(Component component) {
+        setParent(component, false);
+    }
+
+    /**
+     * Set the parent of this Component.
+     * @param component The new parent of this Component.
+     * @param inheritParentState Whether to inherit the state (e.g. mouse events) of the parent.
+     */
+    public void setParent(Component component, boolean inheritParentState) {
+        component.addChild(this, inheritParentState);
+    }
+
+    /**
+     * Add a child to this Component.
+     * @param child The child Component to add.
+     */
+    public void addChild(Component child) {
+        addChild(child, false);
+    }
+
+    /**
      * Add child to this Component.
      * @param component The child Component to add.
+     * @param inheritParentState Whether to inherit the state (e.g. mouse events) of the parent.
      */
-    public void addChild(Component component) {
+    public void addChild(Component component, boolean inheritParentState) {
+        component.parent = this;
+        component.inheritParentState = inheritParentState;
         children.add(component);
     }
 
@@ -58,34 +93,109 @@ public class Component {
      * Draw this component.
      */
     public void draw(DesktopApplication application) {
-        for (Component child : children) {
-            child.draw(application);
-        }
+        if (!isVisible()) return;
+        onDraw(application);
         handleEvents();
     }
 
-    protected void handleEvents() {
-        boolean previousIsHovering = isHovering;
-        isHovering = ImGui.isItemHovered();
-        if (previousIsHovering != isHovering) {
-            // Our hover state has changed. This means that we've either started or stopped hovering.
+    /**
+     * Internal lifecycle method for drawing the component.
+     */
+    protected void onDraw(DesktopApplication application) {
+        for (Component child : children) {
+            child.draw(application);
+        }
+    }
+
+    /**
+     * Update the state of this Component.
+     */
+    private void updateState() {
+        if (inheritParentState && parent != null) {
+            state = parent.state;
+        } else {
+            boolean isHovering = ImGui.isItemHovered();
             if (isHovering) {
+                state = ComponentState.MOUSE_HOVERING;
+            } else {
+                state = ComponentState.DEFAULT;
+            }
+        }
+    }
+
+    /**
+     * Process and handle events.
+     */
+    protected void handleEvents() {
+        ComponentState previousState = state;
+        updateState();
+        if (previousState != state) {
+            // Our state has changed.
+            if (state == ComponentState.MOUSE_HOVERING) {
                 onStartMouseHoverEvent.execute(this);
             } else {
                 onStopMouseHoverEvent.execute(this);
             }
         }
-        if (isHovering) {
+        if (state == ComponentState.MOUSE_HOVERING) {
             whileMouseHoverEvent.execute(this);
         }
     }
 
+    public Component getParent() {
+        return parent;
+    }
+
+    public List<Component> getChildren() {
+        return children;
+    }
+
+    /**
+     * Get if this Component is visible.
+     * @return True if this Component is visible AND all ancestors are visible, and False otherwise.
+     */
+    public boolean isVisible() {
+        Component current = this;
+        while (current != null) {
+            if(!current.visible) {
+                return false;
+            } else {
+                current = current.parent;
+            }
+        }
+        return true;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    /**
+     * Get if this Component is enabled.
+     * @return True if this Component is enabled AND all ancestors are enabled, and False otherwise.
+     */
     public boolean isEnabled() {
-        return enabled;
+        Component current = this;
+        while (current != null) {
+            if(!current.enabled) {
+                return false;
+            } else {
+                current = current.parent;
+            }
+        }
+        return true;
     }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isInheritParentState() {
+        return inheritParentState;
+    }
+
+    public void setInheritParentState(boolean inheritParentState) {
+        this.inheritParentState = inheritParentState;
     }
 
     /**

@@ -27,10 +27,18 @@ public class Menu extends Component {
     }
 
     @Override
-    public void draw(DesktopApplication application) {
-        if (ImGui.beginMenu(label, enabled)) {
-            super.draw(application);
+    public void onDraw(DesktopApplication application) {
+        if (ImGui.beginMenu(label, isEnabled())) {
+            super.onDraw(application);
             ImGui.endMenu();
         }
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

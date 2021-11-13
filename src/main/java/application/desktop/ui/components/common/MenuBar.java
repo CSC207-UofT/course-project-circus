@@ -23,9 +23,9 @@ public class MenuBar extends Component {
      * Render this MenuBar.
      */
     @Override
-    public void draw(DesktopApplication application) {
+    public void onDraw(DesktopApplication application) {
         if (ImGui.beginMenuBar()) {
-            super.draw(application);
+            super.onDraw(application);
             ImGui.endMenuBar();
         }
     }
