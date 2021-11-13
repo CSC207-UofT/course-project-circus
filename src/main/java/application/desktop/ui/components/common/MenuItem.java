@@ -44,7 +44,7 @@ public class MenuItem extends Component {
         boolean previousSelected = selected;
         selected = ImGui.menuItem(label, shortcut, selected, isEnabled());
         if (previousSelected != selected) {
-            onSelectedEvent.execute(this);
+            onSelectedEvent.execute(this, application);
         }
         // Draw children of this component
         super.onDraw(application);

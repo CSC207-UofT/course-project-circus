@@ -31,21 +31,25 @@ public class Toolbar extends MenuBar {
         ));
         // Register event listeners
         // TODO: Implement New File callback
-        newMenuItem.getOnSelectedEvent().addListener((source) -> {});
-        newMenuItem.getOnStartMouseHoverEvent().addListener((source) -> {
+        newMenuItem.getOnSelectedEvent().addListener((source, application) -> {});
+        newMenuItem.getOnStartMouseHoverEvent().addListener((source, application) -> {
             newMenuItem.setLabel("Hovering");
         });
-        newMenuItem.getOnStopMouseHoverEvent().addListener((source) -> {
+        newMenuItem.getOnStopMouseHoverEvent().addListener((source, application) -> {
             newMenuItem.setLabel("New");
         });
         // TODO: Implement Open File callback
-        openMenuItem.getOnSelectedEvent().addListener((source) -> {});
+        openMenuItem.getOnSelectedEvent().addListener((source, application) -> {});
         // TODO: Implement Save File callback
-        saveMenuItem.getOnSelectedEvent().addListener((source) -> {});
+        saveMenuItem.getOnSelectedEvent().addListener((source, application) -> {});
         // TODO: Implement Save As callback
-        saveAsMenuItem.getOnSelectedEvent().addListener((source) -> {});
-        saveAsMenuItem.getWhileMouseHoverEvent().addListener((source) -> {
+        saveAsMenuItem.getOnSelectedEvent().addListener((source, application) -> {});
+        saveAsMenuItem.getWhileMouseHoverEvent().addListener((source, application) -> {
             System.out.println("\"Save As\" menu item hovering");
+        });
+
+        exitMenuItem.getOnSelectedEvent().addListener((source, application) -> {
+            application.exit();
         });
     }
 }

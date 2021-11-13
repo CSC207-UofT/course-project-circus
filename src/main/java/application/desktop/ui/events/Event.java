@@ -1,5 +1,6 @@
 package application.desktop.ui.events;
 
+import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Component;
 
 import java.util.ArrayList;
@@ -34,9 +35,9 @@ public class Event {
     /**
      * Raise the event, notifying all listeners.
      */
-    public void execute(Component component) {
+    public void execute(Component component, DesktopApplication application) {
         for (EventListener listener : listeners) {
-            listener.handle(component);
+            listener.handle(component, application);
         }
     }
 }

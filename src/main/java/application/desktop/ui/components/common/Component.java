@@ -95,7 +95,7 @@ public class Component {
     public void draw(DesktopApplication application) {
         if (!isVisible()) return;
         onDraw(application);
-        handleEvents();
+        handleEvents(application);
     }
 
     /**
@@ -126,19 +126,19 @@ public class Component {
     /**
      * Process and handle events.
      */
-    protected void handleEvents() {
+    protected void handleEvents(DesktopApplication application) {
         ComponentState previousState = state;
         updateState();
         if (previousState != state) {
             // Our state has changed.
             if (state == ComponentState.MOUSE_HOVERING) {
-                onStartMouseHoverEvent.execute(this);
+                onStartMouseHoverEvent.execute(this, application);
             } else {
-                onStopMouseHoverEvent.execute(this);
+                onStopMouseHoverEvent.execute(this, application);
             }
         }
         if (state == ComponentState.MOUSE_HOVERING) {
-            whileMouseHoverEvent.execute(this);
+            whileMouseHoverEvent.execute(this, application);
         }
     }
 
