@@ -32,8 +32,11 @@ public class Toolbar extends MenuBar {
         // Register event listeners
         // TODO: Implement New File callback
         newMenuItem.getOnSelectedEvent().addListener((source) -> {});
-        newMenuItem.getWhileMouseHoverEvent().addListener((source) -> {
+        newMenuItem.getOnStartMouseHoverEvent().addListener((source) -> {
             newMenuItem.setLabel("Hovering");
+        });
+        newMenuItem.getOnStopMouseHoverEvent().addListener((source) -> {
+            newMenuItem.setLabel("New");
         });
         // TODO: Implement Open File callback
         openMenuItem.getOnSelectedEvent().addListener((source) -> {});
