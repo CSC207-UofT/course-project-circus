@@ -123,7 +123,7 @@ public class Component {
     /**
      * Draw child Components.
      */
-    protected final void drawChildren(DesktopApplication application) {
+    protected void drawChildren(DesktopApplication application) {
         for (Component child : children) {
             child.draw(application);
         }
