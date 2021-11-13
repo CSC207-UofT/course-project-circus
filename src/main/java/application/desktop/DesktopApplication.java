@@ -14,6 +14,7 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
+import warehouse.Warehouse;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -48,7 +49,10 @@ public class DesktopApplication extends Application {
     public DesktopApplication() {
         components = new ArrayList<>();
         components.add(new Toolbar());
-        WarehouseEditorPanel warehouseLayoutEditor = new WarehouseEditorPanel();
+
+        // Create dummy warehouse
+        Warehouse warehouse = new Warehouse(12, 12);
+        WarehouseEditorPanel warehouseLayoutEditor = new WarehouseEditorPanel(warehouse);
         components.add(warehouseLayoutEditor);
         components.add(new Sidebar(warehouseLayoutEditor));
     }

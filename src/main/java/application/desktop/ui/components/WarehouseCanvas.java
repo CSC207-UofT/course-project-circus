@@ -2,18 +2,18 @@ package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Component;
-import application.desktop.ui.components.common.Menu;
-import application.desktop.ui.components.common.MenuBar;
 import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
-import imgui.type.ImBoolean;
+import warehouse.Warehouse;
 
 /**
  * A canvas that visualizes the Warehouse.
  */
 public class WarehouseCanvas extends Component {
+    private Warehouse warehouse;
     private WarehouseCanvasColourScheme colourScheme;
+
     private float cellSize;
     private float minSizeX;
     private float minSizeY;
@@ -23,13 +23,15 @@ public class WarehouseCanvas extends Component {
     private float zoomStep;
     private boolean showGrid;
 
+    private int frameCounter;
+
     private ImVec2 size;
     private ImVec2 topLeft;
 
     /**
      * Offset applied to canvas elements to enable scrolling.
      */
-    private final ImVec2 scrollOffset;
+    private final ImVec2 panOffset;
     /**
      * Scale multiplier for zooming.
      */
@@ -37,9 +39,11 @@ public class WarehouseCanvas extends Component {
 
     /**
      * Construct a new WarehouseCanvas with a default colour scheme.
+     * @param warehouse The Warehouse to visualise.
      */
-    public WarehouseCanvas() {
-        this(WarehouseCanvasColourScheme.DEFAULT,
+    public WarehouseCanvas(Warehouse warehouse) {
+        this(warehouse,
+                WarehouseCanvasColourScheme.DEFAULT,
                 64.0f,
                 100.0f,
                 100.0f, 0.05f,3.0f, 0.1f,
@@ -48,6 +52,7 @@ public class WarehouseCanvas extends Component {
 
     /**
      * Construct a new WarehouseCanvas with a custom colour scheme.
+     * @param warehouse The Warehouse to visualise.
      * @param colourScheme The colour scheme of this WarehouseCanvas.
      * @param cellSize The size of a grid cell in screen coordinates.
      * @param minSizeX The minimum horizontal size of the canvas, in pixels.
@@ -57,11 +62,13 @@ public class WarehouseCanvas extends Component {
      * @param zoomStep The amount to step when zooming.
      * @param showGrid Whether to show the grid.
      */
-    public WarehouseCanvas(WarehouseCanvasColourScheme colourScheme,
+    public WarehouseCanvas(Warehouse warehouse,
+                           WarehouseCanvasColourScheme colourScheme,
                            float cellSize,
                            float minSizeX, float minSizeY,
                            float minZoom, float maxZoom, float zoomStep,
                            boolean showGrid) {
+        this.warehouse = warehouse;
         this.colourScheme = colourScheme;
         this.cellSize = cellSize;
         this.minSizeX = minSizeX;
@@ -73,9 +80,10 @@ public class WarehouseCanvas extends Component {
 
         size = new ImVec2(minSizeX, minSizeY);
         topLeft = new ImVec2(0, 0);
-
-        scrollOffset = new ImVec2(0, 0);
+        panOffset = new ImVec2(0, 0);
         zoom = 1.0f;
+
+        frameCounter = 0;
     }
 
     @Override
@@ -83,15 +91,43 @@ public class WarehouseCanvas extends Component {
         updateTransform();
         handleInteraction();
 
+        // NOTE: The frame counter is a hacky way of centering the contents on load. It works by waiting for the second
+        // frame, so that all the contents have been rendered and updated at least once.
+        if (frameCounter <= 1) {
+            zoomToFit();
+            panToCentre();
+            frameCounter += 1;
+        }
+
         ImDrawList drawList = ImGui.getWindowDrawList();
         drawBackground(drawList);
         drawGrid(drawList);
-
 //        for (int n = 0; n < points.size(); n += 2) {
 //            draw_list.addLine(origin.x + points.get(n).x, origin.y + points.get(n).y,
 //                    origin.x + points.get(n + 1).x, origin.y + points.get(n + 1).y,
 //                    ImGui.getColorU32(255, 255, 0, 255), 2.0f);
 //        }
+    }
+
+    /**
+     * Update the panOffset so that the contents are centered in the canvas. Mutates panOffset.
+     */
+    private void panToCentre() {
+        float gridStep = getGridStep();
+        panOffset.x = gridStep * (float)Math.floor(warehouse.getWidth() / 2.0f)
+                + (size.x - gridStep * warehouse.getWidth()) / 2.0f;
+        panOffset.y = gridStep * (float)Math.floor(warehouse.getHeight() / 2.0f)
+                + (size.y - gridStep * warehouse.getHeight()) / 2.0f;
+    }
+
+    /**
+     * Update the zoom scale so that the contents fit on the screen. Mutates the zoom.
+     */
+    private void zoomToFit() {
+        float gridStep = getGridStep();
+        float actualWarehouseWidth = gridStep * warehouse.getWidth();
+        float actualWarehouseHeight = gridStep * warehouse.getHeight();
+        zoom = Math.min(actualWarehouseWidth / size.x, actualWarehouseHeight / size.y);
     }
 
     /**
@@ -117,7 +153,7 @@ public class WarehouseCanvas extends Component {
             ImGui.setWindowFocus();
         }
 
-        ImVec2 origin = new ImVec2(topLeft.x + scrollOffset.x, topLeft.y + scrollOffset.y);
+        ImVec2 origin = new ImVec2(topLeft.x + panOffset.x, topLeft.y + panOffset.y);
         ImVec2 mousePosition = new ImVec2(io.getMousePos().x - origin.x, io.getMousePos().y - origin.y);
 
 //        // Add first and second point
@@ -139,8 +175,8 @@ public class WarehouseCanvas extends Component {
         // You may decide to make that threshold dynamic based on whether the mouse is hovering something etc.
         if (isHovered && ImGui.isMouseDragging(ImGuiMouseButton.Right, -1))
         {
-            scrollOffset.x += io.getMouseDelta().x;
-            scrollOffset.y += io.getMouseDelta().y;
+            panOffset.x += io.getMouseDelta().x;
+            panOffset.y += io.getMouseDelta().y;
         }
 
         // Zoom
@@ -184,22 +220,44 @@ public class WarehouseCanvas extends Component {
         ImVec2 bottomRight = getBottomRightCoordinate();
         drawList.pushClipRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, true);
         final int gridLineColour = WarehouseCanvasColourScheme.toU32Colour(colourScheme.getGridLineColour());
-        float gridStep = cellSize * zoom;
+        float gridStep = getGridStep();
 
         // Draw horizontal lines
-        for (float x = scrollOffset.x % gridStep; x < size.x; x += gridStep) {
+        for (float x = panOffset.x % gridStep; x < size.x; x += gridStep) {
             float x1 = topLeft.x + x;
             float x2 = topLeft.x + x;
             drawList.addLine(x1, topLeft.y, x2, bottomRight.y, gridLineColour);
         }
         // Draw vertical lines
-        for (float y = scrollOffset.y % gridStep; y < size.y; y += gridStep) {
+        for (float y = panOffset.y % gridStep; y < size.y; y += gridStep) {
             float y1 = topLeft.y + y;
             float y2 = topLeft.y + y;
             drawList.addLine(topLeft.x, y1, bottomRight.x, y2, gridLineColour);
         }
 
+        drawWarehouse(drawList);
         drawList.popClipRect();
+    }
+
+    /**
+     * Draw the warehouse centered at the origin. Mutates the given ImDrawList.
+     */
+    private void drawWarehouse(ImDrawList drawList) {
+        ImVec2 origin = new ImVec2(topLeft.x + panOffset.x, topLeft.y + panOffset.y);
+        float gridStep = getGridStep();
+
+        // Colours
+        int FLOOR_TILE_COLOUR = ImGui.getColorU32(101 / 255.0f, 101 / 255.0f, 101 / 255.0f, 0.5f);
+
+        for (int y = 0; y < warehouse.getHeight(); y++) {
+            for (int x = 0; x < warehouse.getWidth(); x++) {
+                float x1 = origin.x + gridStep * (x - (float)Math.floor(warehouse.getWidth() / 2.0f));
+                float y1 = origin.y + gridStep * (y - (float)Math.floor(warehouse.getHeight() / 2.0f));
+                float x2 = x1 + gridStep;
+                float y2 = y1 + gridStep;
+                drawList.addRectFilled(x1, y1, x2, y2, FLOOR_TILE_COLOUR);
+            }
+        }
     }
 
     /**
@@ -208,6 +266,21 @@ public class WarehouseCanvas extends Component {
      */
     private ImVec2 getBottomRightCoordinate() {
         return new ImVec2(topLeft.x + size.x, topLeft.y + size.y);
+    }
+
+    /**
+     * Get the actual size of a single grid cell, in pixels. This accounts for zooming.
+     */
+    private float getGridStep() {
+        return cellSize * zoom;
+    }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
     }
 
     public WarehouseCanvasColourScheme getColourScheme() {
