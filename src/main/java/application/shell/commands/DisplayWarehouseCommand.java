@@ -19,7 +19,7 @@ public class DisplayWarehouseCommand extends ShellCommand {
 
     static {
         STORAGE_UNIT_SYMBOLS.put(Rack.class, 'R');
-        STORAGE_UNIT_SYMBOLS.put(Depot.class, 'D');
+        STORAGE_UNIT_SYMBOLS.put(MultiTypeStorageUnit.class, 'D');
     }
 
     @Override

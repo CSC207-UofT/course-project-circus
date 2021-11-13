@@ -48,7 +48,7 @@ public class CreateStorageUnitCommand extends ShellCommand {
         String type = args.getType().toLowerCase();
         StorageUnit storageUnitToAdd;
         if (type.equals("depot")) {
-            storageUnitToAdd = new Depot(args.getCapacity());
+            storageUnitToAdd = new MultiTypeStorageUnit(args.getCapacity());
         } else if (type.equals("rack")) {
             storageUnitToAdd = new Rack(args.getCapacity());
         } else {
