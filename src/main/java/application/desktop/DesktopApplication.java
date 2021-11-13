@@ -2,6 +2,7 @@ package application.desktop;
 
 import application.desktop.ui.FontAwesomeIcons;
 import application.desktop.ui.components.WarehouseLayoutCanvas;
+import application.desktop.ui.components.WarehouseLayoutEditor;
 import application.desktop.ui.components.common.*;
 import application.desktop.ui.components.common.Toolbar;
 import imgui.*;
@@ -44,7 +45,7 @@ public class DesktopApplication extends Application {
     public DesktopApplication() {
         components = new ArrayList<>();
         components.add(new Toolbar());
-        components.add(new WarehouseLayoutCanvas());
+        components.add(new WarehouseLayoutEditor());
     }
 
     @Override

@@ -7,40 +7,55 @@ import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
 
 public class WarehouseLayoutCanvas extends UIComponent {
+    private WarehouseLayoutCanvasColourScheme colourScheme;
+    private float cellSize;
+
+    private float minZoom;
+    private float maxZoom;
+    private float zoomStep;
+
     /**
      * Offset applied to canvas elements to enable scrolling.
      */
     private final ImVec2 scrollOffset;
-    private WarehouseLayoutCanvasColourScheme colourScheme;
+    /**
+     * Scale multiplier for zooming.
+     */
+    private float zoom;
 
     /**
      * Construct a new WarehouseLayoutCanvas with a default colour scheme.
      */
     public WarehouseLayoutCanvas() {
-        this(WarehouseLayoutCanvasColourScheme.DEFAULT);
+        this(WarehouseLayoutCanvasColourScheme.DEFAULT, 64.0f, 0.05f, 10.0f, 0.1f);
     }
 
     /**
      * Construct a new WarehouseLayoutCanvas with a custom colour scheme.
      * @param colourScheme The colour scheme of this WarehouseLayoutCanvas.
+     * @param cellSize The size of a grid cell in screen coordinates.
+     * @param minZoom The minimum scale allowed zooming out.
+     * @param maxZoom The maximum scale allowed zooming in.
+     * @param zoomStep The amount to step when zooming.
      */
-    public WarehouseLayoutCanvas(WarehouseLayoutCanvasColourScheme colourScheme) {
+    public WarehouseLayoutCanvas(WarehouseLayoutCanvasColourScheme colourScheme, float cellSize,
+                                 float minZoom, float maxZoom, float zoomStep) {
         this.colourScheme = colourScheme;
+        this.cellSize = cellSize;
+        this.minZoom = minZoom;
+        this.maxZoom = maxZoom;
+        this.zoomStep = zoomStep;
+
         scrollOffset = new ImVec2(0, 0);
+        zoom = 1.0f;
     }
 
     @Override
     public void render(DesktopApplication application) {
-        ImGui.begin("Warehouse Layout");
-        ImGui.text("Mouse Left: drag to add lines,\nMouse Right: drag to scroll, click for context menu.");
-
-        renderCanvas();
-        ImGui.end();
-    }
-
-    private void renderCanvas() {
         ImVec2 canvasTopLeft = ImGui.getCursorScreenPos();
         ImVec2 canvasSize = ImGui.getContentRegionAvail();
+        canvasSize.x = Math.max(canvasSize.x, 50);
+        canvasSize.y = Math.max(canvasSize.y, 50);
         ImVec2 canvasBottomRight = new ImVec2(canvasTopLeft.x + canvasSize.x, canvasTopLeft.y + canvasSize.y);
 
         // Draw border and background color
@@ -84,6 +99,10 @@ public class WarehouseLayoutCanvas extends UIComponent {
             scrollOffset.y += io.getMouseDelta().y;
         }
 
+        // Zoom
+        zoom += Math.signum(io.getMouseWheel()) * zoomStep;
+        zoom = Math.max(Math.min(zoom, maxZoom), minZoom);
+
         // Context menu (under default mouse threshold)
         ImVec2 dragDelta = ImGui.getMouseDragDelta(ImGuiMouseButton.Right);
         if (ImGui.isMouseReleased(ImGuiMouseButton.Right) && dragDelta.x == 0.0f && dragDelta.y == 0.0f) {
@@ -98,14 +117,14 @@ public class WarehouseLayoutCanvas extends UIComponent {
 
         // Draw grid + all lines in the canvas
         drawList.pushClipRect(canvasTopLeft.x, canvasTopLeft.y, canvasBottomRight.x, canvasBottomRight.y, true);
-        float GRID_STEP = 64.0f;
         final int gridLineColour = WarehouseLayoutCanvasColourScheme.toU32Colour(colourScheme.getGridLineColour());
-        for (float x = scrollOffset.x % GRID_STEP; x < canvasSize.x; x += GRID_STEP) {
+        float gridStep = cellSize * zoom;
+        for (float x = scrollOffset.x % gridStep; x < canvasSize.x; x += gridStep) {
             float x1 = canvasTopLeft.x + x;
             float x2 = canvasTopLeft.x + x;
             drawList.addLine(x1, canvasTopLeft.y, x2, canvasBottomRight.y, gridLineColour);
         }
-        for (float y = scrollOffset.y % GRID_STEP; y < canvasSize.y; y += GRID_STEP) {
+        for (float y = scrollOffset.y % gridStep; y < canvasSize.y; y += gridStep) {
             float y1 = canvasTopLeft.y + y;
             float y2 = canvasTopLeft.y + y;
             drawList.addLine(canvasTopLeft.x, y1, canvasBottomRight.x, y2, gridLineColour);
