@@ -14,6 +14,8 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
+import warehouse.Rack;
+import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
 
 import java.io.IOException;
@@ -52,6 +54,14 @@ public class DesktopApplication extends Application {
 
         // Create dummy warehouse
         Warehouse warehouse = new Warehouse(12, 12);
+        try {
+            warehouse.getTileAt(1, 1).setStorageUnit(new Rack(10));
+            warehouse.getTileAt(2, 1).setStorageUnit(new Rack(10));
+            warehouse.getTileAt(3, 1).setStorageUnit(new Rack(10));
+        } catch (TileOutOfBoundsException e) {
+            e.printStackTrace();
+        }
+
         WarehouseEditorPanel warehouseLayoutEditor = new WarehouseEditorPanel(warehouse);
         components.add(warehouseLayoutEditor);
         components.add(new Sidebar(warehouseLayoutEditor));

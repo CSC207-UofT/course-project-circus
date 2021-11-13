@@ -5,7 +5,8 @@ import application.desktop.ui.components.common.Component;
 import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
-import imgui.flag.ImGuiStyleVar;
+import warehouse.Tile;
+import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
 
 /**
@@ -243,11 +244,16 @@ public class WarehouseCanvas extends Component {
         float gridStep = getGridStep();
 
         // Colours
-        int WORLD_BORDER_COLOUR = ImGui.getColorU32(0, 0, 0, 1);
+        int WORLD_BORDER_COLOUR = ImGui.getColorU32(113 / 255f, 129 / 255.0f, 109 / 255.0f, 1.0f);
         int FLOOR_TILE_COLOUR = ImGui.getColorU32(101 / 255.0f, 101 / 255.0f, 101 / 255.0f, 0.5f);
 
         float centreOffsetX = -(float)Math.floor(warehouse.getWidth() / 2.0f);
         float centreOffsetY = -(float)Math.floor(warehouse.getHeight() / 2.0f);
+
+        float thickness = 4.0f * zoom;
+        ImVec4 RACK_BACKGROUND_COLOUR = new ImVec4(68 / 255.0f, 118 / 255.0f, 160 / 255.0f, 0.2f);
+        ImVec4 RACK_BORDER_COLOUR = new ImVec4(RACK_BACKGROUND_COLOUR.x, RACK_BACKGROUND_COLOUR.y, RACK_BACKGROUND_COLOUR.z, 1.0f);
+
 
         // Draw tiles
         for (int y = 0; y < warehouse.getHeight(); y++) {
@@ -257,13 +263,31 @@ public class WarehouseCanvas extends Component {
                 float x2 = x1 + gridStep;
                 float y2 = y1 + gridStep;
                 drawList.addRectFilled(x1, y1, x2, y2, FLOOR_TILE_COLOUR);
+
+                try {
+                    Tile tile = warehouse.getTileAt(x, y);
+                    if (!tile.isEmpty()) {
+                        drawList.addRectFilled(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
+                                x2 - thickness * 0.5f, y2 - thickness * 0.5f,
+                                WarehouseCanvasColourScheme.toU32Colour(RACK_BACKGROUND_COLOUR), 5.0f, 0);
+
+                        drawList.addRect(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
+                                x2 - thickness * 0.5f, y2 - thickness * 0.5f, WarehouseCanvasColourScheme.toU32Colour(RACK_BORDER_COLOUR),
+                                5.0f, 0, thickness);
+                    }
+                } catch (TileOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         // Draw border
-        drawList.addRect(origin.x + gridStep * centreOffsetX, origin.y + gridStep * centreOffsetY,
-                origin.x + gridStep * (warehouse.getWidth() + centreOffsetX), origin.y + gridStep * (warehouse.getHeight() + centreOffsetY),
-                WORLD_BORDER_COLOUR, 0, 0, 2.0f);
+        float borderThickness = 4.0f * zoom;
+        drawList.addRect(origin.x + gridStep * centreOffsetX - borderThickness * 0.5f,
+                origin.y + gridStep * centreOffsetY - borderThickness * 0.5f,
+                origin.x + gridStep * (warehouse.getWidth() + centreOffsetX) + borderThickness * 0.5f,
+                origin.y + gridStep * (warehouse.getHeight() + centreOffsetY) + borderThickness * 0.5f,
+                WORLD_BORDER_COLOUR, 10.0f, 0, borderThickness);
     }
 
     /**
