@@ -8,6 +8,9 @@ import application.desktop.ui.components.common.Panel;
 public class WarehouseLayoutEditor extends Panel {
     private final WarehouseLayoutCanvas canvas;
 
+    /**
+     * Construct a new WarehouseLayoutEditor.
+     */
     public WarehouseLayoutEditor() {
         super("Warehouse Layout");
         setCanClose(false);
