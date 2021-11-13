@@ -3,6 +3,7 @@ package application.desktop.ui.components.common;
 import application.desktop.DesktopApplication;
 import application.desktop.ui.events.Event;
 import imgui.ImGui;
+import imgui.type.ImBoolean;
 
 /**
  * An item of the Menu component.
@@ -10,17 +11,19 @@ import imgui.ImGui;
 public class MenuItem extends Component {
     private String label;
     private String shortcut;
+    private boolean toggle;
 
-    private final Event onSelectedEvent;
+    private final Event onSelectedToggleEvent;
+    private final Event onClickedEvent;
 
-    private boolean selected;
+    private final ImBoolean selected;
 
     /**
      * Construct a MenuItem with a label.
      * @param label The label of this MenuItem.
      */
     public MenuItem(String label) {
-        this(label, null, true);
+        this(label, null, true, false);
     }
 
     /**
@@ -28,11 +31,16 @@ public class MenuItem extends Component {
      * @param label The label of this MenuItem.
      * @param shortcut Keyboard shortcut to access this Menu. Can be null.
      * @param enabled Whether this MenuItem is enabled.
+     * @param toggle Whether this MenuItem is toggleable.
      */
-    public MenuItem(String label, String shortcut, boolean enabled) {
+    public MenuItem(String label, String shortcut, boolean enabled, boolean toggle) {
         this.label = label;
         this.shortcut = shortcut;
-        this.onSelectedEvent = new Event();
+        this.toggle = toggle;
+
+        onSelectedToggleEvent = new Event();
+        onClickedEvent = new Event();
+        selected = new ImBoolean(false);
         setEnabled(enabled);
     }
 
@@ -40,12 +48,20 @@ public class MenuItem extends Component {
      * Render this MenuItem.
      */
     @Override
-    public void onDraw(DesktopApplication application) {
-        boolean previousSelected = selected;
-        selected = ImGui.menuItem(label, shortcut, selected, isEnabled());
-        if (previousSelected != selected) {
-            onSelectedEvent.execute(this, application);
+    protected void onDraw(DesktopApplication application) {
+        boolean previousSelected = selected.get();
+
+        if(ImGui.menuItem(label, shortcut, selected, isEnabled())) {
+            if (!toggle) {
+                selected.set(false);
+            }
+            onClickedEvent.execute(this, application);
         }
+
+        if (previousSelected != selected.get()) {
+            onSelectedToggleEvent.execute(this, application);
+        }
+
         super.onDraw(application);
     }
 
@@ -65,10 +81,25 @@ public class MenuItem extends Component {
         this.shortcut = shortcut;
     }
 
+    public boolean isToggle() {
+        return toggle;
+    }
+
+    public void setToggle(boolean toggle) {
+        this.toggle = toggle;
+    }
+
     /**
      * This event is called when this MenuItem is selected.
      */
-    public Event getOnSelectedEvent() {
-        return onSelectedEvent;
+    public Event getOnSelectedToggleEvent() {
+        return onSelectedToggleEvent;
+    }
+
+    /**
+     * This event is called when this MenuItem is clicked on.
+     */
+    public Event getOnClickedEvent() {
+        return onClickedEvent;
     }
 }

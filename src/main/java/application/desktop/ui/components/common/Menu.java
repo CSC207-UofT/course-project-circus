@@ -27,7 +27,7 @@ public class Menu extends Component {
     }
 
     @Override
-    public void onDraw(DesktopApplication application) {
+    protected void onDraw(DesktopApplication application) {
         if (ImGui.beginMenu(label, isEnabled())) {
             super.onDraw(application);
             ImGui.endMenu();

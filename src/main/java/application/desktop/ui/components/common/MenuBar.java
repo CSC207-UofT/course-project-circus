@@ -3,8 +3,6 @@ package application.desktop.ui.components.common;
 import application.desktop.DesktopApplication;
 import imgui.ImGui;
 
-import java.util.List;
-
 /**
  * A menu bar component.
  */
@@ -23,7 +21,7 @@ public class MenuBar extends Component {
      * Render this MenuBar.
      */
     @Override
-    public void onDraw(DesktopApplication application) {
+    protected void onDraw(DesktopApplication application) {
         if (ImGui.beginMenuBar()) {
             super.onDraw(application);
             ImGui.endMenuBar();

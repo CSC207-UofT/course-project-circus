@@ -1,9 +1,8 @@
 package application.desktop.ui.components;
 
-import application.desktop.ui.components.common.Menu;
-import application.desktop.ui.components.common.MenuBar;
-import application.desktop.ui.components.common.MenuItem;
-import application.desktop.ui.components.common.Separator;
+import application.desktop.DesktopApplication;
+import application.desktop.ui.components.common.*;
+import imgui.ImGui;
 
 /**
  * Main toolbar component for the DesktopApplication.
@@ -29,9 +28,23 @@ public class Toolbar extends MenuBar {
                 new Separator(),
                 exitMenuItem
         ));
+
+        Panel panel = new Panel("Hello World");
+        panel.getOnOpenedEvent().addListener((source, application) -> {
+            panel.setTitle("Opened!");
+            System.out.println("Panel opened");
+        });
+        panel.getOnClosedEvent().addListener((source, application) -> {
+            panel.setTitle("Closed!");
+            System.out.println("Panel closed");
+        });
+        addChild(panel);
+
         // Register event listeners
         // TODO: Implement New File callback
-        newMenuItem.getOnSelectedEvent().addListener((source, application) -> {});
+        newMenuItem.getOnClickedEvent().addListener((source, application) -> {
+            panel.setOpen(true);
+        });
         newMenuItem.getOnStartMouseHoverEvent().addListener((source, application) -> {
             newMenuItem.setLabel("Hovering");
         });
@@ -39,16 +52,16 @@ public class Toolbar extends MenuBar {
             newMenuItem.setLabel("New");
         });
         // TODO: Implement Open File callback
-        openMenuItem.getOnSelectedEvent().addListener((source, application) -> {});
+        openMenuItem.getOnClickedEvent().addListener((source, application) -> {});
         // TODO: Implement Save File callback
-        saveMenuItem.getOnSelectedEvent().addListener((source, application) -> {});
+        saveMenuItem.getOnClickedEvent().addListener((source, application) -> {});
         // TODO: Implement Save As callback
-        saveAsMenuItem.getOnSelectedEvent().addListener((source, application) -> {});
+        saveAsMenuItem.getOnClickedEvent().addListener((source, application) -> {});
         saveAsMenuItem.getWhileMouseHoverEvent().addListener((source, application) -> {
             System.out.println("\"Save As\" menu item hovering");
         });
 
-        exitMenuItem.getOnSelectedEvent().addListener((source, application) -> {
+        exitMenuItem.getOnClickedEvent().addListener((source, application) -> {
             application.exit();
         });
     }

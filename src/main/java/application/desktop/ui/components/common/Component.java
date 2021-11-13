@@ -100,6 +100,7 @@ public class Component {
 
     /**
      * Internal lifecycle method for drawing the component.
+     * By default, draws the children of this component.
      */
     protected void onDraw(DesktopApplication application) {
         for (Component child : children) {
