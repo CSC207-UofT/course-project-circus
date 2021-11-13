@@ -56,7 +56,7 @@ public class WarehouseLayoutCanvas extends Component {
     }
 
     @Override
-    public void draw(DesktopApplication application) {
+    public void onDraw(DesktopApplication application) {
         ImVec2 canvasTopLeft = ImGui.getCursorScreenPos();
         ImVec2 canvasSize = ImGui.getContentRegionAvail();
         canvasSize.x = Math.max(canvasSize.x, 50);
@@ -100,6 +100,8 @@ public class WarehouseLayoutCanvas extends Component {
         ImGuiIO io = ImGui.getIO();
         ImVec2 canvasTopLeft = ImGui.getCursorScreenPos();
         ImVec2 canvasSize = ImGui.getContentRegionAvail();
+        canvasSize.x = Math.max(canvasSize.x, 50);
+        canvasSize.y = Math.max(canvasSize.y, 50);
 
         ImGui.invisibleButton("canvas", canvasSize.x, canvasSize.y, ImGuiButtonFlags.MouseButtonLeft |
                 ImGuiButtonFlags.MouseButtonRight);

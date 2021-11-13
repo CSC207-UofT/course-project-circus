@@ -1,7 +1,6 @@
 package application.desktop.ui.components;
 
 import imgui.ImGui;
-import imgui.ImVec2;
 import imgui.ImVec4;
 
 /**

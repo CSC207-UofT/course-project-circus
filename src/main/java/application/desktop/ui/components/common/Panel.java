@@ -13,6 +13,7 @@ public class Panel extends Component {
     private String title;
     private float paddingX;
     private float paddingY;
+    private boolean canClose;
 
     private boolean previousIsOpen;
     private final ImBoolean isOpen;
@@ -26,21 +27,27 @@ public class Panel extends Component {
      * @param title The title of the panel.
      */
     public Panel(String title) {
-        this(title, 10.0f, 10.0f, true);
+        this(title, 10.0f, 10.0f, true, true);
     }
 
     /**
      * Construct a new Panel with the given title and open state.
      * @param title The title of the panel.
+     * @param paddingX Horizontal padding applied to (both sides of) contents in this Panel.
+     * @param paddingY Vertical padding applied to (both sides of) contents in this Panel.
+     * @param canClose Whether this Panel is closeable.
      * @param isOpen Whether the panel should be open or not.
      */
-    public Panel(String title, float paddingX, float paddingY, boolean isOpen) {
+    public Panel(String title, float paddingX, float paddingY, boolean canClose, boolean isOpen) {
         this.title = title;
         this.paddingX = paddingX;
         this.paddingY = paddingY;
+        this.canClose = canClose;
 
+        // State management
         this.isOpen = new ImBoolean(isOpen);
         isFirstUpdate = true;
+
         // Events
         onOpenedEvent = new Event();
         onClosedEvent = new Event();
@@ -54,11 +61,18 @@ public class Panel extends Component {
     protected void onDraw(DesktopApplication application) {
         if(isOpen.get()) {
             ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, paddingX, paddingY);
-            ImGui.begin(title, isOpen);
-            ImGui.popStyleVar();
 
-            super.onDraw(application);
-            ImGui.end();
+            boolean drawContents;
+            if (canClose) {
+                drawContents =ImGui.begin(title, isOpen);
+            } else {
+                drawContents = ImGui.begin(title);
+            }
+            ImGui.popStyleVar();
+            if (drawContents) {
+                super.onDraw(application);
+                ImGui.end();
+            }
         }
     }
 
@@ -105,6 +119,14 @@ public class Panel extends Component {
 
     public void setPaddingY(float paddingY) {
         this.paddingY = paddingY;
+    }
+
+    public boolean isCanClose() {
+        return canClose;
+    }
+
+    public void setCanClose(boolean canClose) {
+        this.canClose = canClose;
     }
 
     public boolean isOpen() {

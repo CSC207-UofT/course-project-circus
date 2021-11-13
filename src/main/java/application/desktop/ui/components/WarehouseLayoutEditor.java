@@ -10,6 +10,8 @@ public class WarehouseLayoutEditor extends Panel {
 
     public WarehouseLayoutEditor() {
         super("Warehouse Layout");
+        setCanClose(false);
+
         canvas = new WarehouseLayoutCanvas();
         addChild(canvas);
     }
