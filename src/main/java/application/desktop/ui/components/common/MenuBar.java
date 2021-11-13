@@ -8,26 +8,24 @@ import java.util.List;
 /**
  * A menu bar component.
  */
-public class MenuBar extends UIComponent {
-    private List<Menu> menus;
-
+public class MenuBar extends Component {
     /**
      * Construct a MenuBar with the given menus.
      * @param menus The menus in the bar.
      */
     public MenuBar(Menu... menus) {
-        this.menus = List.of(menus);
+        for (Menu menu : menus) {
+            addChild(menu);
+        }
     }
 
     /**
      * Render this MenuBar.
      */
     @Override
-    public void render(DesktopApplication application) {
+    public void draw(DesktopApplication application) {
         if (ImGui.beginMenuBar()) {
-            for (Menu menu : menus) {
-                menu.render(application);
-            }
+            super.draw(application);
             ImGui.endMenuBar();
         }
     }

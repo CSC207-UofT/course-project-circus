@@ -1,10 +1,9 @@
 package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
-import application.desktop.ui.components.common.UIComponent;
+import application.desktop.ui.components.common.Component;
 import imgui.ImGui;
 import imgui.ImGuiWindowClass;
-import imgui.ImVec2;
 import imgui.flag.ImGuiDockNodeFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
@@ -12,7 +11,7 @@ import imgui.type.ImBoolean;
 /**
  * Sidebar component for the DesktopApplication.
  */
-public class Sidebar extends UIComponent {
+public class Sidebar extends Component {
     private final WarehouseLayoutEditor warehouseLayoutEditor;
 
     /**
@@ -24,7 +23,7 @@ public class Sidebar extends UIComponent {
     }
 
     @Override
-    public void render(DesktopApplication application) {
+    public void draw(DesktopApplication application) {
         // Setup window so that it automatically hides its tab bar
         ImGuiWindowClass windowClass = new ImGuiWindowClass();
         windowClass.addDockNodeFlagsOverrideSet(ImGuiDockNodeFlags.AutoHideTabBar);

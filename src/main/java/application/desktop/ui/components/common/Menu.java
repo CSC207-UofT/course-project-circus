@@ -5,37 +5,32 @@ import imgui.ImGui;
 
 import java.util.List;
 
-public class Menu extends UIComponent {
-    public String label;
-    private List<UIComponent> components;
-    private boolean enabled;
-
+/**
+ * A menu component.
+ */
+public class Menu extends Component {
+    /**
+     * The label of this Menu.
+     */
+    private String label;
 
     /**
      * Construct a new Menu.
      * @param label The label of this Menu.
-     * @param components The items of this Menu.
+     * @param children The items of this Menu.
      */
-    public Menu(String label, UIComponent... components) {
+    public Menu(String label, Component... children) {
         this.label = label;
-        this.components = List.of(components);
-    }
-
-    @Override
-    public void render(DesktopApplication application) {
-        if (ImGui.beginMenu(label)) {
-            for (UIComponent component : components) {
-                component.render(application);
-            }
-            ImGui.endMenu();
+        for (Component child : children) {
+            addChild(child);
         }
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+    @Override
+    public void draw(DesktopApplication application) {
+        if (ImGui.beginMenu(label, enabled)) {
+            super.draw(application);
+            ImGui.endMenu();
+        }
     }
 }

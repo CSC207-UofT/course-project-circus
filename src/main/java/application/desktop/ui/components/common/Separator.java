@@ -6,9 +6,9 @@ import imgui.ImGui;
 /**
  * Separator component.
  */
-public class Separator extends UIComponent {
+public class Separator extends Component {
     @Override
-    public void render(DesktopApplication application) {
+    public void draw(DesktopApplication application) {
         ImGui.separator();
     }
 }

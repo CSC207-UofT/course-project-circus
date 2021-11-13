@@ -1,12 +1,12 @@
 package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
-import application.desktop.ui.components.common.UIComponent;
+import application.desktop.ui.components.common.Component;
 import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
 
-public class WarehouseLayoutCanvas extends UIComponent {
+public class WarehouseLayoutCanvas extends Component {
     private WarehouseLayoutCanvasColourScheme colourScheme;
     private float cellSize;
 
@@ -56,7 +56,7 @@ public class WarehouseLayoutCanvas extends UIComponent {
     }
 
     @Override
-    public void render(DesktopApplication application) {
+    public void draw(DesktopApplication application) {
         ImVec2 canvasTopLeft = ImGui.getCursorScreenPos();
         ImVec2 canvasSize = ImGui.getContentRegionAvail();
         canvasSize.x = Math.max(canvasSize.x, 50);

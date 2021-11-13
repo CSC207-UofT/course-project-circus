@@ -4,7 +4,7 @@ import application.desktop.ui.FontAwesomeIcons;
 import application.desktop.ui.components.Sidebar;
 import application.desktop.ui.components.WarehouseLayoutEditor;
 import application.desktop.ui.components.common.*;
-import application.desktop.ui.components.common.Toolbar;
+import application.desktop.ui.components.Toolbar;
 import imgui.*;
 import imgui.app.Application;
 import imgui.app.Configuration;
@@ -39,7 +39,7 @@ public class DesktopApplication extends Application {
      */
     private final static float DEFAULT_FONT_SIZE = 16.0f;
 
-    private final List<UIComponent> components;
+    private final List<Component> components;
     private boolean hasInitialisedDockspaceLayout;
 
     /**
@@ -103,8 +103,8 @@ public class DesktopApplication extends Application {
     public void process() {
         initDockspace();
         // Render components
-        for (UIComponent component : components) {
-            component.render(this);
+        for (Component component : components) {
+            component.draw(this);
         }
         // End dockspace window
         ImGui.end();
