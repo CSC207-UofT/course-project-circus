@@ -1,8 +1,6 @@
 package application.desktop.ui.components;
 
-import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.*;
-import imgui.ImGui;
 
 /**
  * Main toolbar component for the DesktopApplication.

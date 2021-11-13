@@ -3,6 +3,7 @@ package application.desktop.ui.components.common;
 import application.desktop.DesktopApplication;
 import application.desktop.ui.events.Event;
 import imgui.ImGui;
+import imgui.flag.ImGuiStyleVar;
 import imgui.type.ImBoolean;
 
 /**
@@ -10,6 +11,8 @@ import imgui.type.ImBoolean;
  */
 public class Panel extends Component {
     private String title;
+    private float paddingX;
+    private float paddingY;
 
     private boolean previousIsOpen;
     private final ImBoolean isOpen;
@@ -23,7 +26,7 @@ public class Panel extends Component {
      * @param title The title of the panel.
      */
     public Panel(String title) {
-        this(title, true);
+        this(title, 10.0f, 10.0f, true);
     }
 
     /**
@@ -31,8 +34,11 @@ public class Panel extends Component {
      * @param title The title of the panel.
      * @param isOpen Whether the panel should be open or not.
      */
-    public Panel(String title, boolean isOpen) {
+    public Panel(String title, float paddingX, float paddingY, boolean isOpen) {
         this.title = title;
+        this.paddingX = paddingX;
+        this.paddingY = paddingY;
+
         this.isOpen = new ImBoolean(isOpen);
         isFirstUpdate = true;
         // Events
@@ -47,7 +53,10 @@ public class Panel extends Component {
     @Override
     protected void onDraw(DesktopApplication application) {
         if(isOpen.get()) {
+            ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, paddingX, paddingY);
             ImGui.begin(title, isOpen);
+            ImGui.popStyleVar();
+
             super.onDraw(application);
             ImGui.end();
         }
@@ -80,6 +89,22 @@ public class Panel extends Component {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public float getPaddingX() {
+        return paddingX;
+    }
+
+    public void setPaddingX(float paddingX) {
+        this.paddingX = paddingX;
+    }
+
+    public float getPaddingY() {
+        return paddingY;
+    }
+
+    public void setPaddingY(float paddingY) {
+        this.paddingY = paddingY;
     }
 
     public boolean isOpen() {

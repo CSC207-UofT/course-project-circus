@@ -3,8 +3,6 @@ package application.desktop.ui.components.common;
 import application.desktop.DesktopApplication;
 import imgui.ImGui;
 
-import java.util.List;
-
 /**
  * A menu component.
  */
