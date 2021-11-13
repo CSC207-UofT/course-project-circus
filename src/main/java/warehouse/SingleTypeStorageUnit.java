@@ -8,44 +8,47 @@ import java.util.List;
 /**
  * A storage unit in the warehouse that can store items of a single type.
  *
- * More specifically, the Rack is homogenous with respect to the Items it stores. If the Rack is non-empty, then only
- * an Item of the same type can be added to the Rack. Otherwise, if the Rack is empty, any Item can be added.
+ * More specifically, the SingleTypeStorageUnit is homogenous with respect to the Items it stores. If the
+ * SingleTypeStorageUnit is non-empty, then only an Item of the same type can be added to the SingleTypeStorageUnit.
+ * Otherwise, if the SingleTypeStorageUnit is empty, any Item can be added.
  */
-public class Rack extends StorageUnit {
+public class SingleTypeStorageUnit extends StorageUnit {
     private final int capacity;
     /**
-     * The current Item type stored in this Rack. If null, then no item is currently stored in this Rack.
+     * The current Item type stored in this SingleTypeStorageUnit.
+     * If null, then no item is currently stored in this SingleTypeStorageUnit.
      */
     private Item currentItem;
     private int size;
 
     /**
-     * Construct a Rack with a capacity.
-     * @param capacity The capacity of this Rack. If negative, then the Rack has infinite capacity.
+     * Construct a SingleTypeStorageUnit with a capacity.
+     * @param capacity The capacity of this SingleTypeStorageUnit.
+     *                 If negative, then the SingleTypeStorageUnit has infinite capacity.
      */
-    public Rack(int capacity) {
+    public SingleTypeStorageUnit(int capacity) {
         this.capacity = capacity;
         currentItem = null;
     }
 
     /**
-     * Construct a Rack with infinite capacity.
+     * Construct a SingleTypeStorageUnit with infinite capacity.
      */
-    public Rack() {
+    public SingleTypeStorageUnit() {
         this(-1);
     }
 
     /**
-     * Get the capacity of this Rack. If negative, then the capacity is infinite.
-     * @return The capacity of this Rack.
+     * Get the capacity of this SingleTypeStorageUnit. If negative, then the capacity is infinite.
+     * @return The capacity of this SingleTypeStorageUnit.
      */
     public int getCapacity() {
         return capacity;
     }
 
     /**
-     * Get the size of this Rack. In other words how many items are in this rack.
-     * @return The size of this Rack.
+     * Get the size of this SingleTypeStorageUnit. In other words how many items are in this SingleTypeStorageUnit.
+     * @return The size of this SingleTypeStorageUnit.
      */
     @Override
     public int getSize() {
@@ -53,15 +56,15 @@ public class Rack extends StorageUnit {
     }
 
     /**
-     * Return whether this Rack has infinite capacity.
-     * @return True if the Rack has infinite capacity, or False otherwise.
+     * Return whether this SingleTypeStorageUnit has infinite capacity.
+     * @return True if the SingleTypeStorageUnit has infinite capacity, or False otherwise.
      */
     public boolean hasInfiniteCapacity() {
         return capacity < 0;
     }
 
     /**
-     * Check whether an Item can be added into this Rack.
+     * Check whether an Item can be added into this SingleTypeStorageUnit.
      * @param item The Item to check.
      * @return True if the Item can be added, and False otherwise.
      */
@@ -111,7 +114,7 @@ public class Rack extends StorageUnit {
 
     @Override
     public String toString() {
-        return "Rack{" +
+        return "SingleTypeStorageUnit{" +
                 "capacity=" + capacity +
                 ", currentItem=" + currentItem +
                 ", size=" + size +

@@ -8,32 +8,32 @@ import java.util.Map;
 /**
  * A storage unit in the warehouse that can store items of any type.
  */
-public class Depot extends StorageUnit {
+public class MultiTypeStorageUnit extends StorageUnit {
     /**
-     * A mapping from Items to the quantity stored in this Depot.
+     * A mapping from Items to the quantity stored in this MultiTypeStorageUnit.
      */
     private final Map<Item, Integer> items;
     private final int capacity;
 
     /**
-     * Construct a Depot with a capacity.
-     * @param maxCapacity The maximum capacity of this Depot. If negative, then the capacity is infinite.
+     * Construct a MultiTypeStorageUnit with a capacity.
+     * @param maxCapacity The maximum capacity of this MultiTypeStorageUnit. If negative, then the capacity is infinite.
      */
-    public Depot(int maxCapacity) {
+    public MultiTypeStorageUnit(int maxCapacity) {
         this.items = new HashMap<>();
         this.capacity = maxCapacity;
     }
 
     /**
-     * Construct a Depot with infinite capacity.
+     * Construct a MultiTypeStorageUnit with infinite capacity.
      */
-    public Depot() {
+    public MultiTypeStorageUnit() {
         this(-1);
     }
 
 
     /**
-     * Add an item to this Depot.
+     * Add an item to this MultiTypeStorageUnit.
      * @param item The item to add.
      * @return True if the Item could be added, False otherwise.
      */
@@ -48,7 +48,7 @@ public class Depot extends StorageUnit {
     }
 
     /**
-     * Remove the given Item from this Depot.
+     * Remove the given Item from this MultiTypeStorageUnit.
      * @param item The item to remove.
      * @return True if the Item could be removed, False otherwise.
      */
@@ -63,24 +63,24 @@ public class Depot extends StorageUnit {
     }
 
     /**
-     * Get the capacity of this Depot. If negative, then the capacity is infinite.
-     * @return The capacity of this Depot.
+     * Get the capacity of this MultiTypeStorageUnit. If negative, then the capacity is infinite.
+     * @return The capacity of this MultiTypeStorageUnit.
      */
     public int getCapacity() {
         return capacity;
     }
 
     /**
-     * Return whether this Depot has infinite capacity.
-     * @return True if the Depot has infinite capacity, or False otherwise.
+     * Return whether this MultiTypeStorageUnit has infinite capacity.
+     * @return True if the MultiTypeStorageUnit has infinite capacity, or False otherwise.
      */
     public boolean hasInfiniteCapacity() {
         return capacity < 0;
     }
 
     /**
-     * Get the size of this Depot, which is the sum of quantities for each Item type.
-     * @return The size of this Depot.
+     * Get the size of this MultiTypeStorageUnit, which is the sum of quantities for each Item type.
+     * @return The size of this MultiTypeStorageUnit.
      */
     @Override
     public int getSize() {
@@ -98,7 +98,7 @@ public class Depot extends StorageUnit {
 
     @Override
     public String toString() {
-        return "Depot{" +
+        return "MultiTypeStorageUnit{" +
                 "items=" + items +
                 ", capacity=" + capacity +
                 '}';
