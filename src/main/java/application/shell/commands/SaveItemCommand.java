@@ -7,6 +7,7 @@ import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
 import inventory.InventoryCatalogue;
 import inventory.Item;
+import serialization.JsonFileObjectLoader;
 import warehouse.Tile;
 import warehouse.WarehouseController;
 

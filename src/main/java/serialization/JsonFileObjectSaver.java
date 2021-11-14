@@ -10,7 +10,7 @@ import java.io.Writer;
 /**
  * Saves an object to file in JSON format.
  */
-public class JsonFileSaver<T> implements FileSaver<T> {
+public class JsonFileObjectSaver<T> implements FileObjectSaver<T> {
     @Override
     public void save(T data, String filepath) throws IOException {
         Writer writer = new FileWriter(filepath);

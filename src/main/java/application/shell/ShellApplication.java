@@ -5,8 +5,8 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandExecutor;
 import inventory.InventoryCatalogue;
 import inventory.Item;
-import serialization.FileSaver;
-import serialization.JsonFileSaver;
+import serialization.FileObjectSaver;
+import serialization.JsonFileObjectSaver;
 import warehouse.Warehouse;
 import warehouse.WarehouseController;
 
@@ -16,8 +16,8 @@ import java.util.Scanner;
  * Driver class for the shell application.
  */
 public class ShellApplication {
-    private final FileSaver<Item> itemFileSaver;
-    private final FileSaver<InventoryCatalogue> inventoryCatalogueFileSaver;
+    private final FileObjectSaver<Item> itemFileSaver;
+    private final FileObjectSaver<InventoryCatalogue> inventoryCatalogueFileSaver;
     private final WarehouseController warehouseController;
 
     private boolean isRunning;
@@ -28,8 +28,8 @@ public class ShellApplication {
      */
     public ShellApplication() {
         // Serialization adapters
-        itemFileSaver = new JsonFileSaver<>();
-        inventoryCatalogueFileSaver = new JsonFileSaver<>();
+        itemFileSaver = new JsonFileObjectSaver<>();
+        inventoryCatalogueFileSaver = new JsonFileObjectSaver<>();
         // TODO: Should the warehouse controller be made here?!
         // TODO: Replace empty warehouse with file loading or something
         // TODO: Don't hardcode warehouse dimensions
@@ -87,11 +87,11 @@ public class ShellApplication {
         return warehouseController;
     }
 
-    public FileSaver<Item> getItemFileSaver() {
+    public FileObjectSaver<Item> getItemFileSaver() {
         return itemFileSaver;
     }
 
-    public FileSaver<InventoryCatalogue> getInventoryCatalogueFileSaver() {
+    public FileObjectSaver<InventoryCatalogue> getInventoryCatalogueFileSaver() {
         return inventoryCatalogueFileSaver;
     }
 
