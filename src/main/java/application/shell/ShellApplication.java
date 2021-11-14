@@ -4,6 +4,9 @@ import application.shell.commands.*;
 import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandExecutor;
 import inventory.InventoryCatalogue;
+import inventory.Item;
+import serialization.FileSaver;
+import serialization.JsonFileSaver;
 import warehouse.Warehouse;
 import warehouse.WarehouseController;
 
@@ -13,14 +16,28 @@ import java.util.Scanner;
  * Driver class for the shell application.
  */
 public class ShellApplication {
+    private final FileSaver<Item> itemFileSaver;
+    private final FileSaver<InventoryCatalogue> inventoryCatalogueFileSaver;
+    private final WarehouseController warehouseController;
+
     private boolean isRunning;
     private final ShellCommandExecutor commandExecutor;
-    private final WarehouseController warehouseController;
 
     /**
      * Construct a ShellApplication.
      */
     public ShellApplication() {
+        // Serialization adapters
+        itemFileSaver = new JsonFileSaver<>();
+        inventoryCatalogueFileSaver = new JsonFileSaver<>();
+        // TODO: Should the warehouse controller be made here?!
+        // TODO: Replace empty warehouse with file loading or something
+        // TODO: Don't hardcode warehouse dimensions
+        warehouseController = new WarehouseController(
+                new Warehouse(10, 10),
+                new InventoryCatalogue()
+        );
+
         isRunning = false;
         commandExecutor = new ShellCommandExecutor(this, new ShellCommand[]{
                 new CreateItemCommand(),
@@ -29,16 +46,10 @@ public class ShellApplication {
                 new DisplayWarehouseCommand(),
                 new DisplayStorageUnitInfoCommand(),
                 new DisplayInventoryCommand(),
+                new SaveItemCommand(),
                 new HelpCommand(),
                 new ExitCommand(),
         });
-        // TODO: Should the warehouse controller be made here?!
-        // TODO: Replace empty warehouse with file loading or something
-        // TODO: Don't hardcode warehouse dimensions
-        warehouseController = new WarehouseController(
-                new Warehouse(10, 10),
-                new InventoryCatalogue()
-        );
     }
 
     /**
@@ -74,6 +85,14 @@ public class ShellApplication {
      */
     public WarehouseController getWarehouseController() {
         return warehouseController;
+    }
+
+    public FileSaver<Item> getItemFileSaver() {
+        return itemFileSaver;
+    }
+
+    public FileSaver<InventoryCatalogue> getInventoryCatalogueFileSaver() {
+        return inventoryCatalogueFileSaver;
     }
 
     /**
