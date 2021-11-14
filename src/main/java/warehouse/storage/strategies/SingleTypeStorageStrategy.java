@@ -1,9 +1,7 @@
-package warehouse;
+package warehouse.storage.strategies;
 
 import inventory.Item;
-
-import java.util.Collections;
-import java.util.List;
+import warehouse.storage.StorageUnit;
 
 /**
  * A strategy that only allows StorageUnits to add items of a single type.

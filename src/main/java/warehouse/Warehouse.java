@@ -1,6 +1,8 @@
 package warehouse;
 
 import inventory.Item;
+import warehouse.storage.Rack;
+import warehouse.storage.StorageUnit;
 
 /**
  * A stateless 2D representation of the layout of a warehouse. A layout is a 2D grid of cells, where each cell can

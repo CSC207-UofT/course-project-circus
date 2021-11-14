@@ -1,7 +1,11 @@
-package warehouse;
+package warehouse.storage;
 
 import inventory.Item;
 import query.Query;
+import warehouse.Distributable;
+import warehouse.Receivable;
+import warehouse.storage.containers.StorageUnitContainer;
+import warehouse.storage.strategies.StorageUnitStrategy;
 
 import java.util.List;
 

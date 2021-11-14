@@ -1,5 +1,7 @@
 package warehouse;
 
+import warehouse.storage.StorageUnit;
+
 /**
  * An empty tile in the warehouse.
  */

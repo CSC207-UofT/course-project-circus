@@ -1,4 +1,10 @@
-package warehouse;
+package warehouse.storage;
+
+import warehouse.storage.*;
+import warehouse.storage.containers.InMemoryStorageUnitContainer;
+import warehouse.storage.containers.StorageUnitContainer;
+import warehouse.storage.strategies.SingleTypeStorageStrategy;
+import warehouse.storage.strategies.StorageUnitStrategy;
 
 public class Rack extends StorageUnit {
     /**

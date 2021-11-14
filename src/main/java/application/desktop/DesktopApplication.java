@@ -14,7 +14,7 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
-import warehouse.Rack;
+import warehouse.storage.Rack;
 import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
 

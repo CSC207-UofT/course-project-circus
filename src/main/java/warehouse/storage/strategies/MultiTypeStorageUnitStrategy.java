@@ -1,14 +1,13 @@
-package warehouse;
+package warehouse.storage.strategies;
 
 import inventory.Item;
-
-import java.util.HashMap;
-import java.util.Map;
+import warehouse.storage.StorageUnit;
+import warehouse.storage.strategies.StorageUnitStrategy;
 
 /**
  * A strategy that only allows StorageUnits to add items of any type.
  */
-public class MultiTypeStorageUnit implements StorageUnitStrategy {
+public class MultiTypeStorageUnitStrategy implements StorageUnitStrategy {
     /**
      * Check whether an Item can be added into the given StorageUnit
      * @param storageUnit The StorageUnit to add to.

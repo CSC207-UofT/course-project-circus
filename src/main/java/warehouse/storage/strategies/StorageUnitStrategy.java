@@ -1,6 +1,7 @@
-package warehouse;
+package warehouse.storage.strategies;
 
 import inventory.Item;
+import warehouse.storage.StorageUnit;
 
 /**
  * A strategy for storing items. This allows for constraints to be placed onto StorageUnits.

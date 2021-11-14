@@ -1,4 +1,4 @@
-package warehouse;
+package warehouse.storage.containers;
 
 import inventory.Item;
 

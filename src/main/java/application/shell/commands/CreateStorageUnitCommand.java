@@ -6,6 +6,8 @@ import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.*;
+import warehouse.storage.Rack;
+import warehouse.storage.StorageUnit;
 
 /**
  * Argument container for CreateStorageUnitCommand.

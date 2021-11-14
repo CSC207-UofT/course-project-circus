@@ -6,6 +6,8 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.*;
+import warehouse.storage.Rack;
+import warehouse.storage.StorageUnit;
 
 import java.util.HashMap;
 import java.util.Map;
