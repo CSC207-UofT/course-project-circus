@@ -1,8 +1,11 @@
 package warehouse.storage;
 
 import inventory.Item;
+import messaging.Message;
 import query.Query;
 import warehouse.Distributable;
+import warehouse.ItemDistributedMessageData;
+import warehouse.ItemReceivedMessageData;
 import warehouse.Receivable;
 import warehouse.storage.containers.StorageUnitContainer;
 import warehouse.storage.strategies.StorageUnitStrategy;
@@ -17,6 +20,12 @@ public class StorageUnit implements Receivable, Distributable {
     private final StorageUnitStrategy strategy;
     private final StorageUnitContainer container;
 
+    private final Message<StorageUnitItemMessageData> onItemAddedMessage;
+    private final Message<StorageUnitItemMessageData> onItemRemovedMessage;
+
+    private final Message<ItemReceivedMessageData> onItemReceivedMessage;
+    private final Message<ItemDistributedMessageData> onItemDistributedMessage;
+
     /**
      * Construct a StorageUnit with the given strategy.
      * @param capacity The capacity of this StorageUnit.
@@ -28,6 +37,11 @@ public class StorageUnit implements Receivable, Distributable {
         this.capacity = capacity;
         this.strategy = strategy;
         this.container = container;
+
+        onItemAddedMessage = new Message<>();
+        onItemRemovedMessage = new Message<>();
+        onItemReceivedMessage = new Message<>();
+        onItemDistributedMessage = new Message<>();
     }
 
     /**
@@ -38,6 +52,7 @@ public class StorageUnit implements Receivable, Distributable {
     public boolean addItem(Item item) {
         if (canAddItem(item)) {
             container.add(item);
+            onItemAddedMessage.execute(new StorageUnitItemMessageData(item, this));
             return true;
         }
         return false;
@@ -49,7 +64,11 @@ public class StorageUnit implements Receivable, Distributable {
      * @return True if the Item could be removed, False otherwise.
      */
     public boolean removeItem(Item item) {
-        return container.remove(item);
+        if (container.remove(item)) {
+            onItemRemovedMessage.execute(new StorageUnitItemMessageData(item, this));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -87,7 +106,11 @@ public class StorageUnit implements Receivable, Distributable {
 
     @Override
     public boolean receiveItem(Item item) {
-        return addItem(item);
+        if (addItem(item)) {
+            onItemReceivedMessage.execute(new ItemReceivedMessageData(item, this));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -103,7 +126,9 @@ public class StorageUnit implements Receivable, Distributable {
             return null;
         }
         // Copy before returning
-        return new Item(item);
+        Item itemCopy = new Item(item);
+        onItemDistributedMessage.execute(new ItemDistributedMessageData(itemCopy, this));
+        return itemCopy;
     }
 
     @Override
@@ -117,5 +142,21 @@ public class StorageUnit implements Receivable, Distributable {
 
     public StorageUnitContainer getContainer() {
         return container;
+    }
+
+    public Message<StorageUnitItemMessageData> getOnItemAddedMessage() {
+        return onItemAddedMessage;
+    }
+
+    public Message<StorageUnitItemMessageData> getOnItemRemovedMessage() {
+        return onItemRemovedMessage;
+    }
+
+    public Message<ItemReceivedMessageData> getOnItemReceivedMessage() {
+        return onItemReceivedMessage;
+    }
+
+    public Message<ItemDistributedMessageData> getOnItemDistributedMessage() {
+        return onItemDistributedMessage;
     }
 }

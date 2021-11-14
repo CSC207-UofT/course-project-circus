@@ -4,20 +4,6 @@ import messaging.Message;
 import warehouse.storage.StorageUnit;
 
 /**
- * Data for tile onStorageUnitChanged event.
- */
-record TileStorageUnitChangedMessageData(Tile tile, StorageUnit oldStorageUnit) {
-    /**
-     * Construct a TileStorageUnitChangedMessageData given a Tile and StorageUnit.
-     *
-     * @param tile                The tile whose StorageUnit has changed.
-     * @param oldStorageUnit The old value of the tile's storage unit.
-     */
-    TileStorageUnitChangedMessageData {
-    }
-}
-
-/**
  * An empty tile in the warehouse.
  */
 public class Tile {
