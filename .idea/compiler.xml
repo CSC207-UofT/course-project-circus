@@ -14,6 +14,6 @@
       <entry name="?*.fxml" />
       <entry name="?*.css" />
     </wildcardResourcePatterns>
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="16" />
   </component>
 </project>

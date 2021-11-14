@@ -1,12 +1,18 @@
 package warehouse.storage;
 
-import warehouse.storage.*;
 import warehouse.storage.containers.InMemoryStorageUnitContainer;
 import warehouse.storage.containers.StorageUnitContainer;
 import warehouse.storage.strategies.SingleTypeStorageStrategy;
 import warehouse.storage.strategies.StorageUnitStrategy;
 
 public class Rack extends StorageUnit {
+    /**
+     * Construct an in-memory Rack with infinite capacity and a single-type strategy.
+     */
+    public Rack() {
+        this(-1);
+    }
+
     /**
      * Construct an in-memory Rack with the given capacity and a single-type strategy.
      */
