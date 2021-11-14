@@ -1,7 +1,7 @@
 package application.desktop.ui.components.common;
 
 import application.desktop.DesktopApplication;
-import application.desktop.ui.events.Event;
+import application.desktop.ui.events.ComponentEvent;
 import imgui.ImGui;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
@@ -29,8 +29,8 @@ public class Panel extends Component {
     private final ImBoolean isOpen;
     private boolean isFirstUpdate;
 
-    private final Event onOpenedEvent;
-    private final Event onClosedEvent;
+    private final ComponentEvent onOpenedEvent;
+    private final ComponentEvent onClosedEvent;
 
     /**
      * Construct a new Panel with the given title.
@@ -57,8 +57,8 @@ public class Panel extends Component {
         isFirstUpdate = true;
 
         // Events
-        onOpenedEvent = new Event();
-        onClosedEvent = new Event();
+        onOpenedEvent = new ComponentEvent();
+        onClosedEvent = new ComponentEvent();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class Panel extends Component {
     }
 
     /**
-     * Handle open and close events.
+     * Handle open and close application.desktop.ui.events.
      * @param application The application instance.
      */
     @Override
@@ -243,14 +243,14 @@ public class Panel extends Component {
     /**
      * This event is called when the panel is opened, except for possibly when it is first initialised.
      */
-    public Event getOnOpenedEvent() {
+    public ComponentEvent getOnOpenedEvent() {
         return onOpenedEvent;
     }
 
     /**
      * This event is called when the panel is closed, except for possibly when it is first initialised.
      */
-    public Event getOnClosedEvent() {
+    public ComponentEvent getOnClosedEvent() {
         return onClosedEvent;
     }
 }

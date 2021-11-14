@@ -5,6 +5,9 @@ import warehouse.storage.containers.StorageUnitContainer;
 import warehouse.storage.strategies.SingleTypeStorageStrategy;
 import warehouse.storage.strategies.StorageUnitStrategy;
 
+/**
+ * Stores Items in the Warehouse.
+ */
 public class Rack extends StorageUnit {
     /**
      * Construct an in-memory Rack with infinite capacity and a single-type strategy.

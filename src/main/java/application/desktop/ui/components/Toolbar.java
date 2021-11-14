@@ -29,19 +29,19 @@ public class Toolbar extends MenuBar {
 
         // Register event listeners
         // TODO: Implement New File callback
-        newMenuItem.getOnClickedEvent().addListener((source, application) -> {});
+        newMenuItem.getOnClickedEvent().addListener((data) -> {});
         // TODO: Implement Open File callback
-        openMenuItem.getOnClickedEvent().addListener((source, application) -> {});
+        openMenuItem.getOnClickedEvent().addListener((data) -> {});
         // TODO: Implement Save File callback
-        saveMenuItem.getOnClickedEvent().addListener((source, application) -> {});
+        saveMenuItem.getOnClickedEvent().addListener((data) -> {});
         // TODO: Implement Save As callback
-        saveAsMenuItem.getOnClickedEvent().addListener((source, application) -> {});
-        saveAsMenuItem.getWhileMouseHoverEvent().addListener((source, application) -> {
+        saveAsMenuItem.getOnClickedEvent().addListener((data) -> {});
+        saveAsMenuItem.getWhileMouseHoverEvent().addListener((data) -> {
             System.out.println("\"Save As\" menu item hovering");
         });
 
-        exitMenuItem.getOnClickedEvent().addListener((source, application) -> {
-            application.exit();
+        exitMenuItem.getOnClickedEvent().addListener((data) -> {
+            data.application().exit();
         });
     }
 }
