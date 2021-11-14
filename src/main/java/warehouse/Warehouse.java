@@ -27,8 +27,17 @@ public class Warehouse {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 tiles[x][y] = new Tile(x, y);
+                tiles[x][y].getOnStorageUnitChangedMessage().addListener(this::onTileStorageUnitChanged);
             }
         }
+    }
+
+    /**
+     * Called when a tile's storage unit changes.
+     * @param data Message data.
+     */
+    private void onTileStorageUnitChanged(TileStorageUnitChangedMessageData data) {
+        System.out.println(data.tile().getStorageUnit());
     }
 
     /**
