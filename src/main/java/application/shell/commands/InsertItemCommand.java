@@ -5,8 +5,8 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
-import inventory.InventoryCatalogue;
-import inventory.Item;
+import warehouse.inventory.InventoryCatalogue;
+import warehouse.inventory.Item;
 import warehouse.Tile;
 import warehouse.WarehouseController;
 
@@ -34,7 +34,7 @@ public class InsertItemCommand extends ShellCommand {
         InventoryCatalogue inventoryCatalogue = warehouseController.getInventoryCatalogue();
         Item item = inventoryCatalogue.getItemById(args.getId());
         if (item == null) {
-            return String.format("Could not find item with id \"%s\" in the inventory catalogue!", args.getId());
+            return String.format("Could not find item with id \"%s\" in the warehouse.inventory catalogue!", args.getId());
         } else {
             Tile tile = warehouseController.insertItem(item);
             if (tile != null) {

@@ -5,15 +5,15 @@ import application.shell.ShellApplication;
 import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
-import inventory.InventoryCatalogue;
-import inventory.Item;
+import warehouse.inventory.InventoryCatalogue;
+import warehouse.inventory.Item;
 
 import java.util.List;
 
 /**
  * A command to display the InventoryCatalogue.
  */
-@ShellCommandSpec(name = "display-inventory", description = "Display the inventory catalogue.")
+@ShellCommandSpec(name = "display-warehouse.inventory", description = "Display the warehouse.inventory catalogue.")
 public class DisplayInventoryCommand extends ShellCommand {
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer args) {
@@ -21,7 +21,7 @@ public class DisplayInventoryCommand extends ShellCommand {
         StringBuilder stringBuilder = new StringBuilder();
         List<Item> items = inventoryCatalogue.getItems();
         // Create header line
-        stringBuilder.append(String.format("(%d) item%s in the inventory catalogue",
+        stringBuilder.append(String.format("(%d) item%s in the warehouse.inventory catalogue",
                 items.size(),
                 items.size() > 0 ? "s" : ""));
         // Create list of items

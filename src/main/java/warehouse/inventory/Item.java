@@ -1,4 +1,4 @@
-package inventory;
+package warehouse.inventory;
 
 import java.util.Objects;
 import java.util.UUID;

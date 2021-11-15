@@ -1,6 +1,6 @@
 package pathfinding;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 
 import java.util.Map;
 import java.util.Set;

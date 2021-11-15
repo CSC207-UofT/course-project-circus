@@ -1,4 +1,4 @@
-import inventory.Item;
+import warehouse.inventory.Item;
 import org.junit.jupiter.api.Test;
 import warehouse.storage.Rack;
 

@@ -1,4 +1,4 @@
-package orders;
+package warehouse.orders;
 
 import java.util.LinkedList;
 import java.util.Queue;

@@ -1,4 +1,4 @@
-import inventory.Item;
+import warehouse.inventory.Item;
 import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
 import warehouse.Tile;

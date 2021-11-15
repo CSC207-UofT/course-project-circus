@@ -1,6 +1,6 @@
 package pathfinding;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 
 public interface Scorer<T extends Item> {
     double computeCost(T from, T to);
