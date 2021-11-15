@@ -1,4 +1,4 @@
-package pathfinding;
+package complexPathfinder;
 
 import inventory.Item;
 
