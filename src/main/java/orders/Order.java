@@ -51,6 +51,10 @@ public class Order {
         return this.currentLocation;
     }
 
+    public Item getItem() {
+        return this.item;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
