@@ -1,4 +1,4 @@
-package pathfinding;
+package simplePathfinder;
 
 import warehouse.Rack;
 import warehouse.Tile;
@@ -10,35 +10,10 @@ import java.util.List;
 
 public class SimplePathFinder {
 
-
-    public static class Point {
-        public Tile tile;
-        public Point previous;
-
-        public Point(Tile cell, Point previous) {
-            this.tile = cell;
-            this.previous = previous;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            Point point = (Point) o;
-            return tile.getX() == point.tile.getX() && tile.getY() == point.tile.getY();
-        }
-
-        public String toString() { return String.format("(%d, %d)", tile.getX(), tile.getY()); }
-
-
-
-        public Point offset(int ox, int oy) {
-            return new Point(new Tile(tile.getX() +ox, tile.getY()+oy), this);
-        }
-    }
-
     public static boolean IsWalkable(Warehouse map, Point point) throws TileOutOfBoundsException {
         if (point.tile.getY() < 0 || point.tile.getY() > map.getHeight() - 1) return false;
         if (point.tile.getX() < 0 || point.tile.getX() > map.getWidth() - 1) return false;
-        return map.getTileAt(point.tile.getX(),point.tile.getY()).isEmpty();
+        return map.getTileAt(point.tile.getX(), point.tile.getY()).isEmpty();
     }
 
     public static List<Point> FindNeighbors(Warehouse map, Point point) throws TileOutOfBoundsException {
