@@ -1,5 +1,3 @@
-package tests.java;
-
 import inventory.Item;
 import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
