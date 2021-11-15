@@ -41,7 +41,7 @@ public class Toolbar extends MenuBar {
         });
 
         exitMenuItem.getOnClickedEvent().addListener((data) -> {
-            data.application().exit();
+            data.getApplication().exit();
         });
     }
 }
