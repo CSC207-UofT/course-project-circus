@@ -5,7 +5,7 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
-import inventory.Item;
+import warehouse.inventory.Item;
 
 /**
  * Argument container for CreateItemCommand.
@@ -32,9 +32,9 @@ class CreateItemCommandArgContainer extends ShellCommandArgContainer {
 }
 
 /**
- * A command to create an Item and add it to the Warehouse inventory catalogue.
+ * A command to create an Item and add it to the Warehouse warehouse.inventory catalogue.
  */
-@ShellCommandSpec(name = "create-item", description = "Create an Item and add it to the Warehouse inventory catalogue.")
+@ShellCommandSpec(name = "create-item", description = "Create an Item and add it to the Warehouse warehouse.inventory catalogue.")
 public class CreateItemCommand extends ShellCommand {
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
@@ -43,7 +43,7 @@ public class CreateItemCommand extends ShellCommand {
         // Add it to the catalogue.
         boolean result = application.getWarehouseController().getInventoryCatalogue().addItem(item);
         if (result) {
-            return String.format("Created %s and added it to the inventory catalogue.", item);
+            return String.format("Created %s and added it to the warehouse.inventory catalogue.", item);
         } else {
             return "Error - Item with same id already exists!";
         }

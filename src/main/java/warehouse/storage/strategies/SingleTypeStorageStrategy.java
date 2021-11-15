@@ -1,6 +1,6 @@
 package warehouse.storage.strategies;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 import warehouse.storage.StorageUnit;
 
 /**

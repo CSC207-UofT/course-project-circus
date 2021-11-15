@@ -1,10 +1,10 @@
 package warehouse;
 
 
-import inventory.InventoryCatalogue;
-import inventory.Item;
-import orders.Order;
-import orders.OrderQueue;
+import warehouse.inventory.InventoryCatalogue;
+import warehouse.inventory.Item;
+import warehouse.orders.Order;
+import warehouse.orders.OrderQueue;
 
 /**
  * This class will be in charge of the WareHouse as a whole and will be the class that the User interacts with

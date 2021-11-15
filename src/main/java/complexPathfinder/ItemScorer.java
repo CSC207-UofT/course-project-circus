@@ -1,6 +1,6 @@
 package complexPathfinder;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 
 public class ItemScorer implements Scorer<Item> {
 

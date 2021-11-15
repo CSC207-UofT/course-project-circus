@@ -1,6 +1,6 @@
 package warehouse;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 import messaging.Message;
 import query.Query;
 import query.Queryable;

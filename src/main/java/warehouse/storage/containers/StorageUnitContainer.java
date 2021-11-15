@@ -1,6 +1,6 @@
 package warehouse.storage.containers;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 
 /**
  * The underlying container for StorageUnits.

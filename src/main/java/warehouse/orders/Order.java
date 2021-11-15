@@ -1,6 +1,6 @@
-package orders;
+package warehouse.orders;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 import warehouse.Tile;
 
 /**

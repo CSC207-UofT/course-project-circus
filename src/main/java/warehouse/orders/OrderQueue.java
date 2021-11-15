@@ -1,4 +1,4 @@
-package orders;
+package warehouse.orders;
 
 import inventory.Item;
 

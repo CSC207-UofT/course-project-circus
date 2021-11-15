@@ -1,5 +1,5 @@
-import inventory.InventoryCatalogue;
-import inventory.Item;
+import warehouse.inventory.InventoryCatalogue;
+import warehouse.inventory.Item;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

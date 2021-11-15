@@ -1,6 +1,6 @@
 package complexPathfinder;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 
 public class RouteNode <T extends Item> implements Comparable<RouteNode<T>> {
     private final T current;

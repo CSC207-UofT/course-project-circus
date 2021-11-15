@@ -1,13 +1,12 @@
 package warehouse;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 import messaging.Message;
 import warehouse.storage.Rack;
 import warehouse.storage.StorageUnit;
 
 /**
- * A 2D representation of the layout of a warehouse. A layout is a 2D grid of tiles, where each tile can
- * contain a StorageUnit such as a Rack or ReceiveDepot.
+ * A 2D representation of a warehouse as a grid of Tiles.
  */
 public class Warehouse {
     private final int width;

@@ -1,8 +1,7 @@
 package warehouse.storage.strategies;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 import warehouse.storage.StorageUnit;
-import warehouse.storage.strategies.StorageUnitStrategy;
 
 /**
  * A strategy that only allows StorageUnits to add items of any type.

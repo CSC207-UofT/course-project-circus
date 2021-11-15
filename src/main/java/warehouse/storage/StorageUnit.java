@@ -1,6 +1,6 @@
 package warehouse.storage;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 import messaging.Message;
 import query.Query;
 import warehouse.Distributable;
