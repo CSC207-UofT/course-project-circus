@@ -6,7 +6,7 @@ import warehouse.storage.Rack;
 import warehouse.storage.StorageUnit;
 
 /**
- * A stateless 2D representation of the layout of a warehouse. A layout is a 2D grid of tiles, where each tile can
+ * A 2D representation of the layout of a warehouse. A layout is a 2D grid of tiles, where each tile can
  * contain a StorageUnit such as a Rack or ReceiveDepot.
  */
 public class Warehouse {
