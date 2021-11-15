@@ -1,9 +1,9 @@
 package simplePathfinder;
 
-import warehouse.Rack;
 import warehouse.Tile;
 import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
+import warehouse.storage.Rack;
 
 import java.util.ArrayList;
 import java.util.List;
