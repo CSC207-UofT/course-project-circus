@@ -9,17 +9,17 @@ import warehouse.Tile;
 public class Order {
     private String status;
     private final Item item;
-    private final Tile currentLocation;
+    private Tile currentLocation;
     private Tile destination = null;
 
+    //TODO: Update currentLocation parameter once Shipping + Recieving depots are implemented.
     /**
      * Construct a new Order with its progress and item.
      * @param item The item in this order.
-     * @param currentLocation Where this item is currently located.
      */
-    public Order(Item item, Tile currentLocation) {
+    public Order(Item item) {
         this.item = item;
-        this.currentLocation = currentLocation;
+        this.currentLocation = null;
         this.status = "Order in progress";
     }
 
@@ -27,6 +27,7 @@ public class Order {
      * Update Order status once it is complete.
      */
     public void updateStatus() {
+        this.currentLocation = this.destination;
         this.status = "Order complete";
     }
 
