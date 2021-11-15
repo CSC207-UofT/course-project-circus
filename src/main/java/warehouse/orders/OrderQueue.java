@@ -1,5 +1,7 @@
 package warehouse.orders;
 
+import inventory.Item;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -7,7 +9,7 @@ import java.util.Queue;
  * Current Warehouse order queue.
  */
 public class OrderQueue {
-    private Queue<Order> orderQueue;
+    private final Queue<Order> orderQueue;
 
     /**
      * Construct an empty Order Queue.
@@ -20,10 +22,11 @@ public class OrderQueue {
      * Remove Order from OrderQueue once it is completed and
      * update the order's status.
      */
-    public void completeOrder() {
+    public Item completeOrder() {
         Order completedOrder = orderQueue.poll();
         assert completedOrder != null;
         completedOrder.updateStatus();
+        return completedOrder.getItem();
     }
 
     /**
@@ -32,5 +35,9 @@ public class OrderQueue {
      */
     public void addOrder(Order order) {
         orderQueue.add(order);
+    }
+
+    public boolean emptyQueue() {
+        return orderQueue.isEmpty();
     }
 }

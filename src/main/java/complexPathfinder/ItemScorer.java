@@ -1,4 +1,4 @@
-package pathfinding;
+package complexPathfinder;
 
 import warehouse.inventory.Item;
 
