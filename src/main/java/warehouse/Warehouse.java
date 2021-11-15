@@ -1,6 +1,8 @@
 package warehouse;
 
 import inventory.Item;
+import warehouse.storage.Rack;
+import warehouse.storage.StorageUnit;
 
 /**
  * A stateless 2D representation of the layout of a warehouse. A layout is a 2D grid of cells, where each cell can
@@ -24,8 +26,43 @@ public class Warehouse {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 tiles[x][y] = new Tile(x, y);
+                // Hook into onStorageUnitChanged message
+                tiles[x][y].getOnStorageUnitChangedMessage().addListener(this::onTileStorageUnitChanged);
             }
         }
+    }
+
+    /**
+     * Called when a tile's storage unit changes.
+     * @param data Message data.
+     */
+    private void onTileStorageUnitChanged(TileStorageUnitChangedMessageData data) {
+        StorageUnit oldStorageUnit = data.oldStorageUnit();
+        if (oldStorageUnit != null) {
+            oldStorageUnit.getOnItemDistributedMessage().removeListener(this::onItemDistributed);
+            oldStorageUnit.getOnItemReceivedMessage().removeListener(this::onItemReceived);
+        }
+        StorageUnit newStorageUnit = data.tile().getStorageUnit();
+        if (newStorageUnit != null) {
+            newStorageUnit.getOnItemDistributedMessage().addListener(this::onItemDistributed);
+            newStorageUnit.getOnItemReceivedMessage().addListener(this::onItemReceived);
+        }
+    }
+
+    /**
+     * Called when a Distributable distributes an Item.
+     * @param data Message data.
+     */
+    private void onItemDistributed(ItemDistributedMessageData data) {
+        System.out.println("Distributed " + data.item());
+    }
+
+    /**
+     * Called when a Receivable distributes an Item.
+     * @param data Message data.
+     */
+    private void onItemReceived(ItemReceivedMessageData data) {
+        System.out.println("Received " + data.item());
     }
 
     /**
@@ -44,21 +81,6 @@ public class Warehouse {
     }
 
     /**
-     * Find an empty Tile.
-     * @return a Tile object with no StorageUnit attached to it, or null if no such Tile exists.
-     */
-    public Tile findEmptyTile() {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (tiles[x][y].isEmpty()) {
-                    return tiles[x][y];
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * Find an available Rack for the given Item.
      * @return a Tile object with a Rack that can contain the given Item.
      */
@@ -68,7 +90,7 @@ public class Warehouse {
                 Tile tile = tiles[x][y];
                 StorageUnit storageUnit = tile.getStorageUnit();
                 if (tile.isEmpty() || !(storageUnit instanceof Rack)) continue;
-                if (((Rack) storageUnit).canAddItem(item)) {
+                if (storageUnit.canAddItem(item)) {
                     return tile;
                 }
             }

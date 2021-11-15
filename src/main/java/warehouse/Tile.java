@@ -1,5 +1,8 @@
 package warehouse;
 
+import messaging.Message;
+import warehouse.storage.StorageUnit;
+
 /**
  * An empty tile in the warehouse.
  */
@@ -7,6 +10,8 @@ public class Tile {
     private final int x;
     private final int y;
     private StorageUnit storageUnit;
+
+    private final Message<TileStorageUnitChangedMessageData> onStorageUnitChangedMessage;
 
     /**
      * Construct a WarehouseCell with the given position and StorageUnit.
@@ -18,6 +23,7 @@ public class Tile {
         this.x = x;
         this.y = y;
         this.storageUnit = storageUnit;
+        onStorageUnitChangedMessage = new Message<>();
     }
 
     /**
@@ -52,7 +58,12 @@ public class Tile {
      * @param storageUnit the storage unit being added.
      */
     public void setStorageUnit(StorageUnit storageUnit) {
+        if (this.storageUnit != null && this.storageUnit.equals(storageUnit)) return;
+        StorageUnit oldStorageUnit = this.storageUnit;
         this.storageUnit = storageUnit;
+        onStorageUnitChangedMessage.execute(new TileStorageUnitChangedMessageData(
+                this, oldStorageUnit
+        ));
     }
 
     public int getX() {
@@ -61,5 +72,9 @@ public class Tile {
 
     public int getY() {
         return y;
+    }
+
+    public Message<TileStorageUnitChangedMessageData> getOnStorageUnitChangedMessage() {
+        return onStorageUnitChangedMessage;
     }
 }

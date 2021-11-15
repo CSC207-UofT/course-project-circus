@@ -6,6 +6,8 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.*;
+import warehouse.storage.Rack;
+import warehouse.storage.StorageUnit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +21,7 @@ public class DisplayWarehouseCommand extends ShellCommand {
 
     static {
         STORAGE_UNIT_SYMBOLS.put(Rack.class, 'R');
-        STORAGE_UNIT_SYMBOLS.put(MultiTypeStorageUnit.class, 'D');
+//        STORAGE_UNIT_SYMBOLS.put(Depot.class, 'D');
     }
 
     @Override

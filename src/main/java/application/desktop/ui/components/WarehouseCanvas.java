@@ -6,6 +6,8 @@ import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
 import warehouse.*;
+import warehouse.storage.Rack;
+import warehouse.storage.StorageUnit;
 
 /**
  * A canvas that visualizes the Warehouse.
