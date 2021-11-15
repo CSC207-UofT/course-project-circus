@@ -1,5 +1,3 @@
-package tests.java;
-
 import inventory.InventoryCatalogue;
 import inventory.Item;
 import org.junit.jupiter.api.Test;

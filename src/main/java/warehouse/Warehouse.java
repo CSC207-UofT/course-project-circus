@@ -37,12 +37,12 @@ public class Warehouse {
      * @param data Message data.
      */
     private void onTileStorageUnitChanged(TileStorageUnitChangedMessageData data) {
-        StorageUnit oldStorageUnit = data.oldStorageUnit();
+        StorageUnit oldStorageUnit = data.getOldStorageUnit();
         if (oldStorageUnit != null) {
             oldStorageUnit.getOnItemDistributedMessage().removeListener(this::onItemDistributed);
             oldStorageUnit.getOnItemReceivedMessage().removeListener(this::onItemReceived);
         }
-        StorageUnit newStorageUnit = data.tile().getStorageUnit();
+        StorageUnit newStorageUnit = data.getTile().getStorageUnit();
         if (newStorageUnit != null) {
             newStorageUnit.getOnItemDistributedMessage().addListener(this::onItemDistributed);
             newStorageUnit.getOnItemReceivedMessage().addListener(this::onItemReceived);
@@ -54,7 +54,7 @@ public class Warehouse {
      * @param data Message data.
      */
     private void onItemDistributed(ItemDistributedMessageData data) {
-        System.out.println("Distributed " + data.item());
+        System.out.println("Distributed " + data.getItem());
     }
 
     /**
@@ -62,7 +62,7 @@ public class Warehouse {
      * @param data Message data.
      */
     private void onItemReceived(ItemReceivedMessageData data) {
-        System.out.println("Received " + data.item());
+        System.out.println("Received " + data.getItem());
     }
 
     /**
