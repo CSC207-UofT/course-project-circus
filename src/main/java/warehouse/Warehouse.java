@@ -54,7 +54,7 @@ public class Warehouse {
      * @param data Message data.
      */
     private void onItemDistributed(ItemDistributedMessageData data) {
-        System.out.println("Distributed " + data.item());
+        System.out.println("Distributed " + data.getItem());
     }
 
     /**
@@ -62,7 +62,7 @@ public class Warehouse {
      * @param data Message data.
      */
     private void onItemReceived(ItemReceivedMessageData data) {
-        System.out.println("Received " + data.item());
+        System.out.println("Received " + data.getItem());
     }
 
     /**
