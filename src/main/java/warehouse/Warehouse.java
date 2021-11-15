@@ -1,15 +1,22 @@
 package warehouse;
 
 import inventory.Item;
+import messaging.Message;
+import warehouse.storage.Rack;
+import warehouse.storage.StorageUnit;
 
 /**
- * A stateless 2D representation of the layout of a warehouse. A layout is a 2D grid of cells, where each cell can
- * contain a Unit such as a Rack or Depot.
+ * A 2D representation of the layout of a warehouse. A layout is a 2D grid of tiles, where each tile can
+ * contain a StorageUnit such as a Rack or ReceiveDepot.
  */
 public class Warehouse {
     private final int width;
     private final int height;
     private final Tile[][] tiles;
+
+    private final Message<TileStorageUnitChangedMessageData> anyStorageUnitChangedMessage;
+    private final Message<ItemDistributedMessageData> itemDistributedMessage;
+    private final Message<ItemReceivedMessageData> itemReceivedMessage;
 
     /**
      * Construct an empty layout with the given width and height.
@@ -19,12 +26,36 @@ public class Warehouse {
     public Warehouse(int width, int height) {
         this.width = width;
         this.height = height;
-        // Initialise the cells
         this.tiles = new Tile[width][height];
+        // Messaging
+        anyStorageUnitChangedMessage = new Message<>();
+        anyStorageUnitChangedMessage.addListener(this::onTileStorageUnitChanged);
+        itemDistributedMessage = new Message<>();
+        itemReceivedMessage = new Message<>();
+        // Initialise tiles
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 tiles[x][y] = new Tile(x, y);
+                // Hook into onStorageUnitChanged message
+                tiles[x][y].getOnStorageUnitChangedMessage().addListener(anyStorageUnitChangedMessage);
             }
+        }
+    }
+
+    /**
+     * Called when a tile's storage unit changes.
+     * @param data Message data.
+     */
+    private void onTileStorageUnitChanged(TileStorageUnitChangedMessageData data) {
+        StorageUnit oldStorageUnit = data.getOldStorageUnit();
+        if (oldStorageUnit != null) {
+            oldStorageUnit.getOnItemDistributedMessage().removeListener(itemDistributedMessage);
+            oldStorageUnit.getOnItemReceivedMessage().removeListener(itemReceivedMessage);
+        }
+        StorageUnit newStorageUnit = data.getTile().getStorageUnit();
+        if (newStorageUnit != null) {
+            newStorageUnit.getOnItemDistributedMessage().addListener(itemDistributedMessage);
+            newStorageUnit.getOnItemReceivedMessage().addListener(itemReceivedMessage);
         }
     }
 
@@ -44,21 +75,6 @@ public class Warehouse {
     }
 
     /**
-     * Find an empty Tile.
-     * @return a Tile object with no StorageUnit attached to it, or null if no such Tile exists.
-     */
-    public Tile findEmptyTile() {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                if (tiles[x][y].isEmpty()) {
-                    return tiles[x][y];
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * Find an available Rack for the given Item.
      * @return a Tile object with a Rack that can contain the given Item.
      */
@@ -68,7 +84,7 @@ public class Warehouse {
                 Tile tile = tiles[x][y];
                 StorageUnit storageUnit = tile.getStorageUnit();
                 if (tile.isEmpty() || !(storageUnit instanceof Rack)) continue;
-                if (((Rack) storageUnit).canAddItem(item)) {
+                if (storageUnit.canAddItem(item)) {
                     return tile;
                 }
             }
@@ -100,5 +116,26 @@ public class Warehouse {
      */
     public int getHeight() {
         return height;
+    }
+
+    /**
+     * This event is called whenever the StorageUnit of a tile in this Warehouse is changed.
+     */
+    public Message<TileStorageUnitChangedMessageData> getAnyStorageUnitChangedMessage() {
+        return anyStorageUnitChangedMessage;
+    }
+
+    /**
+     * This event is called when any Distributable in this Warehouse distributes an Item.
+     */
+    public Message<ItemDistributedMessageData> getItemDistributedMessage() {
+        return itemDistributedMessage;
+    }
+
+    /**
+     * This event is called when any Receivable in this Warehouse distributes an Item.
+     */
+    public Message<ItemReceivedMessageData> getItemReceivedMessage() {
+        return itemReceivedMessage;
     }
 }

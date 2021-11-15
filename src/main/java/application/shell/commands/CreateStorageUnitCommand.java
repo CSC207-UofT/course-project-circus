@@ -6,6 +6,8 @@ import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.*;
+import warehouse.storage.Rack;
+import warehouse.storage.StorageUnit;
 
 /**
  * Argument container for CreateStorageUnitCommand.
@@ -48,7 +50,9 @@ public class CreateStorageUnitCommand extends ShellCommand {
         String type = args.getType().toLowerCase();
         StorageUnit storageUnitToAdd;
         if (type.equals("depot")) {
-            storageUnitToAdd = new Depot(args.getCapacity());
+            // TODO: Add depot
+            storageUnitToAdd = null;
+//            storageUnitToAdd = new Depot(args.getCapacity());
         } else if (type.equals("rack")) {
             storageUnitToAdd = new Rack(args.getCapacity());
         } else {

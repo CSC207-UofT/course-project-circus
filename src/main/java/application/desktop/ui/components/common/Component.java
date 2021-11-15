@@ -1,7 +1,7 @@
 package application.desktop.ui.components.common;
 
 import application.desktop.DesktopApplication;
-import application.desktop.ui.events.Event;
+import application.desktop.ui.events.ComponentEvent;
 import imgui.ImGui;
 
 import java.util.ArrayList;
@@ -17,9 +17,9 @@ public class Component {
     private boolean enabled;
     private boolean inheritParentState;
 
-    private final Event onStartMouseHoverEvent;
-    private final Event onStopMouseHoverEvent;
-    private final Event whileMouseHoverEvent;
+    private final ComponentEvent onStartMouseHoverEvent;
+    private final ComponentEvent onStopMouseHoverEvent;
+    private final ComponentEvent whileMouseHoverEvent;
 
     protected ComponentState state;
 
@@ -48,9 +48,9 @@ public class Component {
         this.state = ComponentState.DEFAULT;
 
         // Events
-        this.onStartMouseHoverEvent = new Event();
-        this.onStopMouseHoverEvent = new Event();
-        this.whileMouseHoverEvent = new Event();
+        this.onStartMouseHoverEvent = new ComponentEvent();
+        this.onStopMouseHoverEvent = new ComponentEvent();
+        this.whileMouseHoverEvent = new ComponentEvent();
     }
 
     /**
@@ -64,7 +64,7 @@ public class Component {
     /**
      * Set the parent of this Component.
      * @param component The new parent of this Component.
-     * @param inheritParentState Whether to inherit the state (e.g. mouse events) of the parent.
+     * @param inheritParentState Whether to inherit the state (e.g. mouse application.desktop.ui.events) of the parent.
      */
     public void setParent(Component component, boolean inheritParentState) {
         component.addChild(this, inheritParentState);
@@ -81,7 +81,7 @@ public class Component {
     /**
      * Add child to this Component.
      * @param component The child Component to add.
-     * @param inheritParentState Whether to inherit the state (e.g. mouse events) of the parent.
+     * @param inheritParentState Whether to inherit the state (e.g. mouse application.desktop.ui.events) of the parent.
      */
     public void addChild(Component component, boolean inheritParentState) {
         component.parent = this;
@@ -146,7 +146,7 @@ public class Component {
     }
 
     /**
-     * Process and handle events.
+     * Process and handle application.desktop.ui.events.
      */
     protected void handleEvents(DesktopApplication application) {
         ComponentState previousState = state;
@@ -223,21 +223,21 @@ public class Component {
     /**
      * This event is called when the mouse starts hovering over this Component.
      */
-    public Event getOnStartMouseHoverEvent() {
+    public ComponentEvent getOnStartMouseHoverEvent() {
         return onStartMouseHoverEvent;
     }
 
     /**
      * This event is called when the mouse stops hovering over this Component.
      */
-    public Event getOnStopMouseHoverEvent() {
+    public ComponentEvent getOnStopMouseHoverEvent() {
         return onStopMouseHoverEvent;
     }
 
     /**
      * This event is called every frame while the mouse hovers over this Component.
      */
-    public Event getWhileMouseHoverEvent() {
+    public ComponentEvent getWhileMouseHoverEvent() {
         return whileMouseHoverEvent;
     }
 }
