@@ -13,23 +13,13 @@ public class Item {
 
     /**
      * Construct an Item with a name and description.
-     * @param id The UUID of this item.
-     * @param name The name of this Item.
-     * @param description The description of this Item.
+     * @param builder an instance of the ItemBuilder class to implement the Builder java design pattern
      */
-    public Item(String id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
-
-    /**
-     * Construct an Item with a name, description, and random id.
-     * @param name The name of this Item.
-     * @param description The description of this Item.
-     */
-    public Item(String name, String description) {
-        this(name, description, UUID.randomUUID().toString());
+    public Item(ItemBuilder builder)
+    {
+        this.id = builder.getId();
+        this.name = builder.getName();
+        this.description = builder.getDescription();
     }
 
     /**
