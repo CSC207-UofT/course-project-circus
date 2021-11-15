@@ -12,9 +12,10 @@ import imgui.flag.*;
 import imgui.internal.flag.ImGuiDockNodeFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
+import inventory.Item;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
-import warehouse.Rack;
+import warehouse.storage.Rack;
 import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
 

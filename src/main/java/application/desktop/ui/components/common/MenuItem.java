@@ -1,7 +1,7 @@
 package application.desktop.ui.components.common;
 
 import application.desktop.DesktopApplication;
-import application.desktop.ui.events.Event;
+import application.desktop.ui.events.ComponentEvent;
 import imgui.ImGui;
 import imgui.type.ImBoolean;
 
@@ -13,8 +13,8 @@ public class MenuItem extends Component {
     private String shortcut;
     private boolean toggle;
 
-    private final Event onSelectedToggleEvent;
-    private final Event onClickedEvent;
+    private final ComponentEvent onSelectedToggleEvent;
+    private final ComponentEvent onClickedEvent;
 
     private final ImBoolean selected;
 
@@ -38,8 +38,8 @@ public class MenuItem extends Component {
         this.shortcut = shortcut;
         this.toggle = toggle;
 
-        onSelectedToggleEvent = new Event();
-        onClickedEvent = new Event();
+        onSelectedToggleEvent = new ComponentEvent();
+        onClickedEvent = new ComponentEvent();
         selected = new ImBoolean(false);
         setEnabled(enabled);
     }
@@ -91,14 +91,14 @@ public class MenuItem extends Component {
     /**
      * This event is called when this MenuItem is selected.
      */
-    public Event getOnSelectedToggleEvent() {
+    public ComponentEvent getOnSelectedToggleEvent() {
         return onSelectedToggleEvent;
     }
 
     /**
      * This event is called when this MenuItem is clicked on.
      */
-    public Event getOnClickedEvent() {
+    public ComponentEvent getOnClickedEvent() {
         return onClickedEvent;
     }
 }

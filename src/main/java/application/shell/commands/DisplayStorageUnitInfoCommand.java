@@ -6,7 +6,7 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
-import warehouse.StorageUnit;
+import warehouse.storage.StorageUnit;
 import warehouse.Tile;
 import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;

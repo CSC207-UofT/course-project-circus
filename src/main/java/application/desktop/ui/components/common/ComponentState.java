@@ -12,5 +12,4 @@ public enum ComponentState {
      * When the mouse is hovering over this Component.
      */
     MOUSE_HOVERING,
-
 }
