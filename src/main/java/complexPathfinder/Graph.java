@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Graph<T extends Item> {
+public class Graph<T extends Comparable> {
     private final Set<T> nodes;
     private final Map<String, Set<String>> connections;
 

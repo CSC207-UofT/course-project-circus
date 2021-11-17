@@ -9,7 +9,7 @@ import java.util.*;
  * <p>
  * Classes that extend this one will have to implement the methods we choose here.
  */
-public abstract class Pathfinder<T extends Item> {
+public abstract class Pathfinder<T extends Comparable> {
 
     private final Graph<T> graph;
     private final Scorer<T> nextNodeScorer;
@@ -69,7 +69,7 @@ public abstract class Pathfinder<T extends Item> {
                 return route;
             }
             graph.getConnections(next.getCurrent()).forEach(connection -> {
-                RouteNode<T> nextNode = allNodes.getOrDefault(connection, new RouteNode<>(connection));
+                RouteNode<T> nextNode = allNodes.getOrDefault(connection, new RouteNode<T>(connection));
                 allNodes.put(connection, nextNode);
 
                 double newScore = next.getRouteScore() + nextNodeScorer.computeCost(next.getCurrent(), connection);
