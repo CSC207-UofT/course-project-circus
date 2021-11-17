@@ -1,7 +1,5 @@
 package complexPathfinder;
 
-import inventory.Item;
-
 public class RouteNode <T extends GraphNode> implements Comparable<RouteNode<T>> {
     private final T current;
     private T previous;

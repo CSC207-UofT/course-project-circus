@@ -1,7 +1,5 @@
 package complexPathfinder;
 
-import inventory.Item;
-
 import java.util.*;
 
 /**

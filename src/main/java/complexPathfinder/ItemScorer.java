@@ -1,7 +1,5 @@
 package complexPathfinder;
 
-import inventory.Item;
-
 public class ItemScorer implements Scorer<GraphNode> {
 
     /**
