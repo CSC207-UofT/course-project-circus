@@ -1,6 +1,7 @@
 
 import org.junit.jupiter.api.Test;
 import warehouse.inventory.Item;
+import warehouse.inventory.Part;
 import warehouse.orders.Order;
 import warehouse.orders.OrderQueue;
 
@@ -10,7 +11,7 @@ public class OrderQueueTest {
     @Test
     public void testCompleteOrder() {
         OrderQueue queue = new OrderQueue();
-        Item item = new Item("Cucumber", "A Vegetable");
+        Item item = new Item(new Part("Cucumber", "A Vegetable"));
         Order order = new Order(item);
         queue.addOrder(order);
         queue.completeOrder();
@@ -21,8 +22,8 @@ public class OrderQueueTest {
     @Test
     public void testAddOrder() {
         OrderQueue queue = new OrderQueue();
-        Item item = new Item("Cucumber", "A Vegetable");
-        Item item2 = new Item("Banana", "A Fruit");
+        Item item = new Item(new Part("Cucumber", "A Vegetable"));
+        Item item2 = new Item(new Part("Banana", "A Fruit"));
         Order order = new Order(item);
         Order order2 = new Order(item2);
         queue.addOrder(order);
