@@ -1,8 +1,8 @@
 
-import inventory.Item;
-import orders.OrderQueue;
-import orders.Order;
 import org.junit.jupiter.api.Test;
+import warehouse.inventory.Item;
+import warehouse.orders.Order;
+import warehouse.orders.OrderQueue;
 
 import static org.junit.jupiter.api.Assertions.*;
 

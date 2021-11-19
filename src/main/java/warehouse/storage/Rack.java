@@ -48,4 +48,13 @@ public class Rack extends StorageUnit {
     public Rack(int capacity, StorageUnitStrategy strategy, StorageUnitContainer container) {
         super(capacity, strategy, container);
     }
+
+    @Override
+    public String toString() {
+        return "Rack{" +
+                "capacity=" + getCapacity() +
+                ", strategy=" + getStrategy() +
+                ", container=" + getContainer() +
+                '}';
+    }
 }

@@ -1,5 +1,6 @@
 import warehouse.inventory.Item;
 import org.junit.jupiter.api.Test;
+import warehouse.inventory.Part;
 import warehouse.storage.Rack;
 
 import java.util.ArrayList;
@@ -28,12 +29,14 @@ public class RackTest {
     public void addItemBasicTests()
     {
         Rack r = new Rack(3);
-        Item i = new Item("Artem", "Smart student whose first language is Python.");
+        Part p = new Part("Artem", "Smart student whose first language is Python.");
+        Item i = new Item(p);
         assertTrue(r.addItem(i));
         assertEquals(1, r.getSize());
         assertTrue(r.addItem(i));
         assertEquals(2, r.getSize());
-        Item k = new Item("Shon Verch", "A professional agricultural economist.");
+        Part p2 = new Part("Shon Verch", "A professional agricultural economist.");
+        Item k = new Item(p2);
         assertFalse(r.addItem(k));
         assertTrue(r.addItem(i));
         assertFalse(r.addItem(i));
@@ -42,7 +45,8 @@ public class RackTest {
     public void removeItemBasicTests()
     {
         Rack r = new Rack(3);
-        Item i = new Item("Leon", "Polish \"left wing\" nationalist.");
+        Part p = new Part("Leon", "Polish \"left wing\" nationalist.");
+        Item i = new Item(p);
         r.addItem(i);
         r.addItem(i);
         r.addItem(i);
@@ -56,7 +60,8 @@ public class RackTest {
     public void getQueryItemsBasicTests()
     {
         Rack r = new Rack(3);
-        Item i = new Item("Mr. Martin", "Best TA from STA130");
+        Part p = new Part("Mr. Martin", "Best TA from STA130");
+        Item i = new Item(p);
         r.addItem(i);
         List<Item> l = new ArrayList<>();
         l.add(i);

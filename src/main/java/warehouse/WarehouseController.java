@@ -1,7 +1,7 @@
 package warehouse;
 
 
-import warehouse.inventory.InventoryCatalogue;
+import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
 import warehouse.orders.Order;
 import warehouse.orders.OrderQueue;
@@ -18,7 +18,7 @@ public class WarehouseController {
     /**
      * Available items serviced by the Warehouse.
      */
-    private final InventoryCatalogue inventoryCatalogue;
+    private final PartCatalogue partCatalogue;
     /**
      * Warehouse's current order queue.
      */
@@ -27,10 +27,10 @@ public class WarehouseController {
     /**
      * Constructs an instance of the WarehouseController.
      */
-    public WarehouseController(Warehouse warehouse, InventoryCatalogue inventoryCatalogue)
+    public WarehouseController(Warehouse warehouse, PartCatalogue partCatalogue)
     {
         this.warehouse = warehouse;
-        this.inventoryCatalogue = inventoryCatalogue;
+        this.partCatalogue = partCatalogue;
         this.orderQueue = new OrderQueue();
     }
 
@@ -60,7 +60,7 @@ public class WarehouseController {
         return warehouse;
     }
 
-    public InventoryCatalogue getInventoryCatalogue() {
-        return inventoryCatalogue;
+    public PartCatalogue getPartCatalogue() {
+        return partCatalogue;
     }
 }

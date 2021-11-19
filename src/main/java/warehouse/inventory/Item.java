@@ -1,81 +1,45 @@
 package warehouse.inventory;
 
-import java.util.Objects;
 import java.util.UUID;
 
 /**
- * An item in the Inventory.
+ * A physical instance of a Part.
  */
 public class Item {
     private final String id;
-    private String name;
-    private String description;
+    private final Part part;
 
     /**
-     * Construct an Item with a name and description.
-     * @param builder an instance of the ItemBuilder class to implement the Builder java design pattern
+     * Construct an Item with a randomly generated id.
+     * @param part The master abstract Part that this Item is an instance of.
      */
-    public Item(ItemBuilder builder)
-    {
-        this.id = builder.getId();
-        this.name = builder.getName();
-        this.description = builder.getDescription();
+    public Item(Part part) {
+        this(UUID.randomUUID().toString(), part);
     }
 
     /**
-     * Copy constructor for the Item class.
-     * @param item The item to copy.
+     * Construct an Item.
+     * @param id The unique-id of this Item (e.g. a barcode or serial number).
+     * @param part The master abstract Part that this Item is an instance of.
      */
-    public Item(Item item) {
-        id = item.id;
-        name = item.name;
-        description = item.description;
+    public Item(String id, Part part) {
+        this.id = id;
+        this.part = part;
     }
 
-    public String getName() {
-        return this.name;
+    public String getId() {
+        return id;
     }
 
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public Part getPart() {
+        return part;
     }
 
     @Override
     public String toString() {
         return "Item{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
+                "id='" + id + '\'' +
+                ", part=" + part +
                 '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return Objects.equals(id, item.id) && Objects.equals(name, item.name) &&
-                Objects.equals(description, item.description);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description);
-    }
-
-    /**
-     * Getter method for id.
-     * @return id private variable
-     */
-    public String getId() {
-        return id;
     }
 }

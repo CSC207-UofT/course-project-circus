@@ -44,4 +44,11 @@ public class InMemoryStorageUnitContainer implements StorageUnitContainer {
     public Iterable<Item> getItems() {
         return items;
     }
+
+    @Override
+    public String toString() {
+        return "InMemoryStorageUnitContainer{" +
+                "items=" + items +
+                '}';
+    }
 }
