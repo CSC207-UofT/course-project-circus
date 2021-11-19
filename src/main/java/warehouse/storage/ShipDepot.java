@@ -48,4 +48,13 @@ public class ShipDepot extends StorageUnit {
     public ShipDepot(int capacity, StorageUnitStrategy strategy, StorageUnitContainer container) {
         super(capacity, strategy, container);
     }
+
+    @Override
+    public String toString() {
+        return "ShipDepot{" +
+                "capacity=" + getCapacity() +
+                ", strategy=" + getStrategy() +
+                ", container=" + getContainer() +
+                '}';
+    }
 }

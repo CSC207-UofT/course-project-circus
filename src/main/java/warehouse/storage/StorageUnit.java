@@ -125,10 +125,8 @@ public class StorageUnit implements Receivable, Distributable {
         if (!removeItem(item)) {
             return null;
         }
-        // Copy before returning
-        Item itemCopy = new Item(item);
-        onItemDistributedMessage.execute(new ItemDistributedMessageData(itemCopy, this));
-        return itemCopy;
+        onItemDistributedMessage.execute(new ItemDistributedMessageData(item, this));
+        return item;
     }
 
     @Override
@@ -158,5 +156,14 @@ public class StorageUnit implements Receivable, Distributable {
 
     public Message<ItemDistributedMessageData> getOnItemDistributedMessage() {
         return onItemDistributedMessage;
+    }
+
+    @Override
+    public String toString() {
+        return "StorageUnit{" +
+                "capacity=" + capacity +
+                ", strategy=" + strategy +
+                ", container=" + container +
+                '}';
     }
 }

@@ -1,6 +1,6 @@
 package warehouse.orders;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 
 import java.util.LinkedList;
 import java.util.Queue;

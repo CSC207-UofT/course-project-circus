@@ -3,7 +3,8 @@ package application.shell;
 import application.shell.commands.*;
 import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandExecutor;
-import warehouse.inventory.InventoryCatalogue;
+import warehouse.inventory.Part;
+import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
 import serialization.FileObjectSaver;
 import serialization.JsonFileObjectSaver;
@@ -16,8 +17,8 @@ import java.util.Scanner;
  * Driver class for the shell application.
  */
 public class ShellApplication {
-    private final FileObjectSaver<Item> itemFileSaver;
-    private final FileObjectSaver<InventoryCatalogue> inventoryCatalogueFileSaver;
+    private final FileObjectSaver<Part> partFileSaver;
+    private final FileObjectSaver<PartCatalogue> partCatalogueFileSaver;
     private final WarehouseController warehouseController;
 
     private boolean isRunning;
@@ -28,25 +29,25 @@ public class ShellApplication {
      */
     public ShellApplication() {
         // Serialization adapters
-        itemFileSaver = new JsonFileObjectSaver<>();
-        inventoryCatalogueFileSaver = new JsonFileObjectSaver<>();
+        partFileSaver = new JsonFileObjectSaver<>();
+        partCatalogueFileSaver = new JsonFileObjectSaver<>();
         // TODO: Should the warehouse controller be made here?!
         // TODO: Replace empty warehouse with file loading or something
         // TODO: Don't hardcode warehouse dimensions
         warehouseController = new WarehouseController(
                 new Warehouse(10, 10),
-                new InventoryCatalogue()
+                new PartCatalogue()
         );
 
         isRunning = false;
         commandExecutor = new ShellCommandExecutor(this, new ShellCommand[]{
-                new CreateItemCommand(),
+                new CreatePartCommand(),
                 new CreateStorageUnitCommand(),
                 new InsertItemCommand(),
                 new DisplayWarehouseCommand(),
                 new DisplayStorageUnitInfoCommand(),
-                new DisplayInventoryCommand(),
-                new SaveItemCommand(),
+                new DisplayPartCatalogue(),
+                new SavePartCommand(),
                 new HelpCommand(),
                 new ExitCommand(),
         });
@@ -87,12 +88,12 @@ public class ShellApplication {
         return warehouseController;
     }
 
-    public FileObjectSaver<Item> getItemFileSaver() {
-        return itemFileSaver;
+    public FileObjectSaver<Part> getPartFileSaver() {
+        return partFileSaver;
     }
 
-    public FileObjectSaver<InventoryCatalogue> getInventoryCatalogueFileSaver() {
-        return inventoryCatalogueFileSaver;
+    public FileObjectSaver<PartCatalogue> getPartCatalogueFileSaver() {
+        return partCatalogueFileSaver;
     }
 
     /**

@@ -8,24 +8,24 @@ Runinng the project opens a command-line interface, which contains an _empty_ wa
 
 ### Commands
 
-- ``create-item <id> <name> <description>``: Creates an item (with the given id, name, and description) and adds it to the warehouse warehouse.inventory catalogue. If an item with the given id already exists in the warehouse, then no item is created. 
+- ``create-part <id> <name> <description>``: Creates a part (with the given id, name, and description) and adds it to the part catalogue. If an part with the given id already exists in the warehouse, then no part is created. 
 - ``create-storage-unit <type> <x> <y> <capacity>``: Creates a storage unit (of the given type; one of ``rack`` or ``depot``) at the given tile coordinates. If the tile at the given coordinates is non-empty, then no storage unit is created.
-- ``display-warehouse.inventory``: Display the warehouse.inventory catalogue of the warehouse.
+- ``display-parts``: Display the part catalogue of the warehouse.
 - ``display-warehouse``: Display the warehouse layout.
 - ``display-storage-unit-info <x> <y>``: Display info about a storage unit at the given location.
-- ``insert-item <id>``: Insert the item with the given id into an available rack in the warehouse. If there is no item with the given id, or no rack is available, then no item is inserted.
+- ``insert-part <id>``: Insert the part with the given id into an available rack in the warehouse. If there is no part with the given id, or no rack is available, then no part is inserted.
 - ``help <name>``: Provides help information for the command with the given name.
 
 ### Example
 ```
-> create-item 1 Mango "A delectable fruit"
-Created Item{id=1, name='Mango', description='A delectable fruit'} and added it to the warehouse.inventory catalogue.
-> create-item 2 "Crack Cocaine" "A children's candy"
-Created Item{id=2, name='Crack Cocaine', description='A children's candy'} and added it to the warehouse.inventory catalogue.
-> display-warehouse.inventory
-(2) items in the warehouse.inventory catalogue
-- Item{id=1, name='Mango', description='A delectable fruit'}
-- Item{id=2, name='Crack Cocaine', description='A children's candy'}
+> create-part 1 Mango "A delectable fruit"
+Created Part{id=1, name='Mango', description='A delectable fruit'} and added it to the part catalogue.
+> create-part 2 "Crack Cocaine" "A children's candy"
+Created Part{id=2, name='Crack Cocaine', description='A children's candy'} and added it to the part catalogue.
+> display-parts
+(2) parts in the part catalogue
+- Part{id=1, name='Mango', description='A delectable fruit'}
+- Part{id=2, name='Crack Cocaine', description='A children's candy'}
 
 > create-storage-unit rack 0 0 1
 Created rack at (0, 0)
@@ -43,9 +43,9 @@ Created rack at (5, 0)
  7 X X X X X X X X X X
  8 X X X X X X X X X X
  9 X X X X X X X X X X
- > insert-item 1
- Great Success! Inserted item into Rack at (0, 0) 
- > insert-item 1
- Great Success! Inserted item into Rack at (5, 0)
- > display-storage-unit-info 5 0
-Rack{capacity=3, currentItem=Item{id=1, name='Mango', description='A delectable fruit'}, size=1}
+
+> insert-item 1
+Great Success! Inserted item into Rack at (0, 0)
+> insert-item 1
+Great Success! Inserted item into Rack at (5, 0)
+```
