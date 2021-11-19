@@ -13,7 +13,7 @@ Runinng the project opens a command-line interface, which contains an _empty_ wa
 - ``display-parts``: Display the part catalogue of the warehouse.
 - ``display-warehouse``: Display the warehouse layout.
 - ``display-storage-unit-info <x> <y>``: Display info about a storage unit at the given location.
-- ``insert-part <id>``: Insert the part with the given id into an available rack in the warehouse. If there is no part with the given id, or no rack is available, then no part is inserted.
+- ``insert-item <part_id>``: Insert an Item (consisting of the Part with the given part_id) into an available rack in the warehouse. If there is no part with the given id, or no rack is available, then no item is inserted.
 - ``help <name>``: Provides help information for the command with the given name.
 
 ### Example
