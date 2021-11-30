@@ -1,6 +1,7 @@
 package warehouse;
 
 import warehouse.storage.StorageUnit;
+import warehouse.tiles.Tile;
 
 /**
  * Data for tile onStorageUnitChanged event.

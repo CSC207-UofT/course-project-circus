@@ -4,6 +4,8 @@ import warehouse.storage.containers.InMemoryStorageUnitContainer;
 import warehouse.storage.containers.StorageUnitContainer;
 import warehouse.storage.strategies.MultiTypeStorageUnitStrategy;
 import warehouse.storage.strategies.StorageUnitStrategy;
+import warehouse.transactions.Distributable;
+import warehouse.transactions.Receivable;
 
 /**
  * Ships Items to the outside world.

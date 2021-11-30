@@ -7,7 +7,8 @@ import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.storage.StorageUnit;
-import warehouse.Tile;
+import warehouse.tiles.StorageTile;
+import warehouse.tiles.Tile;
 import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
 
@@ -40,12 +41,10 @@ public class DisplayStorageUnitInfoCommand extends ShellCommand {
         Warehouse warehouse = application.getWarehouseController().getWarehouse();
         try {
             Tile tile = warehouse.getTileAt(args.getX(), args.getY());
-            StorageUnit storageUnit = tile.getStorageUnit();
-            if (storageUnit == null) {
+            if (!(tile instanceof StorageTile) || ((StorageTile)tile).isEmpty()) {
                 return String.format("Tile at (%d, %d) is empty!", args.getX(), args.getY());
-            } else {
-                return storageUnit.toString();
             }
+            return ((StorageTile)tile).getStorageUnit().toString();
         } catch (TileOutOfBoundsException e) {
             return e.getMessage();
         }

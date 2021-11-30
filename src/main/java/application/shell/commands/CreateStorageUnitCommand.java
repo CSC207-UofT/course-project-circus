@@ -8,6 +8,8 @@ import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.*;
 import warehouse.storage.Rack;
 import warehouse.storage.StorageUnit;
+import warehouse.tiles.StorageTile;
+import warehouse.tiles.Tile;
 
 /**
  * Argument container for CreateStorageUnitCommand.
@@ -62,13 +64,14 @@ public class CreateStorageUnitCommand extends ShellCommand {
         Warehouse warehouse = application.getWarehouseController().getWarehouse();
         try {
             Tile tile = warehouse.getTileAt(args.getX(), args.getY());
-            if (!tile.isEmpty()) {
+            if (tile instanceof StorageTile && !((StorageTile)tile).isEmpty()) {
                 return String.format("Cannot add %s at (%d, %d) since the tile already has a storage unit",
                         type,
                         args.getX(),
                         args.getY());
             } else {
-                tile.setStorageUnit(storageUnitToAdd);
+                Tile newTile = new StorageTile(args.getX(), args.getY(), storageUnitToAdd);
+                warehouse.setTile(newTile);
                 return String.format("Created %s at (%d, %d)", type, args.getX(), args.getY());
             }
         } catch (TileOutOfBoundsException e) {

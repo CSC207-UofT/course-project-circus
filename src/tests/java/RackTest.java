@@ -1,10 +1,7 @@
-import warehouse.inventory.Item;
 import org.junit.jupiter.api.Test;
+import warehouse.inventory.Item;
 import warehouse.inventory.Part;
 import warehouse.storage.Rack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,19 +51,5 @@ public class RackTest {
         assertTrue(r.removeItem(i));
         assertEquals(2, r.getSize());
         assertEquals(3, r.getCapacity());
-    }
-
-    @Test
-    public void getQueryItemsBasicTests()
-    {
-        Rack r = new Rack(3);
-        Part p = new Part("Mr. Martin", "Best TA from STA130");
-        Item i = new Item(p);
-        r.addItem(i);
-        List<Item> l = new ArrayList<>();
-        l.add(i);
-        assertEquals(l, r.getQueryItems());
-        Rack r2 = new Rack();
-        assertNotEquals(l, r2.getQueryItems());
     }
 }

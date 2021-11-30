@@ -7,7 +7,12 @@ import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.*;
 import warehouse.storage.Rack;
+import warehouse.storage.ReceiveDepot;
+import warehouse.storage.ShipDepot;
 import warehouse.storage.StorageUnit;
+import warehouse.tiles.EmptyTile;
+import warehouse.tiles.StorageTile;
+import warehouse.tiles.Tile;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,10 +23,13 @@ import java.util.Map;
 @ShellCommandSpec(name = "display-warehouse", description = "Display the layout of the warehouse.")
 public class DisplayWarehouseCommand extends ShellCommand {
     private final static Map<Class<? extends StorageUnit>, Character> STORAGE_UNIT_SYMBOLS = new HashMap<>();
+    private final static Character UNKNOWN_TILE_SYMBOL = 'U';
+    private final static Character EMPTY_TILE_SYMBOL = 'X';
 
     static {
         STORAGE_UNIT_SYMBOLS.put(Rack.class, 'R');
-//        STORAGE_UNIT_SYMBOLS.put(Depot.class, 'D');
+        STORAGE_UNIT_SYMBOLS.put(ReceiveDepot.class, 'I');
+        STORAGE_UNIT_SYMBOLS.put(ShipDepot.class, 'O');
     }
 
     @Override
@@ -41,14 +49,16 @@ public class DisplayWarehouseCommand extends ShellCommand {
                 try {
                     Tile tile = warehouse.getTileAt(x, y);
                     stringBuilder.append(' ');
-                    if (tile.isEmpty()) {
-                        Character EMPTY_TILE_SYMBOL = 'X';
+                    if ((tile instanceof EmptyTile) || (tile instanceof StorageTile && ((StorageTile)tile).isEmpty())) {
                         stringBuilder.append(EMPTY_TILE_SYMBOL);
-                    } else {
-                        Class<?> clazz = tile.getStorageUnit().getClass();
+                    } else if (tile instanceof StorageTile) {
+                        Class<?> clazz = ((StorageTile)tile).getStorageUnit().getClass();
                         Character UNKNOWN_STORAGE_UNIT_SYMBOL = '?';
                         stringBuilder.append(STORAGE_UNIT_SYMBOLS.getOrDefault(clazz,
                                 UNKNOWN_STORAGE_UNIT_SYMBOL));
+                    } else {
+
+                        stringBuilder.append(UNKNOWN_TILE_SYMBOL);
                     }
                 } catch (TileOutOfBoundsException e) {
                     e.printStackTrace();

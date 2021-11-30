@@ -1,4 +1,4 @@
-package warehouse;
+package warehouse.transactions;
 
 import warehouse.inventory.Item;
 import messaging.Message;

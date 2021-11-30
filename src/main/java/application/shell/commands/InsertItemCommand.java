@@ -8,7 +8,7 @@ import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
-import warehouse.Tile;
+import warehouse.tiles.Tile;
 import warehouse.WarehouseController;
 
 /**
@@ -37,16 +37,18 @@ public class InsertItemCommand extends ShellCommand {
         if (part == null) {
             return String.format("Could not find part with id \"%s\" in the part catalogue!", args.getPartId());
         } else {
-            Item item = new Item(part);
-            Tile tile = warehouseController.insertItem(item);
-            if (tile != null) {
-                return String.format("Great Success! Inserted item into %s at (%d, %d)",
-                        tile.getStorageUnit().getClass().getSimpleName(),
-                        tile.getX(),
-                        tile.getY());
-            } else {
-                return String.format("Could not insert %s into the warehouse!", item);
-            }
+            // TODO: Implement this using the Order system
+//            Item item = new Item(part);
+//            Tile tile = warehouseController.insertItem(item);
+//            if (tile != null) {
+//                return String.format("Great Success! Inserted item into %s at (%d, %d)",
+//                        tile.getStorageUnit().getClass().getSimpleName(),
+//                        tile.getX(),
+//                        tile.getY());
+//            } else {
+//                return String.format("Could not insert %s into the warehouse!", item);
+//            }
+            return "Not implemented yet!";
         }
     }
     @Override

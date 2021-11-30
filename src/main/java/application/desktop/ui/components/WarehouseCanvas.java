@@ -8,6 +8,8 @@ import imgui.flag.ImGuiMouseButton;
 import warehouse.*;
 import warehouse.storage.Rack;
 import warehouse.storage.StorageUnit;
+import warehouse.tiles.StorageTile;
+import warehouse.tiles.Tile;
 
 /**
  * A canvas that visualizes the Warehouse.
@@ -266,8 +268,8 @@ public class WarehouseCanvas extends Component {
 
                 try {
                     Tile tile = warehouse.getTileAt(x, y);
-                    if (!tile.isEmpty()) {
-                        StorageUnit storageUnit = tile.getStorageUnit();
+                    if ((tile instanceof StorageTile) && !((StorageTile)tile).isEmpty()) {
+                        StorageUnit storageUnit = ((StorageTile)tile).getStorageUnit();
                         if (storageUnit instanceof Rack) {
                             // Draw rack
                             drawList.addRectFilled(x1 + thickness * 0.5f, y1 + thickness * 0.5f,

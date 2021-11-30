@@ -1,6 +1,7 @@
-package warehouse;
+package warehouse.transactions;
 
 import warehouse.inventory.Item;
+import warehouse.transactions.Receivable;
 
 /**
  * Data for the onItemReceived message.

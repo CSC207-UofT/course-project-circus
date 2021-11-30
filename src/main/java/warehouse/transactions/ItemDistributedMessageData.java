@@ -1,6 +1,7 @@
-package warehouse;
+package warehouse.transactions;
 
 import warehouse.inventory.Item;
+import warehouse.transactions.Distributable;
 
 /**
  * Data for the onItemDistributed message.

@@ -17,6 +17,7 @@ import utils.Pair;
 import warehouse.storage.Rack;
 import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
+import warehouse.tiles.StorageTile;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -55,9 +56,9 @@ public class DesktopApplication extends Application {
         // Create dummy warehouse
         Warehouse warehouse = new Warehouse(12, 12);
         try {
-            warehouse.getTileAt(1, 1).setStorageUnit(new Rack(10));
-            warehouse.getTileAt(2, 1).setStorageUnit(new Rack(10));
-            warehouse.getTileAt(3, 1).setStorageUnit(new Rack(10));
+            warehouse.setTile(new StorageTile(1, 1, new Rack(10)));
+            warehouse.setTile(new StorageTile(2, 1, new Rack(10)));
+            warehouse.setTile(new StorageTile(3, 1, new Rack(10)));
         } catch (TileOutOfBoundsException e) {
             e.printStackTrace();
         }
