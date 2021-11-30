@@ -4,12 +4,9 @@ package warehouse;
 import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
 import warehouse.transactions.Order;
-import warehouse.storage.ReceiveDepot;
-import warehouse.transactions.Receivable;
 
 /**
- * This class will be in charge of the WareHouse as a whole and will be the class that the User interacts with
- * rather than other more basic classes.
+ * Controls the Warehouse.
  */
 public class WarehouseController {
     /**
@@ -31,23 +28,13 @@ public class WarehouseController {
     }
 
     /**
-     *
-     * @param item The item to insert
-     * @param intermediate The depot to keep this Item
-     * @return The Order for this Item.
+     * Insert an Item fromm the outside world. This will place the Item into an available ReceiveDepot, and then issue
+     * an Order for the Item to be moved from that ReceiveDepot to an available StorageUnit in the Warehouse.
+     * @param item The Item to insert.
+     * @return an Order representing a request to move the Item to an available StorageUnit in the Warehouse.
      */
-    public Order insertItem(Item item, Receivable intermediate) {
+    public Order insertItem(Item item) {
         // TODO: Implement me!
-        return null;
-    }
-
-    /**
-     * Receive an Item.
-     * @param item The item to receive.
-     * @return a ReceiveDepot that can received the given Item, or null if the Item can't be received.
-     */
-    public ReceiveDepot receiveItem(Item item) {
-        // TODO: Implement me
         return null;
     }
 

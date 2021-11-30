@@ -1,8 +1,5 @@
 package warehouse;
 
-import warehouse.inventory.Item;
-import warehouse.storage.Rack;
-import warehouse.storage.StorageUnit;
 import warehouse.tiles.EmptyTile;
 import warehouse.tiles.Tile;
 

@@ -32,20 +32,21 @@ Created rack at (0, 0)
 > create-storage-unit rack 5 0 3
 Created rack at (5, 0)
 > display-warehouse
+======================
+EmptyTile        .
+ReceiveDepot     R
+ShipDepot        S
+Rack             X
+======================
    0 1 2 3 4 5 6 7 8 9
- 0 R X X X X R X X X X
- 1 X X X X X X X X X X
- 2 X X X X X X X X X X
- 3 X X X X X X X X X X
- 4 X X X X X X X X X X
- 5 X X X X X X X X X X
- 6 X X X X X X X X X X
- 7 X X X X X X X X X X
- 8 X X X X X X X X X X
- 9 X X X X X X X X X X
-
-> insert-item 1
-Great Success! Inserted item into Rack at (0, 0)
-> insert-item 1
-Great Success! Inserted item into Rack at (5, 0)
+ 0 X . . . . X . . . .
+ 1 . . . . . . . . . .
+ 2 . . . . . . . . . .
+ 3 . . . . . . . . . .
+ 4 . . . . . . . . . .
+ 5 . . . . . . . . . .
+ 6 . . . . . . . . . .
+ 7 . . . . . . . . . .
+ 8 . . . . . . . . . .
+ 9 . . . . . . . . . .
 ```

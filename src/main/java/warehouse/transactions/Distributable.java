@@ -6,7 +6,7 @@ import query.Query;
 import query.Queryable;
 
 /**
- * Provides a transaction for distributing items.
+ * Provides a contract for distributing items.
  */
 public interface Distributable extends Queryable<Item> {
     /**

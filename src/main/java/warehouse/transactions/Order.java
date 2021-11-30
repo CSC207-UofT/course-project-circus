@@ -12,9 +12,9 @@ public class Order {
 
     /**
      * Construct an Order given a source, destination, and Item to move.
-     * @param source The source
-     * @param destination
-     * @param item
+     * @param source The source Distributable to move the item from.
+     * @param destination The destination Receivable to move the item to.
+     * @param item The Item to move.
      */
     public Order(Distributable source, Receivable destination, Item item) {
         this.source = source;

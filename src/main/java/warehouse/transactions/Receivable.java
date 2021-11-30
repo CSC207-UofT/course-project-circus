@@ -4,7 +4,7 @@ import warehouse.inventory.Item;
 import messaging.Message;
 
 /**
- * Provides a transaction for receiving items.
+ * Provides a contract for receiving items.
  */
 public interface Receivable {
     /**
