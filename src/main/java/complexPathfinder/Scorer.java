@@ -1,7 +1,5 @@
 package complexPathfinder;
 
-import warehouse.inventory.Item;
-
-public interface Scorer<T extends Item> {
+public interface Scorer<T extends GraphNode> {
     double computeCost(T from, T to);
 }

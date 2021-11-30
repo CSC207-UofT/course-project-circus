@@ -1,7 +1,5 @@
 package complexPathfinder;
 
-import warehouse.inventory.Item;
-
 import java.util.*;
 
 /**
@@ -9,7 +7,7 @@ import java.util.*;
  * <p>
  * Classes that extend this one will have to implement the methods we choose here.
  */
-public abstract class Pathfinder<T extends Item> {
+public abstract class Pathfinder<T extends GraphNode> {
 
     private final Graph<T> graph;
     private final Scorer<T> nextNodeScorer;
@@ -53,7 +51,7 @@ public abstract class Pathfinder<T extends Item> {
         Queue<RouteNode<T>> openSet = new PriorityQueue<>();
         Map<T, RouteNode<T>> allNodes = new HashMap<>();
 
-        RouteNode<T> start = new RouteNode<>(from, null, 0d, targetScorer.computeCost(from, to));
+        RouteNode<T> start = new RouteNode<T>(from, null, 0d, targetScorer.computeCost(from, to));
         openSet.add(start);
         allNodes.put(from, start);
 
@@ -69,7 +67,7 @@ public abstract class Pathfinder<T extends Item> {
                 return route;
             }
             graph.getConnections(next.getCurrent()).forEach(connection -> {
-                RouteNode<T> nextNode = allNodes.getOrDefault(connection, new RouteNode<>(connection));
+                RouteNode<T> nextNode = allNodes.getOrDefault(connection, new RouteNode<T>(connection));
                 allNodes.put(connection, nextNode);
 
                 double newScore = next.getRouteScore() + nextNodeScorer.computeCost(next.getCurrent(), connection);
