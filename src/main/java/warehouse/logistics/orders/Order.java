@@ -1,15 +1,11 @@
 package warehouse.logistics.orders;
 
-import warehouse.inventory.Item;
-import warehouse.transactions.Distributable;
-import warehouse.transactions.Receivable;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
 /**
- * An Order specifying that an Item should be moved from a Receivable to Distributable.
+ * The base Order class. Represents a command to do "work" in the Warehouse.
  */
 public abstract class Order {
     private final UUID id;

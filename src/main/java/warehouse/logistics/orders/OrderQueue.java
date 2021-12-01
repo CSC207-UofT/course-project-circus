@@ -2,6 +2,7 @@ package warehouse.logistics.orders;
 
 import warehouse.Warehouse;
 
+import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -14,11 +15,20 @@ public class OrderQueue {
 
     /**
      * Construct an OrderQueue given a Warehouse.
-     * @param warehouse The warehouse.
+     * @param warehouse The warehouse to execute Orders in.
+     * @param orderComparator The comparator to use when comparing Orders.
+     */
+    public OrderQueue(Warehouse warehouse, Comparator<Order> orderComparator) {
+        this.warehouse = warehouse;
+        orderQueue = new PriorityQueue<>(orderComparator);
+    }
+
+    /**
+     * Construct an OrderQueue given a Warehouse with a OrderCreatedAtComparator.
+     * @param warehouse The warehouse to execute Orders in.
      */
     public OrderQueue(Warehouse warehouse) {
-        this.warehouse = warehouse;
-        orderQueue = new PriorityQueue<>(new OrderCreatedAtComparator());
+        this(warehouse, new OrderCreatedAtComparator());
     }
 
     /**
