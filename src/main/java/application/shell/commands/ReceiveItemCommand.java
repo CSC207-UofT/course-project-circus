@@ -9,8 +9,9 @@ import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
 import warehouse.WarehouseController;
+import warehouse.logistics.orders.PlaceOrder;
 import warehouse.tiles.Tile;
-import warehouse.transactions.Order;
+import warehouse.logistics.orders.Order;
 
 /**
  * Argument container for ReceiveItemCommand.
@@ -42,7 +43,7 @@ public class ReceiveItemCommand extends ShellCommand {
             return String.format("Could not find part with id \"%s\" in the part catalogue!", args.getPartId());
         } else {
             Item item = new Item(part);
-            Order order = warehouseController.receiveItem(item);
+            PlaceOrder order = warehouseController.receiveItem(item);
             Tile tile = order.getSource().getTile();
             return String.format("Placed item into %s at (%d, %d)\nOrder id: %s", tile.getClass().getSimpleName(),
                     tile.getX(), tile.getY(), order.getId());

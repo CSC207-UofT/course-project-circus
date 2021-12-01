@@ -1,9 +1,5 @@
 
 import org.junit.jupiter.api.Test;
-import warehouse.inventory.Item;
-import warehouse.inventory.Part;
-import warehouse.transactions.Order;
-import static org.junit.jupiter.api.Assertions.*;
 
 // TODO: Fix these tests after completed implementation of OrderQueue
 

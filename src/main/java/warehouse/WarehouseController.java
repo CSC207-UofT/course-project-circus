@@ -7,10 +7,12 @@ import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
 import warehouse.logistics.assignment.BasicReceiveDepotAssignmentPolicy;
 import warehouse.logistics.assignment.BasicShipDepotAssignmentPolicy;
 import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
+import warehouse.logistics.orders.OrderCreatedAtComparator;
+import warehouse.logistics.orders.PlaceOrder;
 import warehouse.tiles.Rack;
 import warehouse.tiles.ReceiveDepot;
 import warehouse.tiles.ShipDepot;
-import warehouse.transactions.Order;
+import warehouse.logistics.orders.Order;
 
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -49,7 +51,7 @@ public class WarehouseController {
         this.shipDepotAssignmentPolicy = shipDepotAssignmentPolicy;
         this.rackAssignmentPolicy = rackAssignmentPolicy;
         // Initialise order queue
-        orderQueue = new LinkedList<>();
+        orderQueue = new PriorityQueue<>(new OrderCreatedAtComparator());
     }
 
     /**
@@ -68,17 +70,16 @@ public class WarehouseController {
      * Receive an Item from the outside world. This will place the Item into an available ReceiveDepot, and then issue
      * an Order for the Item to be moved from that ReceiveDepot to an available StorageUnit in the Warehouse.
      * @param item The Item to insert.
-     * @return an Order representing a request to move the Item to an available StorageUnit in the Warehouse, or null
-     * if the Item cannot be inserted into the Warehouse.
+     * @return a PlaceOrder representing a request to move the Item to an available StorageUnit in the Warehouse,
+     * or null if the Item cannot be inserted into the Warehouse.
      */
-    public Order receiveItem(Item item) {
+    public PlaceOrder receiveItem(Item item) {
         ReceiveDepot receiveDepot = receiveDepotAssignmentPolicy.assign(item, warehouse);
-        Rack rack = rackAssignmentPolicy.assign(item, warehouse);
-        if (receiveDepot == null || rack == null) {
-            // Item could not be assigned to a ReceiveDepot (source) or Rack (destination)!
+        if (receiveDepot == null) {
+            // Item could not be assigned to a ReceiveDepot (source)!
             return null;
         } else {
-            Order order = new Order(receiveDepot, rack, item);
+            PlaceOrder order = new PlaceOrder(receiveDepot, item);
             orderQueue.add(order);
             return order;
         }

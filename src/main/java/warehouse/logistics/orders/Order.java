@@ -1,54 +1,42 @@
-package warehouse.transactions;
+package warehouse.logistics.orders;
 
 import warehouse.inventory.Item;
+import warehouse.transactions.Distributable;
+import warehouse.transactions.Receivable;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 /**
  * An Order specifying that an Item should be moved from a Receivable to Distributable.
  */
-public class Order {
+public abstract class Order {
     private final UUID id;
-    private final Distributable source;
-    private final Receivable destination;
-    private final Item item;
+    private final Date createdAt;
 
     /**
-     * Construct an Order given a source, destination, and Item to move.
-     * @param source The source Distributable to move the item from.
-     * @param destination The destination Receivable to move the item to.
-     * @param item The Item to move.
+     * Construct an Order with a random UUID.
      */
-    public Order(Distributable source, Receivable destination, Item item) {
+    public Order() {
         id = UUID.randomUUID();
-        this.source = source;
-        this.destination = destination;
-        this.item = item;
+        createdAt = new Date(System.currentTimeMillis());
     }
 
     public UUID getId() {
         return id;
     }
 
-    public Distributable getSource() {
-        return source;
-    }
-
-    public Receivable getDestination() {
-        return destination;
-    }
-
-    public Item getItem() {
-        return item;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
     @Override
     public String toString() {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
         return "Order{" +
                 "id=" + id +
-                ", source=" + source +
-                ", destination=" + destination +
-                ", item=" + item +
+                ", createdAt=" + dateFormatter.format(createdAt) +
                 '}';
     }
 }
