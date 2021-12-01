@@ -62,9 +62,9 @@ public class WarehouseController {
      */
     public WarehouseController(Warehouse warehouse, PartCatalogue partCatalogue) {
         this(warehouse, partCatalogue,
-                new BasicReceiveDepotAssignmentPolicy(),
-                new BasicShipDepotAssignmentPolicy(),
-                new BasicRackAssignmentPolicy());
+                new BasicReceiveDepotAssignmentPolicy(warehouse),
+                new BasicShipDepotAssignmentPolicy(warehouse),
+                new BasicRackAssignmentPolicy(warehouse));
     }
 
     /**
@@ -75,12 +75,12 @@ public class WarehouseController {
      * or null if the Item cannot be inserted into the Warehouse.
      */
     public PlaceOrder receiveItem(Item item) {
-        ReceiveDepot receiveDepot = receiveDepotAssignmentPolicy.assign(item, warehouse);
+        ReceiveDepot receiveDepot = receiveDepotAssignmentPolicy.assign(item);
         if (receiveDepot == null) {
             // Item could not be assigned to a ReceiveDepot (source)!
             return null;
         } else {
-            PlaceOrder order = new PlaceOrder(receiveDepot, item);
+            PlaceOrder order = new PlaceOrder(receiveDepot, item, rackAssignmentPolicy);
             orderQueue.add(order);
             return order;
         }

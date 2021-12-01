@@ -4,8 +4,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import warehouse.Warehouse;
 import warehouse.inventory.Item;
 import warehouse.inventory.Part;
+import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -43,14 +45,23 @@ public class OrderQueueTest {
     static void beforeAll() {
         orderQueue = new OrderQueue();
         Part part = new Part("Example Part", "No description.");
-        order1 = new Order() {
-            @Override
-            public boolean isReady() {
-                return true;
-            }
-        };
-        order2 = new PlaceOrder(null,  new Item(part));
-        order3 = new CustomOrder();
+        // FIXME: Sleep in between instantiating orders to make sure they have different creation dates.
+        try {
+            order1 = new Order() {
+                @Override
+                public boolean isReady() {
+                    return true;
+                }
+            };
+            Thread.sleep(1);
+            order2 = new PlaceOrder(null, new Item(part),
+                    new BasicRackAssignmentPolicy(new Warehouse(1, 1)));
+            Thread.sleep(1);
+            order3 = new CustomOrder();
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
