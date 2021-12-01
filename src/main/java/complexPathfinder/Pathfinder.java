@@ -7,7 +7,7 @@ import java.util.*;
  * <p>
  * Classes that extend this one will have to implement the methods we choose here.
  */
-public abstract class Pathfinder<T extends GraphNode> {
+public class Pathfinder<T extends GraphNode> {
 
     private final Graph<T> graph;
     private final Scorer<T> nextNodeScorer;
