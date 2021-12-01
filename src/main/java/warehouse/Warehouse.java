@@ -137,4 +137,12 @@ public class Warehouse {
     public Message<ItemReceivedMessageData> getItemReceivedMessage() {
         return itemReceivedMessage;
     }
+
+    /**
+     * Getter method for tiles
+     * @return tiles
+     */
+    public Tile[][] getTiles() {
+        return tiles;
+    }
 }

@@ -1,10 +1,17 @@
 package warehouse;
 
 
+import concretePathfinding.TileNode;
+import org.lwjgl.system.CallbackI;
 import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
 import warehouse.orders.Order;
 import warehouse.orders.OrderQueue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * This class will be in charge of the WareHouse as a whole and will be the class that the User interacts with
@@ -56,10 +63,39 @@ public class WarehouseController {
         }
     }
 
+    /**
+     * Returns a set of available TileNodes for the pathfinder
+     * @return the TileNodes
+     */
+    public Set<TileNode> getNodes()
+    {
+        ArrayList<TileNode> nodes = new ArrayList<>();
+
+        Tile[][] tiles = this.getWarehouse().getTiles();
+        for(int i = 0; i < tiles.length; i ++)
+        {
+            for (int j = 0; j < tiles[i].length; j++)
+            {
+                if (tiles[i][j].isEmpty())
+                    nodes.add(new TileNode(tiles[i][j]));
+            }
+        }
+
+        return (Set<TileNode>) nodes;
+    }
+
+    /**
+     * Getter Method for warehouse
+     * @return warehouse
+     */
     public Warehouse getWarehouse() {
         return warehouse;
     }
 
+    /**
+     * Getter method for Part Catalogue
+     * @return partCatalogue
+     */
     public PartCatalogue getPartCatalogue() {
         return partCatalogue;
     }
