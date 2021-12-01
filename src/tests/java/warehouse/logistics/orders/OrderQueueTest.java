@@ -87,7 +87,7 @@ public class OrderQueueTest {
         // Now, even though order3 is NEWER than order2, we should get order3 as our next order.
         assertEquals(order3, orderQueue.getNextOrder());
         // Again, there are no more ready orders in the queue, as it consists of a single order:
-        // a PlaceOrder that is NOT ready, (order2).
+        // a PlaceOrder that is NOT ready, (order2). So, we should get null.
         assertNull(orderQueue.getNextOrder());
     }
 }
