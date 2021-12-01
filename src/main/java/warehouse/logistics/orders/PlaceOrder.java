@@ -27,4 +27,9 @@ public class PlaceOrder extends Order {
     public Item getItem() {
         return item;
     }
+
+    @Override
+    public boolean isReady() {
+        return false;
+    }
 }

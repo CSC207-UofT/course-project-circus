@@ -8,6 +8,7 @@ import warehouse.logistics.assignment.BasicReceiveDepotAssignmentPolicy;
 import warehouse.logistics.assignment.BasicShipDepotAssignmentPolicy;
 import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
 import warehouse.logistics.orders.OrderCreatedAtComparator;
+import warehouse.logistics.orders.OrderQueue;
 import warehouse.logistics.orders.PlaceOrder;
 import warehouse.tiles.Rack;
 import warehouse.tiles.ReceiveDepot;
@@ -29,7 +30,7 @@ public class WarehouseController {
     private final StorageTileAssignmentPolicy<ShipDepot> shipDepotAssignmentPolicy;
     private final StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy;
 
-    private final Queue<Order> orderQueue;
+    private final OrderQueue orderQueue;
 
     /**
      * Construct a WarehouseController.
@@ -51,7 +52,7 @@ public class WarehouseController {
         this.shipDepotAssignmentPolicy = shipDepotAssignmentPolicy;
         this.rackAssignmentPolicy = rackAssignmentPolicy;
         // Initialise order queue
-        orderQueue = new PriorityQueue<>(new OrderCreatedAtComparator());
+        orderQueue = new OrderQueue();
     }
 
     /**

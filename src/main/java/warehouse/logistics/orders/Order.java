@@ -19,6 +19,12 @@ public abstract class Order {
         createdAt = new Date(System.currentTimeMillis());
     }
 
+    /**
+     * Return whether this Order is ready to be processed.
+     * @return True if the Order is ready, and False otherwise.
+     */
+    public abstract boolean isReady();
+
     public UUID getId() {
         return id;
     }
