@@ -48,6 +48,11 @@ public class ReceiveDepot extends StorageTile implements Distributable {
     }
 
     @Override
+    public Tile getTile() {
+        return this;
+    }
+
+    @Override
     public Message<ItemDistributedMessageData> getOnItemDistributedMessage() {
         return onItemDistributedMessage;
     }

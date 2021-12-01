@@ -3,6 +3,9 @@ package warehouse;
 import warehouse.tiles.EmptyTile;
 import warehouse.tiles.Tile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A 2D representation of a warehouse as a grid of Tiles.
  */
@@ -82,5 +85,23 @@ public class Warehouse {
      */
     public int getHeight() {
         return height;
+    }
+
+    /**
+     * Find all tiles of Type clazz in this Warehouse.
+     * @param clazz The type of the Tile to find.
+     * @return An Iterable of Tile objects.
+     */
+    public <T extends Tile> Iterable<T> findTilesOfType(Class<T> clazz) {
+        List<T> tiles = new ArrayList<T>();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Tile tile = this.tiles[x][y];
+                if (clazz.isInstance(tile)) {
+                    tiles.add(clazz.cast(tile));
+                }
+            }
+        }
+        return tiles;
     }
 }

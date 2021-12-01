@@ -62,6 +62,11 @@ public class Rack extends StorageTile implements Receivable, Distributable {
     }
 
     @Override
+    public Tile getTile() {
+        return this;
+    }
+
+    @Override
     public Message<ItemReceivedMessageData> getOnItemReceivedMessage() {
         return onItemReceivedMessage;
     }
