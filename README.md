@@ -4,7 +4,7 @@ Circus is a warehouse order routing service.
 
 ## Usage
 
-Runinng the project opens a command-line interface, which contains an _empty_ warehouse. Use commands to modify the state of the warehouse.
+Running the project opens a command-line interface, which contains an _empty_ warehouse. Use commands to modify the state of the warehouse.
 
 ### Commands
 
