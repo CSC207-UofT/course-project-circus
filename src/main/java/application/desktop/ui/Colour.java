@@ -1,7 +1,6 @@
 package application.desktop.ui;
 
 import imgui.ImGui;
-import imgui.ImVec4;
 
 /**
  * An RGB colour with optional transparency.
