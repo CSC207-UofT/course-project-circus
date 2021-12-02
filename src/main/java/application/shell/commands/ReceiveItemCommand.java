@@ -8,13 +8,15 @@ import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
-import warehouse.tiles.Tile;
 import warehouse.WarehouseController;
+import warehouse.logistics.orders.PlaceOrder;
+import warehouse.tiles.Tile;
+import warehouse.logistics.orders.Order;
 
 /**
- * Argument container for InsertItemCommand.
+ * Argument container for ReceiveItemCommand.
  */
-class InsertItemCommandArgContainer extends ShellCommandArgContainer {
+class ReceiveItemCommandArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg
     private String partId;
 
@@ -24,36 +26,32 @@ class InsertItemCommandArgContainer extends ShellCommandArgContainer {
 }
 
 /**
- * A command to insert an Item into an available Rack.
+ * A command to receive an Item from the outside world.
  */
-@ShellCommandSpec(name = "insert-item", description = "Inserts an item into the available Rack.")
-public class InsertItemCommand extends ShellCommand {
+@ShellCommandSpec(name = "receive-item",
+        description = "Receive an Item from the outside world. This will place the Item into an available ReceiveDepot," +
+                "and then issue an Order for the Item to be moved from that ReceiveDepot to an available StorageUnit in " +
+                "the Warehouse.")
+public class ReceiveItemCommand extends ShellCommand {
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
-        InsertItemCommandArgContainer args = (InsertItemCommandArgContainer) argContainer;
+        ReceiveItemCommandArgContainer args = (ReceiveItemCommandArgContainer) argContainer;
         WarehouseController warehouseController = application.getWarehouseController();
         PartCatalogue partCatalogue = warehouseController.getPartCatalogue();
         Part part = partCatalogue.getPartById(args.getPartId());
         if (part == null) {
             return String.format("Could not find part with id \"%s\" in the part catalogue!", args.getPartId());
         } else {
-            // TODO: Implement this using the Order system
-//            Item item = new Item(part);
-//            Tile tile = warehouseController.insertItem(item);
-//            if (tile != null) {
-//                return String.format("Great Success! Inserted item into %s at (%d, %d)",
-//                        tile.getStorageUnit().getClass().getSimpleName(),
-//                        tile.getX(),
-//                        tile.getY());
-//            } else {
-//                return String.format("Could not insert %s into the warehouse!", item);
-//            }
-            return "Not implemented yet!";
+            Item item = new Item(part);
+            PlaceOrder order = warehouseController.receiveItem(item);
+            Tile tile = order.getSource().getTile();
+            return String.format("Placed item into %s at (%d, %d)\nOrder id: %s", tile.getClass().getSimpleName(),
+                    tile.getX(), tile.getY(), order.getId());
         }
     }
     @Override
     public ShellCommandArgContainer createArgContainer() {
-        return new InsertItemCommandArgContainer();
+        return new ReceiveItemCommandArgContainer();
     }
 }
 

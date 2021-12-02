@@ -6,13 +6,8 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.*;
-import warehouse.storage.Rack;
-import warehouse.storage.ReceiveDepot;
-import warehouse.storage.ShipDepot;
 import warehouse.storage.StorageUnit;
-import warehouse.tiles.EmptyTile;
-import warehouse.tiles.StorageTile;
-import warehouse.tiles.Tile;
+import warehouse.tiles.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,20 +17,35 @@ import java.util.Map;
  */
 @ShellCommandSpec(name = "display-warehouse", description = "Display the layout of the warehouse.")
 public class DisplayWarehouseCommand extends ShellCommand {
-    private final static Map<Class<? extends StorageUnit>, Character> STORAGE_UNIT_SYMBOLS = new HashMap<>();
-    private final static Character UNKNOWN_TILE_SYMBOL = 'U';
-    private final static Character EMPTY_TILE_SYMBOL = 'X';
-
+    private final static Map<Class<? extends Tile>, Character> TILE_SYMBOLS = new HashMap<>();
+    private final static Character UNKNOWN_TILE_SYMBOL = '?';
     static {
-        STORAGE_UNIT_SYMBOLS.put(Rack.class, 'R');
-        STORAGE_UNIT_SYMBOLS.put(ReceiveDepot.class, 'I');
-        STORAGE_UNIT_SYMBOLS.put(ShipDepot.class, 'O');
+
+        TILE_SYMBOLS.put(EmptyTile.class, '.');
+        TILE_SYMBOLS.put(Rack.class, 'X');
+        TILE_SYMBOLS.put(ReceiveDepot.class, 'R');
+        TILE_SYMBOLS.put(ShipDepot.class, 'S');
     }
 
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer args) {
         Warehouse warehouse = application.getWarehouseController().getWarehouse();
         StringBuilder stringBuilder = new StringBuilder();
+        // Create legend bar
+        int legendWidth = 2 * (warehouse.getWidth() + 1);
+        String legendBar = "=".repeat(Math.max(0, legendWidth)) + "\n";
+
+        // Create legend
+        stringBuilder.append(legendBar);
+        for (Class<? extends Tile> clazz : TILE_SYMBOLS.keySet()) {
+            String clazzName = clazz.getSimpleName();
+            String space = " ".repeat(legendWidth - clazzName.length() - 5);
+            char symbol = TILE_SYMBOLS.get(clazz);
+
+            stringBuilder.append(String.format("%s%s%c\n", clazzName, space, symbol));
+        }
+        stringBuilder.append(legendBar);
+
         // Create X coordinate header
         stringBuilder.append("  ");
         for (int x = 0; x < warehouse.getWidth(); x++) {
@@ -47,19 +57,12 @@ public class DisplayWarehouseCommand extends ShellCommand {
             stringBuilder.append(String.format(" %d", y));
             for (int x = 0; x < warehouse.getWidth(); x++) {
                 try {
-                    Tile tile = warehouse.getTileAt(x, y);
                     stringBuilder.append(' ');
-                    if ((tile instanceof EmptyTile) || (tile instanceof StorageTile && ((StorageTile)tile).isEmpty())) {
-                        stringBuilder.append(EMPTY_TILE_SYMBOL);
-                    } else if (tile instanceof StorageTile) {
-                        Class<?> clazz = ((StorageTile)tile).getStorageUnit().getClass();
-                        Character UNKNOWN_STORAGE_UNIT_SYMBOL = '?';
-                        stringBuilder.append(STORAGE_UNIT_SYMBOLS.getOrDefault(clazz,
-                                UNKNOWN_STORAGE_UNIT_SYMBOL));
-                    } else {
 
-                        stringBuilder.append(UNKNOWN_TILE_SYMBOL);
-                    }
+                    Tile tile = warehouse.getTileAt(x, y);
+                    Class<? extends Tile> clazz = tile.getClass();
+                    char symbol = TILE_SYMBOLS.getOrDefault(clazz, UNKNOWN_TILE_SYMBOL);
+                    stringBuilder.append(symbol);
                 } catch (TileOutOfBoundsException e) {
                     e.printStackTrace();
                 }

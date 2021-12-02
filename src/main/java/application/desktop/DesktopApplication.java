@@ -14,9 +14,12 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
-import warehouse.storage.Rack;
 import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
+import warehouse.storage.StorageUnit;
+import warehouse.storage.containers.InMemoryStorageUnitContainer;
+import warehouse.storage.strategies.SingleTypeStorageStrategy;
+import warehouse.tiles.Rack;
 import warehouse.tiles.StorageTile;
 
 import java.io.IOException;
@@ -56,9 +59,15 @@ public class DesktopApplication extends Application {
         // Create dummy warehouse
         Warehouse warehouse = new Warehouse(12, 12);
         try {
-            warehouse.setTile(new StorageTile(1, 1, new Rack(10)));
-            warehouse.setTile(new StorageTile(2, 1, new Rack(10)));
-            warehouse.setTile(new StorageTile(3, 1, new Rack(10)));
+            // TODO: Clean API
+            warehouse.setTile(new Rack(1, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
+                    new InMemoryStorageUnitContainer())));
+            warehouse.setTile(new Rack(1, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
+                    new InMemoryStorageUnitContainer())));
+            warehouse.setTile(new Rack(2, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
+                    new InMemoryStorageUnitContainer())));
+            warehouse.setTile(new Rack(3, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
+                    new InMemoryStorageUnitContainer())));
         } catch (TileOutOfBoundsException e) {
             e.printStackTrace();
         }

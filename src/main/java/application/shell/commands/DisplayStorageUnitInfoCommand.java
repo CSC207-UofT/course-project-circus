@@ -41,10 +41,11 @@ public class DisplayStorageUnitInfoCommand extends ShellCommand {
         Warehouse warehouse = application.getWarehouseController().getWarehouse();
         try {
             Tile tile = warehouse.getTileAt(args.getX(), args.getY());
-            if (!(tile instanceof StorageTile) || ((StorageTile)tile).isEmpty()) {
-                return String.format("Tile at (%d, %d) is empty!", args.getX(), args.getY());
+            if (tile instanceof StorageTile) {
+                return ((StorageTile)tile).getStorageUnit().toString();
+            } else {
+                return String.format("the tile at (%d, %d) is not a StorageTile", args.getX(), args.getY());
             }
-            return ((StorageTile)tile).getStorageUnit().toString();
         } catch (TileOutOfBoundsException e) {
             return e.getMessage();
         }

@@ -6,8 +6,8 @@ import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
 import warehouse.*;
-import warehouse.storage.Rack;
 import warehouse.storage.StorageUnit;
+import warehouse.tiles.Rack;
 import warehouse.tiles.StorageTile;
 import warehouse.tiles.Tile;
 
@@ -268,18 +268,15 @@ public class WarehouseCanvas extends Component {
 
                 try {
                     Tile tile = warehouse.getTileAt(x, y);
-                    if ((tile instanceof StorageTile) && !((StorageTile)tile).isEmpty()) {
-                        StorageUnit storageUnit = ((StorageTile)tile).getStorageUnit();
-                        if (storageUnit instanceof Rack) {
-                            // Draw rack
-                            drawList.addRectFilled(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
-                                    x2 - thickness * 0.5f, y2 - thickness * 0.5f,
-                                    WarehouseCanvasColourScheme.toU32Colour(RACK_BACKGROUND_COLOUR), 5.0f, 0);
+                    if (tile instanceof Rack) {
+                        // Draw rack
+                        drawList.addRectFilled(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
+                                x2 - thickness * 0.5f, y2 - thickness * 0.5f,
+                                WarehouseCanvasColourScheme.toU32Colour(RACK_BACKGROUND_COLOUR), 5.0f, 0);
 
-                            drawList.addRect(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
-                                    x2 - thickness * 0.5f, y2 - thickness * 0.5f, WarehouseCanvasColourScheme.toU32Colour(RACK_BORDER_COLOUR),
-                                    5.0f, 0, thickness);
-                        }
+                        drawList.addRect(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
+                                x2 - thickness * 0.5f, y2 - thickness * 0.5f, WarehouseCanvasColourScheme.toU32Colour(RACK_BORDER_COLOUR),
+                                5.0f, 0, thickness);
                     }
                 } catch (TileOutOfBoundsException e) {
                     e.printStackTrace();
