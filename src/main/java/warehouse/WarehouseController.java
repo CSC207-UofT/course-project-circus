@@ -1,23 +1,17 @@
 package warehouse;
 
 
-import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
+import warehouse.inventory.PartCatalogue;
 import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
 import warehouse.logistics.assignment.BasicReceiveDepotAssignmentPolicy;
 import warehouse.logistics.assignment.BasicShipDepotAssignmentPolicy;
 import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
-import warehouse.logistics.orders.OrderCreatedAtComparator;
 import warehouse.logistics.orders.OrderQueue;
 import warehouse.logistics.orders.PlaceOrder;
 import warehouse.tiles.Rack;
 import warehouse.tiles.ReceiveDepot;
 import warehouse.tiles.ShipDepot;
-import warehouse.logistics.orders.Order;
-
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 /**
  * Controls the Warehouse.
