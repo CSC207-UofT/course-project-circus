@@ -1,6 +1,7 @@
 package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
+import application.desktop.ui.Colour;
 import application.desktop.ui.components.common.Component;
 import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
@@ -202,9 +203,9 @@ public class WarehouseCanvas extends Component {
      */
     private void drawBackground(ImDrawList drawList) {
         ImVec2 bottomRight = getBottomRightCoordinate();
-        final int borderColour = WarehouseCanvasColourScheme.toU32Colour(colourScheme.getBorderColour());
+        final int borderColour = colourScheme.getBorderColour().toU32Colour();
         drawList.addRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, borderColour);
-        final int backgroundColour = WarehouseCanvasColourScheme.toU32Colour(colourScheme.getBackgroundColour());
+        final int backgroundColour = colourScheme.getBackgroundColour().toU32Colour();
         drawList.addRectFilled(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, backgroundColour);
     }
 
@@ -218,7 +219,7 @@ public class WarehouseCanvas extends Component {
 
         ImVec2 bottomRight = getBottomRightCoordinate();
         drawList.pushClipRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, true);
-        final int gridLineColour = WarehouseCanvasColourScheme.toU32Colour(colourScheme.getGridLineColour());
+        final int gridLineColour = colourScheme.getGridLineColour().toU32Colour();
         float gridStep = getGridStep();
 
         // Draw horizontal lines
@@ -253,9 +254,8 @@ public class WarehouseCanvas extends Component {
         float centreOffsetY = -(float)Math.floor(warehouse.getHeight() / 2.0f);
 
         float thickness = 4.0f * zoom;
-        ImVec4 RACK_BACKGROUND_COLOUR = new ImVec4(68 / 255.0f, 118 / 255.0f, 160 / 255.0f, 0.2f);
-        ImVec4 RACK_BORDER_COLOUR = new ImVec4(RACK_BACKGROUND_COLOUR.x, RACK_BACKGROUND_COLOUR.y, RACK_BACKGROUND_COLOUR.z, 1.0f);
-
+        Colour RACK_BACKGROUND_COLOUR = new Colour(68, 118, 160, 0.2f);
+        Colour RACK_BORDER_COLOUR = new Colour(RACK_BACKGROUND_COLOUR, 1.0f);
 
         // Draw tiles
         for (int y = 0; y < warehouse.getHeight(); y++) {
@@ -272,10 +272,11 @@ public class WarehouseCanvas extends Component {
                         // Draw rack
                         drawList.addRectFilled(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
                                 x2 - thickness * 0.5f, y2 - thickness * 0.5f,
-                                WarehouseCanvasColourScheme.toU32Colour(RACK_BACKGROUND_COLOUR), 5.0f, 0);
+                                RACK_BACKGROUND_COLOUR.toU32Colour(), 5.0f, 0);
 
                         drawList.addRect(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
-                                x2 - thickness * 0.5f, y2 - thickness * 0.5f, WarehouseCanvasColourScheme.toU32Colour(RACK_BORDER_COLOUR),
+                                x2 - thickness * 0.5f, y2 - thickness * 0.5f,
+                                RACK_BORDER_COLOUR.toU32Colour(),
                                 5.0f, 0, thickness);
                     }
                 } catch (TileOutOfBoundsException e) {

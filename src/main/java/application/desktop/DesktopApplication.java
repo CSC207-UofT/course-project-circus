@@ -2,10 +2,13 @@ package application.desktop;
 
 import application.desktop.ui.FontAwesomeIcons;
 import application.desktop.ui.components.Sidebar;
-import application.desktop.ui.components.WarehouseEditorPanel;
-import application.desktop.ui.components.common.*;
 import application.desktop.ui.components.Toolbar;
-import imgui.*;
+import application.desktop.ui.components.WarehouseEditorPanel;
+import application.desktop.ui.components.common.Component;
+import imgui.ImFontConfig;
+import imgui.ImFontGlyphRangesBuilder;
+import imgui.ImGui;
+import imgui.ImGuiIO;
 import imgui.app.Application;
 import imgui.app.Configuration;
 import imgui.flag.*;
@@ -20,7 +23,6 @@ import warehouse.storage.StorageUnit;
 import warehouse.storage.containers.InMemoryStorageUnitContainer;
 import warehouse.storage.strategies.SingleTypeStorageStrategy;
 import warehouse.tiles.Rack;
-import warehouse.tiles.StorageTile;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
