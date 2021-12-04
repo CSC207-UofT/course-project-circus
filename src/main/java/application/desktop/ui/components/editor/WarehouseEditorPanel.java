@@ -17,8 +17,7 @@ public class WarehouseEditorPanel extends Panel {
     private final WarehouseCanvas canvas;
     private Warehouse warehouse;
 
-    private Button insertTileButton;
-    private Button eraseTileButton;
+    private final Button insertTileButton;
     private final List<Button> tileInputButtons;
 
     /**
@@ -34,11 +33,19 @@ public class WarehouseEditorPanel extends Panel {
         canvas = new WarehouseCanvas(warehouse);
 
         // Create UI components
-        insertTileButton = new Button("Insert", FontAwesomeIcon.PencilAlt, "", 0, 0,
+        Button selectTileButton = new Button("", FontAwesomeIcon.MousePointer, "Select tool", 0, 0,
+                Colour.TRANSPARENT, true);
+        selectTileButton.getOnClickedEvent().addListener(this::onEraseTileButtonClicked);
+
+        Button moveTileButton = new Button("", FontAwesomeIcon.ArrowsAlt, "Move tool", 0, 0,
+                Colour.TRANSPARENT, true);
+        moveTileButton.getOnClickedEvent().addListener(this::onEraseTileButtonClicked);
+
+        insertTileButton = new Button("", FontAwesomeIcon.PencilAlt, "Insert tool", 0, 0,
                 Colour.TRANSPARENT, true);
         insertTileButton.getOnClickedEvent().addListener(this::onInsertTileButtonClicked);
 
-        eraseTileButton = new Button("Erase", FontAwesomeIcon.Eraser, "", 0, 0,
+        Button eraseTileButton = new Button("", FontAwesomeIcon.Eraser, "Erase tool", 0, 0,
                 Colour.TRANSPARENT, true);
         eraseTileButton.getOnClickedEvent().addListener(this::onEraseTileButtonClicked);
 
@@ -61,6 +68,8 @@ public class WarehouseEditorPanel extends Panel {
 
         // Initialise UI
         addChild(new MenuBar(
+                selectTileButton,
+                moveTileButton,
                 insertTileButton,
                 eraseTileButton,
                 new Text("|", false),
@@ -95,6 +104,7 @@ public class WarehouseEditorPanel extends Panel {
      * Called when the "input rack tile" button is clicked.
      */
     private void onInputRackButtonClicked(ComponentEventData data) {
+        // TODO: Check to make sure that the insert tile button is actually toggled!
         canvas.setInputMode(WarehouseCanvasInputMode.RACK);
     }
 
@@ -102,6 +112,7 @@ public class WarehouseEditorPanel extends Panel {
      * Called when the "input receive depot tile" button is clicked.
      */
     private void onInputReceiveDepotButtonClicked(ComponentEventData data) {
+        // TODO: Check to make sure that the insert tile button is actually toggled!
         canvas.setInputMode(WarehouseCanvasInputMode.RECEIVE_DEPOT);
     }
 
@@ -109,6 +120,7 @@ public class WarehouseEditorPanel extends Panel {
      * Called when the "input ship depot tile button" is clicked.
      */
     private void onInputShipDepotButtonClicked(ComponentEventData data) {
+        // TODO: Check to make sure that the insert tile button is actually toggled!
         canvas.setInputMode(WarehouseCanvasInputMode.SHIP_DEPOT);
     }
 }
