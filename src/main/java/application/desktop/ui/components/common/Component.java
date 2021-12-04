@@ -90,14 +90,51 @@ public class Component {
     }
 
     /**
+     * Add children to this Component.
+     * @param children The children Components to add.
+     */
+    public void addChildren(List<Component> children) {
+        addChildren(children, false);
+    }
+
+    /**
+     * Add children to this Component.
+     * @param children The children Components to add.
+     * @param inheritParentState Whether to inherit the state (e.g. mouse application.desktop.ui.events) of the parent.
+     */
+    public void addChildren(List<Component> children, boolean inheritParentState) {
+        for (Component child : children) {
+            addChild(child, inheritParentState);
+        }
+    }
+
+    /**
+     * Add children to this Component.
+     * @param children The children Components to add.
+     */
+    public void addChildren(Component... children) {
+        addChildren(false, children);
+    }
+
+    /**
+     * Add children to this Component.
+     * @param children The children Components to add.
+     * @param inheritParentState Whether to inherit the state (e.g. mouse application.desktop.ui.events) of the parent.
+     */
+    public void addChildren(boolean inheritParentState, Component... children) {
+        addChildren(List.of(children), inheritParentState);
+    }
+
+    /**
      * Draw this component.
      */
     public void draw(DesktopApplication application) {
         if (!isVisible()) return;
         if (preDraw(application)) {
             drawContent(application);
-            postDraw(application);
+            conditionalPostDraw(application);
         }
+        postDraw(application);
         handleEvents(application);
     }
 
@@ -109,6 +146,11 @@ public class Component {
 
     /**
      * Called after drawContent if and only if preDraw returns True.
+     */
+    protected void conditionalPostDraw(DesktopApplication application) { }
+
+    /**
+     * Called after drawContent regardless of what preDraw returns.
      */
     protected void postDraw(DesktopApplication application) { }
 

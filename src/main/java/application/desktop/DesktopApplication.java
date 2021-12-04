@@ -1,9 +1,9 @@
 package application.desktop;
 
-import application.desktop.ui.FontAwesomeIcons;
+import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.Sidebar;
 import application.desktop.ui.components.Toolbar;
-import application.desktop.ui.components.WarehouseEditorPanel;
+import application.desktop.ui.components.editor.WarehouseEditorPanel;
 import application.desktop.ui.components.common.Component;
 import imgui.ImFontConfig;
 import imgui.ImFontGlyphRangesBuilder;
@@ -55,6 +55,7 @@ public class DesktopApplication extends Application {
      * Construct a DesktopApplication.
      */
     public DesktopApplication() {
+        // TODO: Dependency injection
         components = new ArrayList<>();
         components.add(new Toolbar());
 
@@ -103,7 +104,7 @@ public class DesktopApplication extends Application {
     private void initFonts(final ImGuiIO io) {
         final ImFontGlyphRangesBuilder rangesBuilder = new ImFontGlyphRangesBuilder(); // Glyphs ranges provide
         rangesBuilder.addRanges(io.getFonts().getGlyphRangesDefault());
-        rangesBuilder.addRanges(FontAwesomeIcons._IconRange);
+        rangesBuilder.addRanges(FontAwesomeIcon._IconRange);
 
         // Font config for additional fonts
         // This is a natively allocated struct so don't forget to call destroy after atlas is built

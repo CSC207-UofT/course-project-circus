@@ -12,8 +12,8 @@ public class MenuBar extends Component {
      * Construct a MenuBar with the given menus.
      * @param menus The menus in the bar.
      */
-    public MenuBar(Menu... menus) {
-        for (Menu menu : menus) {
+    public MenuBar(Component... menus) {
+        for (Component menu : menus) {
             addChild(menu);
         }
     }
@@ -24,7 +24,7 @@ public class MenuBar extends Component {
     }
 
     @Override
-    protected void postDraw(DesktopApplication application) {
+    protected void conditionalPostDraw(DesktopApplication application) {
         ImGui.endMenuBar();
     }
 }

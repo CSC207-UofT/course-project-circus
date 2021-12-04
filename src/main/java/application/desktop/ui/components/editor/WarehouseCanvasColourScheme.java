@@ -1,8 +1,6 @@
-package application.desktop.ui.components;
+package application.desktop.ui.components.editor;
 
 import application.desktop.ui.Colour;
-import imgui.ImGui;
-import imgui.ImVec4;
 
 /**
  * Colour scheme of the WarehouseCanvas.

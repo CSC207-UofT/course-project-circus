@@ -1,4 +1,4 @@
-package application.desktop.ui.components;
+package application.desktop.ui.components.editor;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.Colour;
@@ -7,9 +7,7 @@ import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
 import warehouse.*;
-import warehouse.storage.StorageUnit;
 import warehouse.tiles.Rack;
-import warehouse.tiles.StorageTile;
 import warehouse.tiles.Tile;
 
 /**
@@ -41,6 +39,10 @@ public class WarehouseCanvas extends Component {
      * Scale multiplier for zooming.
      */
     private float zoom;
+    /**
+     * Current input mode of this WarehouseCanvas.
+     */
+    private WarehouseCanvasInputMode inputMode;
 
     /**
      * Construct a new WarehouseCanvas with a default colour scheme.
@@ -87,6 +89,7 @@ public class WarehouseCanvas extends Component {
         topLeft = new ImVec2(0, 0);
         panOffset = new ImVec2(0, 0);
         zoom = 1.0f;
+        inputMode = WarehouseCanvasInputMode.NONE;
 
         frameCounter = 0;
     }
@@ -379,6 +382,14 @@ public class WarehouseCanvas extends Component {
 
     public void setZoom(float zoom) {
         this.zoom = zoom;
+    }
+
+    public WarehouseCanvasInputMode getInputMode() {
+        return inputMode;
+    }
+
+    public void setInputMode(WarehouseCanvasInputMode inputMode) {
+        this.inputMode = inputMode;
     }
 
     public boolean isShowGrid() {
