@@ -3,7 +3,7 @@ package application.desktop;
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.Toolbar;
 import application.desktop.ui.components.common.Panel;
-import application.desktop.ui.components.editor.WarehouseEditorPanel;
+import application.desktop.ui.components.editor.WarehouseEditor;
 import imgui.ImFontConfig;
 import imgui.ImFontGlyphRangesBuilder;
 import imgui.ImGui;
@@ -49,7 +49,7 @@ public class DesktopApplication extends Application {
 
     private boolean hasInitialisedDockspaceLayout;
     private final Toolbar toolbar;
-    private final WarehouseEditorPanel warehouseEditorPanel;
+    private final WarehouseEditor warehouseEditor;
     private final Panel sidebar;
 
     /**
@@ -75,7 +75,7 @@ public class DesktopApplication extends Application {
         warehouse.setTile(new ShipDepot(11, 5, new StorageUnit(-1, new MultiTypeStorageUnitStrategy(),
                 new InMemoryStorageUnitContainer())));
 
-        warehouseEditorPanel = new WarehouseEditorPanel(warehouse);
+        warehouseEditor = new WarehouseEditor(warehouse);
         sidebar = new Panel("Sidebar##sidebar");
     }
 
@@ -123,20 +123,6 @@ public class DesktopApplication extends Application {
     }
 
     /**
-     * Draw the UI.
-     */
-    @Override
-    public void process() {
-        initDockspace();
-        // Render components
-        toolbar.draw(this);
-        warehouseEditorPanel.draw(this);
-        sidebar.draw(this);
-        // End dockspace window
-        ImGui.end();
-    }
-
-    /**
      * Setup the dock space for the application.
      */
     private void initDockspace() {
@@ -171,10 +157,28 @@ public class DesktopApplication extends Application {
                     0.33f, null, dockMainId);
 
             imgui.internal.ImGui.dockBuilderDockWindow(sidebar.getTitle(), dockIdLeft);
-            imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditorPanel.getTitle(), dockMainId.get());
+            imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditor.getTitle(), dockMainId.get());
+
+            int dockIdLeftDown = imgui.internal.ImGui.dockBuilderSplitNode(dockIdLeft, ImGuiDir.Down,
+                    0.5f, null, dockMainId);
+            imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditor.getInspector().getTitle(), dockIdLeftDown);
             imgui.internal.ImGui.dockBuilderFinish(dockspaceId);
         }
         ImGui.dockSpace(dockspaceId, 0.0f, 0.0f);
+    }
+
+    /**
+     * Draw the UI.
+     */
+    @Override
+    public void process() {
+        initDockspace();
+        // Render components
+        toolbar.draw(this);
+        warehouseEditor.draw(this);
+        sidebar.draw(this);
+        // End dockspace window
+        ImGui.end();
     }
 
     /**

@@ -17,33 +17,39 @@ import java.util.Map;
 /**
  * Editor window for the Warehouse.
  */
-public class WarehouseEditorPanel extends Panel {
+public class WarehouseEditor extends Panel {
     /**
      * The id of the panel.
      */
     private static final String PANEL_ID = "Warehouse###warehouse_editor_panel";
 
+    private final Warehouse warehouse;
     private final WarehouseCanvas canvas;
+    private final WarehouseInspectorPanel inspector;
 
     private Button insertTileToolButton;
     private final List<Button> toolButtons;
     private final Map<TileType, Button> insertTileTypeButtons;
 
     /**
-     * Construct a new WarehouseEditorPanel given a Warehouse.
+     * Construct a new WarehouseEditor given a Warehouse.
      * @param warehouse The Warehouse to edit.
      */
-    public WarehouseEditorPanel(Warehouse warehouse) {
+    public WarehouseEditor(Warehouse warehouse) {
         super(PANEL_ID);
         setShowMenuBar(true);
         setCloseable(false);
         setMovable(false);
 
+        this.warehouse = warehouse;
         canvas = new WarehouseCanvas(warehouse);
         toolButtons = new ArrayList<>();
         insertTileTypeButtons = new HashMap<>();
 
         initComponents();
+
+        inspector = new WarehouseInspectorPanel(this);
+        addChild(inspector);
     }
 
     private void initComponents() {
@@ -224,5 +230,17 @@ public class WarehouseEditorPanel extends Panel {
      */
     private void onInputShipDepotButtonClicked(ComponentEventData data) {
         canvas.setTileTypeToInsert(TileType.SHIP_DEPOT);
+    }
+
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public WarehouseCanvas getCanvas() {
+        return canvas;
+    }
+
+    public WarehouseInspectorPanel getInspector() {
+        return inspector;
     }
 }
