@@ -1,6 +1,6 @@
 package warehouse.storage.containers;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,5 +43,12 @@ public class InMemoryStorageUnitContainer implements StorageUnitContainer {
     @Override
     public Iterable<Item> getItems() {
         return items;
+    }
+
+    @Override
+    public String toString() {
+        return "InMemoryStorageUnitContainer{" +
+                "items=" + items +
+                '}';
     }
 }

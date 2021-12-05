@@ -1,6 +1,6 @@
-package orders;
+package warehouse.orders;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 import warehouse.Tile;
 
 /**
@@ -49,6 +49,10 @@ public class Order {
 
     public Tile getCurrentLocation() {
         return this.currentLocation;
+    }
+
+    public Item getItem() {
+        return this.item;
     }
 
     @Override

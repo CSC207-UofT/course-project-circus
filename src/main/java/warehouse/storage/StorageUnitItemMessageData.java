@@ -1,6 +1,6 @@
 package warehouse.storage;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 
 /**
  * Data for onItemAdded/onItemRemoved messages on the StorageUnit.

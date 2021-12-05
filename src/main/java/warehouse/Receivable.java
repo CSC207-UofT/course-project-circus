@@ -1,6 +1,6 @@
 package warehouse;
 
-import inventory.Item;
+import warehouse.inventory.Item;
 import messaging.Message;
 
 /**

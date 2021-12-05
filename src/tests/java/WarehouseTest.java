@@ -1,8 +1,9 @@
-import inventory.Item;
+import warehouse.inventory.Item;
 import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
 import warehouse.Tile;
 import org.junit.jupiter.api.Test;
+import warehouse.inventory.Part;
 import warehouse.storage.Rack;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +30,7 @@ public class WarehouseTest {
         Rack r1 = new Rack();
         Tile tile = w.getTileAt(8, 3);
         tile.setStorageUnit(r1);
-        Item item1 = new Item("Cucumber", "A vegetable.");
+        Item item1 = new Item(new Part("Cucumber", "A vegetable."));
         assertEquals(tile, w.findRackFor(item1));
     }
 

@@ -5,8 +5,9 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
-import inventory.InventoryCatalogue;
-import inventory.Item;
+import warehouse.inventory.Part;
+import warehouse.inventory.PartCatalogue;
+import warehouse.inventory.Item;
 import warehouse.Tile;
 import warehouse.WarehouseController;
 
@@ -15,10 +16,10 @@ import warehouse.WarehouseController;
  */
 class InsertItemCommandArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg
-    private String id;
+    private String partId;
 
-    public String getId() {
-        return id;
+    public String getPartId() {
+        return partId;
     }
 }
 
@@ -31,11 +32,12 @@ public class InsertItemCommand extends ShellCommand {
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
         InsertItemCommandArgContainer args = (InsertItemCommandArgContainer) argContainer;
         WarehouseController warehouseController = application.getWarehouseController();
-        InventoryCatalogue inventoryCatalogue = warehouseController.getInventoryCatalogue();
-        Item item = inventoryCatalogue.getItemById(args.getId());
-        if (item == null) {
-            return String.format("Could not find item with id \"%s\" in the inventory catalogue!", args.getId());
+        PartCatalogue partCatalogue = warehouseController.getPartCatalogue();
+        Part part = partCatalogue.getPartById(args.getPartId());
+        if (part == null) {
+            return String.format("Could not find part with id \"%s\" in the part catalogue!", args.getPartId());
         } else {
+            Item item = new Item(part);
             Tile tile = warehouseController.insertItem(item);
             if (tile != null) {
                 return String.format("Great Success! Inserted item into %s at (%d, %d)",

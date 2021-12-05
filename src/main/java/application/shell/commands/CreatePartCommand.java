@@ -5,12 +5,12 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
-import inventory.Item;
+import warehouse.inventory.Part;
 
 /**
- * Argument container for CreateItemCommand.
+ * Argument container for CreatePartCommand.
  */
-class CreateItemCommandArgContainer extends ShellCommandArgContainer {
+class CreatePartCommandArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg
     private String id;
     @ShellCommandArg
@@ -32,25 +32,25 @@ class CreateItemCommandArgContainer extends ShellCommandArgContainer {
 }
 
 /**
- * A command to create an Item and add it to the Warehouse inventory catalogue.
+ * A command to create a Part and add it to the PartCatalogue.
  */
-@ShellCommandSpec(name = "create-item", description = "Create an Item and add it to the Warehouse inventory catalogue.")
-public class CreateItemCommand extends ShellCommand {
+@ShellCommandSpec(name = "create-part", description = "Create a part and add it to the part catalogue.")
+public class CreatePartCommand extends ShellCommand {
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
-        CreateItemCommandArgContainer args = (CreateItemCommandArgContainer) argContainer;
-        Item item = new Item(args.getId(), args.getName(), args.getDescription());
+        CreatePartCommandArgContainer args = (CreatePartCommandArgContainer) argContainer;
+        Part part = new Part(args.getId(), args.getName(), args.getDescription());
         // Add it to the catalogue.
-        boolean result = application.getWarehouseController().getInventoryCatalogue().addItem(item);
+        boolean result = application.getWarehouseController().getPartCatalogue().addPart(part);
         if (result) {
-            return String.format("Created %s and added it to the inventory catalogue.", item);
+            return String.format("Created %s and added it to the part catalogue.", part);
         } else {
-            return "Error - Item with same id already exists!";
+            return "Error - Part with same id already exists!";
         }
     }
 
     @Override
     public ShellCommandArgContainer createArgContainer() {
-        return new CreateItemCommandArgContainer();
+        return new CreatePartCommandArgContainer();
     }
 }
