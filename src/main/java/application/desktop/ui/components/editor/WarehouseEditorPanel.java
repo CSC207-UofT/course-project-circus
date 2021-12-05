@@ -18,6 +18,11 @@ import java.util.Map;
  * Editor window for the Warehouse.
  */
 public class WarehouseEditorPanel extends Panel {
+    /**
+     * The id of the panel.
+     */
+    private static final String PANEL_ID = "Warehouse###warehouse_editor_panel";
+
     private final WarehouseCanvas canvas;
 
     private Button insertTileToolButton;
@@ -29,9 +34,10 @@ public class WarehouseEditorPanel extends Panel {
      * @param warehouse The Warehouse to edit.
      */
     public WarehouseEditorPanel(Warehouse warehouse) {
-        super("Warehouse");
+        super(PANEL_ID);
         setShowMenuBar(true);
         setCloseable(false);
+        setMovable(false);
 
         canvas = new WarehouseCanvas(warehouse);
         toolButtons = new ArrayList<>();

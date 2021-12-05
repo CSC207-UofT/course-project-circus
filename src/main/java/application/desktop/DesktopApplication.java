@@ -1,10 +1,9 @@
 package application.desktop;
 
 import application.desktop.ui.FontAwesomeIcon;
-import application.desktop.ui.components.Sidebar;
 import application.desktop.ui.components.Toolbar;
+import application.desktop.ui.components.common.Panel;
 import application.desktop.ui.components.editor.WarehouseEditorPanel;
-import application.desktop.ui.components.common.Component;
 import imgui.ImFontConfig;
 import imgui.ImFontGlyphRangesBuilder;
 import imgui.ImGui;
@@ -31,8 +30,6 @@ import java.net.URISyntaxException;
 import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -50,16 +47,17 @@ public class DesktopApplication extends Application {
      */
     private final static float DEFAULT_FONT_SIZE = 16.0f;
 
-    private final List<Component> components;
     private boolean hasInitialisedDockspaceLayout;
+    private final Toolbar toolbar;
+    private final WarehouseEditorPanel warehouseEditorPanel;
+    private final Panel sidebar;
 
     /**
      * Construct a DesktopApplication.
      */
     public DesktopApplication() {
         // TODO: Dependency injection
-        components = new ArrayList<>();
-        components.add(new Toolbar());
+        toolbar = new Toolbar();
 
         // Create dummy warehouse
         Warehouse warehouse = new Warehouse(12, 12);
@@ -77,9 +75,8 @@ public class DesktopApplication extends Application {
         warehouse.setTile(new ShipDepot(11, 5, new StorageUnit(-1, new MultiTypeStorageUnitStrategy(),
                 new InMemoryStorageUnitContainer())));
 
-        WarehouseEditorPanel warehouseLayoutEditor = new WarehouseEditorPanel(warehouse);
-        components.add(warehouseLayoutEditor);
-        components.add(new Sidebar(warehouseLayoutEditor));
+        warehouseEditorPanel = new WarehouseEditorPanel(warehouse);
+        sidebar = new Panel("Sidebar##sidebar");
     }
 
     @Override
@@ -132,9 +129,9 @@ public class DesktopApplication extends Application {
     public void process() {
         initDockspace();
         // Render components
-        for (Component component : components) {
-            component.draw(this);
-        }
+        toolbar.draw(this);
+        warehouseEditorPanel.draw(this);
+        sidebar.draw(this);
         // End dockspace window
         ImGui.end();
     }
@@ -173,8 +170,8 @@ public class DesktopApplication extends Application {
             int dockIdLeft = imgui.internal.ImGui.dockBuilderSplitNode(dockMainId.get(), ImGuiDir.Left,
                     0.33f, null, dockMainId);
 
-            imgui.internal.ImGui.dockBuilderDockWindow("Sidebar", dockIdLeft);
-            imgui.internal.ImGui.dockBuilderDockWindow("Warehouse", dockMainId.get());
+            imgui.internal.ImGui.dockBuilderDockWindow(sidebar.getTitle(), dockIdLeft);
+            imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditorPanel.getTitle(), dockMainId.get());
             imgui.internal.ImGui.dockBuilderFinish(dockspaceId);
         }
         ImGui.dockSpace(dockspaceId, 0.0f, 0.0f);
