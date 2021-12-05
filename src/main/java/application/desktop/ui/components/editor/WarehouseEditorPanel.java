@@ -29,7 +29,7 @@ public class WarehouseEditorPanel extends Panel {
      * @param warehouse The Warehouse to edit.
      */
     public WarehouseEditorPanel(Warehouse warehouse) {
-        super("Warehouse Layout");
+        super("Warehouse");
         setShowMenuBar(true);
         setCloseable(false);
 
