@@ -32,6 +32,9 @@ public class WarehouseCanvas extends Component {
     private ImVec2 size;
     private ImVec2 topLeft;
 
+    private TileType tileTypeToInsert;
+    private TileFactory tileFactory;
+
     /**
      * Offset applied to canvas elements to enable scrolling.
      */
@@ -91,6 +94,9 @@ public class WarehouseCanvas extends Component {
         this.maxZoom = maxZoom;
         this.zoomStep = zoomStep;
         this.showGrid = showGrid;
+
+        tileTypeToInsert = TileType.RACK;
+        tileFactory = new TileFactory();
 
         size = new ImVec2(minSizeX, minSizeY);
         topLeft = new ImVec2(0, 0);
@@ -247,22 +253,21 @@ public class WarehouseCanvas extends Component {
             ImGui.endPopup();
         }
 
-
         if (isHovered && ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
+            handleLeftClick();
+        }
+    }
+
+    /**
+     * Handle left click interaction.
+     */
+    private void handleLeftClick() {
+        selectedTile = getTileFromScreenPoint(getRelativeMousePosition());
+        if (inputMode == WarehouseCanvasInputMode.INSERT_TILE) {
             Pair<Integer, Integer> tileCoords = screenToWarehousePoint(getRelativeMousePosition());
-            int tileX = tileCoords.getFirst();
-            int tileY = tileCoords.getSecond();
-            if (warehouse.isTileCoordinateInRange(tileX, tileY)) {
-                Tile newTile = null;
-                switch (inputMode) {
-                    case PLACE_EMPTY -> newTile = new EmptyTile(tileX, tileY);
-                    case PLACE_RACK -> newTile = new Rack(tileX, tileY);
-                    case PLACE_RECEIVE_DEPOT -> newTile = new ReceiveDepot(tileX, tileY);
-                    case PLACE_SHIP_DEPOT -> newTile = new ShipDepot(tileX, tileY);
-                }
-                if (newTile != null) {
-                    warehouse.setTile(newTile);
-                }
+            Tile tileToInsert = tileFactory.createTile(tileTypeToInsert, tileCoords.getFirst(), tileCoords.getSecond());
+            if (tileToInsert != null) {
+                warehouse.setTile(tileToInsert);
             }
         }
     }
@@ -340,19 +345,25 @@ public class WarehouseCanvas extends Component {
                 drawList.addRectFilled(x1, y1, x2, y2, FLOOR_TILE_COLOUR);
 
                 Tile tile = warehouse.getTileAt(x, y);
-                boolean isSelected = isTileSelected(x, y) && inputMode != WarehouseCanvasInputMode.NONE;
                 if (tile instanceof Rack) {
-                    drawRack(drawList, x1, y1, x2, y2, isSelected);
+                    drawRack(drawList, x1, y1, x2, y2);
                 } else if (tile instanceof ReceiveDepot) {
-                    drawReceiveDepot(drawList, x1, y1, x2, y2, isSelected);
+                    drawReceiveDepot(drawList, x1, y1, x2, y2);
                 } else if (tile instanceof ShipDepot) {
-                    drawShipDepot(drawList, x1, y1, x2, y2, isSelected);
+                    drawShipDepot(drawList, x1, y1, x2, y2);
                 }
             }
         }
+
+        // Draw selected tile outline
+        if (selectedTile != null) {
+            drawList.addRect(x1, y1, x2, y2,
+                    colourScheme.getSelectionOutlineColour().toU32Colour(),
+                    5.0f, 0, 1.5f);
+        }
     }
 
-    private void drawRack(ImDrawList drawList, float x1, float y1, float x2, float y2, boolean isSelected) {
+    private void drawRack(ImDrawList drawList, float x1, float y1, float x2, float y2) {
         float thickness = 4.0f * zoom;
         Colour RACK_BACKGROUND_COLOUR = new Colour(68, 118, 160, 0.2f);
         Colour RACK_BORDER_COLOUR = new Colour(RACK_BACKGROUND_COLOUR, 1.0f);
@@ -366,15 +377,9 @@ public class WarehouseCanvas extends Component {
                 x2 - thickness * 0.5f, y2 - thickness * 0.5f,
                 RACK_BORDER_COLOUR.toU32Colour(),
                 5.0f, 0, thickness);
-
-        if (isSelected) {
-            drawList.addRect(x1, y1, x2, y2,
-                    colourScheme.getSelectionOutlineColour().toU32Colour(),
-                    5.0f, 0, 1.5f);
-        }
     }
 
-    private void drawReceiveDepot(ImDrawList drawList, float x1, float y1, float x2, float y2, boolean isSelected) {
+    private void drawReceiveDepot(ImDrawList drawList, float x1, float y1, float x2, float y2) {
         float thickness = 4.0f * zoom;
         Colour BACKGROUND_COLOUR = new Colour(207, 192, 121, 0.2f);
         Colour BORDER_COLOUR = new Colour(BACKGROUND_COLOUR, 1.0f);
@@ -390,18 +395,12 @@ public class WarehouseCanvas extends Component {
                 BORDER_COLOUR.toU32Colour(),
                 5.0f, 0, thickness);
 
-        if (isSelected) {
-            drawList.addRect(x1, y1, x2, y2,
-                    colourScheme.getSelectionOutlineColour().toU32Colour(),
-                    5.0f, 0, 1.5f);
-        }
-
         float iconSize = 35 * zoom;
         drawList.addText(ImGui.getFont(), iconSize, (x1 + x2 - iconSize) / 2, (y1 + y2 - iconSize) / 2,
                 ICON_COLOUR.toU32Colour(), FontAwesomeIcon.SignInAlt.getIconCode());
     }
 
-    private void drawShipDepot(ImDrawList drawList, float x1, float y1, float x2, float y2, boolean isSelected) {
+    private void drawShipDepot(ImDrawList drawList, float x1, float y1, float x2, float y2) {
         float thickness = 4.0f * zoom;
         Colour BACKGROUND_COLOUR = new Colour(166, 109, 113, 0.2f);
         Colour BORDER_COLOUR = new Colour(BACKGROUND_COLOUR, 1.0f);
@@ -416,12 +415,6 @@ public class WarehouseCanvas extends Component {
                 x2 - thickness * 0.5f, y2 - thickness * 0.5f,
                 BORDER_COLOUR.toU32Colour(),
                 5.0f, 0, thickness);
-
-        if (isSelected) {
-            drawList.addRect(x1, y1, x2, y2,
-                    colourScheme.getSelectionOutlineColour().toU32Colour(),
-                    5.0f, 0, 1.5f);
-        }
 
         float iconSize = 35 * zoom;
         ImFont font = ImGui.getFont();
@@ -536,6 +529,14 @@ public class WarehouseCanvas extends Component {
 
     public void setInputMode(WarehouseCanvasInputMode inputMode) {
         this.inputMode = inputMode;
+    }
+
+    public TileType getTileTypeToInsert() {
+        return tileTypeToInsert;
+    }
+
+    public void setTileTypeToInsert(TileType tileTypeToInsert) {
+        this.tileTypeToInsert = tileTypeToInsert;
     }
 
     public Tile getSelectedTile() {
