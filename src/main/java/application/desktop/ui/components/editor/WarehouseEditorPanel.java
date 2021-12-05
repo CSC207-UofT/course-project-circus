@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class WarehouseEditorPanel extends Panel {
     private final WarehouseCanvas canvas;
-    private Warehouse warehouse;
+    private final Warehouse warehouse;
 
     private final Button insertTileButton;
     private final List<Button> tileInputButtons;

@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.Test;
-import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -17,12 +17,14 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
-import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
 import warehouse.storage.StorageUnit;
 import warehouse.storage.containers.InMemoryStorageUnitContainer;
+import warehouse.storage.strategies.MultiTypeStorageUnitStrategy;
 import warehouse.storage.strategies.SingleTypeStorageStrategy;
 import warehouse.tiles.Rack;
+import warehouse.tiles.ReceiveDepot;
+import warehouse.tiles.ShipDepot;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -61,19 +63,19 @@ public class DesktopApplication extends Application {
 
         // Create dummy warehouse
         Warehouse warehouse = new Warehouse(12, 12);
-        try {
-            // TODO: Clean API
-            warehouse.setTile(new Rack(1, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
-                    new InMemoryStorageUnitContainer())));
-            warehouse.setTile(new Rack(1, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
-                    new InMemoryStorageUnitContainer())));
-            warehouse.setTile(new Rack(2, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
-                    new InMemoryStorageUnitContainer())));
-            warehouse.setTile(new Rack(3, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
-                    new InMemoryStorageUnitContainer())));
-        } catch (TileOutOfBoundsException e) {
-            e.printStackTrace();
-        }
+        // TODO: Clean API
+        warehouse.setTile(new Rack(1, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
+                new InMemoryStorageUnitContainer())));
+        warehouse.setTile(new Rack(1, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
+                new InMemoryStorageUnitContainer())));
+        warehouse.setTile(new Rack(2, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
+                new InMemoryStorageUnitContainer())));
+        warehouse.setTile(new Rack(3, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
+                new InMemoryStorageUnitContainer())));
+        warehouse.setTile(new ReceiveDepot(0, 5, new StorageUnit(-1, new MultiTypeStorageUnitStrategy(),
+                new InMemoryStorageUnitContainer())));
+        warehouse.setTile(new ShipDepot(11, 5, new StorageUnit(-1, new MultiTypeStorageUnitStrategy(),
+                new InMemoryStorageUnitContainer())));
 
         WarehouseEditorPanel warehouseLayoutEditor = new WarehouseEditorPanel(warehouse);
         components.add(warehouseLayoutEditor);

@@ -22,14 +22,21 @@ public class WarehouseCanvasColourScheme {
     private static final Colour DEFAULT_GRID_LINE_COLOUR = new Colour(200,  200, 200, 40);
 
     /**
+     * Default selection outline colour.
+     */
+    private static final Colour DEFAULT_SELECTION_OUTLINE_COLOUR = new Colour(223, 224, 223);
+
+
+    /**
      * Default colour scheme for the WarehouseCanvas.
      */
     public static final WarehouseCanvasColourScheme DEFAULT = new WarehouseCanvasColourScheme(
-            DEFAULT_BORDER_COLOUR, DEFAULT_BACKGROUND_COLOUR, DEFAULT_GRID_LINE_COLOUR);
+            DEFAULT_BORDER_COLOUR, DEFAULT_BACKGROUND_COLOUR, DEFAULT_GRID_LINE_COLOUR, DEFAULT_SELECTION_OUTLINE_COLOUR);
 
     private Colour borderColour;
     private Colour backgroundColour;
     private Colour gridLineColour;
+    private Colour selectionOutlineColour;
 
     /**
      * Construct a new WarehouseCanvas with a custom colour scheme.
@@ -37,10 +44,12 @@ public class WarehouseCanvasColourScheme {
      * @param backgroundColour The colour of the canvas background.
      * @param gridLineColour The colour of the canvas grid lines.
      */
-    public WarehouseCanvasColourScheme(Colour borderColour, Colour backgroundColour, Colour gridLineColour) {
+    public WarehouseCanvasColourScheme(Colour borderColour, Colour backgroundColour,
+                                       Colour gridLineColour, Colour selectionOutlineColour) {
         this.borderColour = borderColour;
         this.backgroundColour = backgroundColour;
         this.gridLineColour = gridLineColour;
+        this.selectionOutlineColour = selectionOutlineColour;
     }
 
     public Colour getBorderColour() {
@@ -67,4 +76,11 @@ public class WarehouseCanvasColourScheme {
         this.gridLineColour = gridLineColour;
     }
 
+    public Colour getSelectionOutlineColour() {
+        return selectionOutlineColour;
+    }
+
+    public void setSelectionOutlineColour(Colour selectionOutlineColour) {
+        this.selectionOutlineColour = selectionOutlineColour;
+    }
 }

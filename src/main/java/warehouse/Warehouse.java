@@ -35,29 +35,25 @@ public class Warehouse {
      * Get the tile at the specified coordinate.
      * @param x The horizontal coordinate of the tile.
      * @param y The vertical coordinate of the tile.
-     * @return The tile at the specified coordinate.
-     * @throws TileOutOfBoundsException if the specified coordinates is out of bounds.
+     * @return The tile at the specified coordinate, or null if the coordinates are invalid.
      */
-    public Tile getTileAt(int x, int y) throws TileOutOfBoundsException {
+    public Tile getTileAt(int x, int y) {
         if (isTileCoordinateInRange(x, y)) {
             return tiles[x][y];
         } else {
-            throw new TileOutOfBoundsException(x, y, width, height);
+            return null;
         }
     }
 
     /**
      * Set a Tile in the Warehouse. The Warehouse tile corresponding to the position of the given Tile will be updated.
      * @param tile The new Tile.
-     * @throws TileOutOfBoundsException if the position of the given Tile is out of bounds.
      */
-    public void setTile(Tile tile) throws TileOutOfBoundsException {
+    public void setTile(Tile tile) {
         int x = tile.getX();
         int y = tile.getY();
         if (isTileCoordinateInRange(x, y)) {
             tiles[x][y] = tile;
-        } else {
-            throw new TileOutOfBoundsException(x, y, width, height);
         }
     }
 
