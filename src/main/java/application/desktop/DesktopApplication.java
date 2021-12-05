@@ -47,34 +47,25 @@ public class DesktopApplication extends Application {
      */
     private final static float DEFAULT_FONT_SIZE = 16.0f;
 
+    private Warehouse warehouse;
+
     private boolean hasInitialisedDockspaceLayout;
-    private final ApplicationToolbar toolbar;
-    private final WarehouseEditor warehouseEditor;
-    private final Panel sidebar;
+    private ApplicationToolbar toolbar;
+    private WarehouseEditor warehouseEditor;
+    private Panel sidebar;
 
     /**
      * Construct a DesktopApplication.
      */
     public DesktopApplication() {
-        // TODO: Dependency injection
+        setWarehouse(new Warehouse(12, 12));
+    }
+
+    /**
+     * Initialise components for the given warehouse.
+     */
+    private void initComponents(Warehouse warehouse) {
         toolbar = new ApplicationToolbar();
-
-        // Create dummy warehouse
-        Warehouse warehouse = new Warehouse(12, 12);
-        // TODO: Clean API
-        warehouse.setTile(new Rack(1, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
-                new InMemoryStorageUnitContainer())));
-        warehouse.setTile(new Rack(1, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
-                new InMemoryStorageUnitContainer())));
-        warehouse.setTile(new Rack(2, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
-                new InMemoryStorageUnitContainer())));
-        warehouse.setTile(new Rack(3, 1, new StorageUnit(10, new SingleTypeStorageStrategy(),
-                new InMemoryStorageUnitContainer())));
-        warehouse.setTile(new ReceiveDepot(0, 5, new StorageUnit(-1, new MultiTypeStorageUnitStrategy(),
-                new InMemoryStorageUnitContainer())));
-        warehouse.setTile(new ShipDepot(11, 5, new StorageUnit(-1, new MultiTypeStorageUnitStrategy(),
-                new InMemoryStorageUnitContainer())));
-
         warehouseEditor = new WarehouseEditor(warehouse);
         sidebar = new Panel("Sidebar##sidebar");
     }
@@ -188,6 +179,22 @@ public class DesktopApplication extends Application {
         long window = glfwGetCurrentContext();
         glfwSetWindowShouldClose(window, true);
         System.exit(0);
+    }
+
+    /**
+     * Get the currently loaded warehouse.
+     */
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    /**
+     * Set the currently loaded warehouse.
+     * @param warehouse The new warehouse.
+     */
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+        initComponents(warehouse);
     }
 
     /**
