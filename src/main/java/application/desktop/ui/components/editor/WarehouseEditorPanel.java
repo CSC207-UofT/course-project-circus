@@ -17,7 +17,7 @@ public class WarehouseEditorPanel extends Panel {
     private final WarehouseCanvas canvas;
     private final Warehouse warehouse;
 
-    private final Button insertTileButton;
+    private final List<Button> toolButtons;
     private final List<Button> tileInputButtons;
 
     /**
@@ -32,33 +32,51 @@ public class WarehouseEditorPanel extends Panel {
         this.warehouse = warehouse;
         canvas = new WarehouseCanvas(warehouse);
 
-        // Create UI components
-        Button selectTileButton = new Button("", FontAwesomeIcon.MousePointer, "Select tool", 0, 0,
-                Colour.TRANSPARENT, true);
-        selectTileButton.getOnClickedEvent().addListener(this::onEraseTileButtonClicked);
+        // Create tool buttons
+        Button selectTileButton = new Button("", FontAwesomeIcon.MousePointer, "Select tool");
+        selectTileButton.setToggleable(true);
+        selectTileButton.setNormalColour(Colour.TRANSPARENT);
+        selectTileButton.getOnToggledOnEvent().addListener(this::onSelectTileButtonToggledOn);
+        selectTileButton.getOnToggledOffEvent().addListener(this::onSelectTileButtonToggledOff);
 
-        Button moveTileButton = new Button("", FontAwesomeIcon.ArrowsAlt, "Move tool", 0, 0,
-                Colour.TRANSPARENT, true);
-        moveTileButton.getOnClickedEvent().addListener(this::onEraseTileButtonClicked);
+        Button moveTileButton = new Button("", FontAwesomeIcon.ArrowsAlt, "Move tool");
+        moveTileButton.setToggleable(true);
+        moveTileButton.setNormalColour(Colour.TRANSPARENT);
+        moveTileButton.getOnToggledOnEvent().addListener(this::onMoveTileButtonToggledOn);
+        moveTileButton.getOnToggledOffEvent().addListener(this::onMoveTileButtonToggledOff);
 
-        insertTileButton = new Button("", FontAwesomeIcon.PencilAlt, "Insert tool", 0, 0,
-                Colour.TRANSPARENT, true);
-        insertTileButton.getOnClickedEvent().addListener(this::onInsertTileButtonClicked);
+        Button insertTileButton = new Button("", FontAwesomeIcon.PencilAlt, "Insert tool");
+        insertTileButton.setToggleable(true);
+        insertTileButton.setNormalColour(Colour.TRANSPARENT);
+        insertTileButton.getOnToggledOnEvent().addListener(this::onInsertTileButtonToggledOn);
+        insertTileButton.getOnToggledOffEvent().addListener(this::onInsertTileButtonToggledOff);
 
-        Button eraseTileButton = new Button("", FontAwesomeIcon.Eraser, "Erase tool", 0, 0,
-                Colour.TRANSPARENT, true);
-        eraseTileButton.getOnClickedEvent().addListener(this::onEraseTileButtonClicked);
+        Button eraseTileButton = new Button("", FontAwesomeIcon.Eraser, "Erase tool");
+        eraseTileButton.setToggleable(true);
+        eraseTileButton.setNormalColour(Colour.TRANSPARENT);
+        eraseTileButton.getOnToggledOnEvent().addListener(this::onEraseTileButtonToggledOn);
+        eraseTileButton.getOnToggledOffEvent().addListener(this::onEraseTileButtonToggledOff);
 
-        Button inputRackButton = new Button("Rack", FontAwesomeIcon.Table, "Rack", 0, 0,
-                Colour.TRANSPARENT, false);
+        toolButtons = new ArrayList<>();
+        toolButtons.add(selectTileButton);
+        toolButtons.add(moveTileButton);
+        toolButtons.add(insertTileButton);
+        toolButtons.add(eraseTileButton);
+
+        // Create tile input buttons
+        Button inputRackButton = new Button("Rack", FontAwesomeIcon.Table, "Rack");
+        inputRackButton.setNormalColour(Colour.TRANSPARENT);
+        inputRackButton.setEnabled(false);
         inputRackButton.getOnClickedEvent().addListener(this::onInputRackButtonClicked);
 
-        Button inputReceiveDepotButton = new Button("Receive", FontAwesomeIcon.SignInAlt, "Receive Depot", 0, 0,
-                Colour.TRANSPARENT, false);
+        Button inputReceiveDepotButton = new Button("Receive", FontAwesomeIcon.SignInAlt, "Receive Depot");
+        inputReceiveDepotButton.setNormalColour(Colour.TRANSPARENT);
+        inputReceiveDepotButton.setEnabled(false);
         inputReceiveDepotButton.getOnClickedEvent().addListener(this::onInputReceiveDepotButtonClicked);
 
-        Button inputShipDepotButton = new Button("Shipping", FontAwesomeIcon.SignOutAlt, "Ship Depot", 0, 0,
-                Colour.TRANSPARENT, false);
+        Button inputShipDepotButton = new Button("Shipping", FontAwesomeIcon.SignOutAlt, "Ship Depot");
+        inputShipDepotButton.setNormalColour(Colour.TRANSPARENT);
+        inputShipDepotButton.setEnabled(false);
         inputShipDepotButton.getOnClickedEvent().addListener(this::onInputShipDepotButtonClicked);
 
         tileInputButtons = new ArrayList<>();
@@ -82,22 +100,78 @@ public class WarehouseEditorPanel extends Panel {
     }
 
     /**
-     * Called when the "insert tile" button is clicked.
+     * Called when the "select tile" button is toggled ON.
      */
-    private void onInsertTileButtonClicked(ComponentEventData data) {
-        for (Button button : tileInputButtons) {
-            button.setEnabled(true);
-        }
+    private void onSelectTileButtonToggledOn(ComponentEventData data) {
+        Button source = (Button) data.getSource();
+        onToolButtonToggledOn(source, false);
     }
 
     /**
-     * Called when the "erase tile" button is clicked.
+     * Called when the "select tile" button is toggled OFF.
      */
-    private void onEraseTileButtonClicked(ComponentEventData data) {
-        for (Button button : tileInputButtons) {
-            button.setEnabled(false);
-        }
+    private void onSelectTileButtonToggledOff(ComponentEventData data) {
+    }
+
+    /**
+     * Called when the "move tile" button is toggled ON.
+     */
+    private void onMoveTileButtonToggledOn(ComponentEventData data) {
+        Button source = (Button) data.getSource();
+        onToolButtonToggledOn(source, false);
+    }
+
+    /**
+     * Called when the "move tile" button is toggled OFF.
+     */
+    private void onMoveTileButtonToggledOff(ComponentEventData data) {
+    }
+
+    /**
+     * Called when the "insert tile" button is toggled ON.
+     */
+    private void onInsertTileButtonToggledOn(ComponentEventData data) {
+        Button source = (Button) data.getSource();
+        onToolButtonToggledOn(source, true);
+    }
+
+    /**
+     * Called when the "insert tile" button is toggled OFF.
+     */
+    private void onInsertTileButtonToggledOff(ComponentEventData data) {
+        setTileButtonsEnabled(false);
         canvas.setInputMode(WarehouseCanvasInputMode.NONE);
+    }
+
+    /**
+     * Called when the "erase tile" button is toggled ON.
+     */
+    private void onEraseTileButtonToggledOn(ComponentEventData data) {
+        Button source = (Button) data.getSource();
+        onToolButtonToggledOn(source, false);
+        canvas.setInputMode(WarehouseCanvasInputMode.EMPTY);
+    }
+
+    /**
+     * Called when the "erase tile" button is toggled Off.
+     */
+    private void onEraseTileButtonToggledOff(ComponentEventData data) {
+        canvas.setInputMode(WarehouseCanvasInputMode.NONE);
+    }
+
+    private void onToolButtonToggledOn(Button source, boolean tileButtonsEnabled) {
+        for (Button toolButton : toolButtons) {
+            if (toolButton.equals(source)) continue;
+            toolButton.setToggled(false);
+        }
+        setTileButtonsEnabled(tileButtonsEnabled);
+    }
+
+
+    private void setTileButtonsEnabled(boolean enabled) {
+        for (Button button : tileInputButtons) {
+            button.setEnabled(enabled);
+        }
     }
 
     /**

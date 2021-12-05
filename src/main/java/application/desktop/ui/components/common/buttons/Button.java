@@ -20,11 +20,19 @@ public class Button extends Component {
     private String iconSeparator;
     private String tooltip;
 
+    private boolean isToggleable;
+    private boolean isToggled;
+
     private float borderWidth;
     private float borderRadius;
+
+    private Colour normalColour;
+    private Colour hoveredColour;
     private Colour activeColour;
 
     private final ComponentEvent onClickedEvent;
+    private final ComponentEvent onToggledOnEvent;
+    private final ComponentEvent onToggledOffEvent;
 
     /**
      * Construct a Button with a label.
@@ -40,7 +48,17 @@ public class Button extends Component {
      * @param icon The icon of this Button.
      */
     public Button(String label, FontAwesomeIcon icon) {
-        this(label, icon, "", 0, 0, null, true);
+        this(label, icon, "");
+    }
+
+    /**
+     * Construct a Button with a label, icon, and tooltip.
+     * @param label The label of this Button.
+     * @param icon The icon of this Button.
+     * @param tooltip The tooltip for this Button.
+     */
+    public Button(String label, FontAwesomeIcon icon, String tooltip) {
+        this(label, icon, tooltip, 0, 0, null, null, null, false, true);
     }
 
     /**
@@ -51,18 +69,27 @@ public class Button extends Component {
      */
     public Button(String label, FontAwesomeIcon icon, String tooltip,
                   float borderWidth, float borderRadius,
-                  Colour backgroundColour,
+                  Colour normalColour, Colour hoveredColour, Colour activeColour,
+                  boolean toggleable,
                   boolean enabled) {
         this.label = label;
         this.icon = icon;
         this.iconSeparator = "\t";
         this.tooltip = tooltip;
 
+        this.isToggleable = toggleable;
+        this.isToggled = false;
+
         this.borderWidth = borderWidth;
         this.borderRadius = borderRadius;
-        this.activeColour = backgroundColour;
+
+        this.normalColour = normalColour;
+        this.hoveredColour = hoveredColour;
+        this.activeColour = activeColour;
 
         onClickedEvent = new ComponentEvent();
+        onToggledOnEvent = new ComponentEvent();
+        onToggledOffEvent = new ComponentEvent();
         setEnabled(enabled);
     }
 
@@ -80,20 +107,45 @@ public class Button extends Component {
         ImGui.pushStyleVar(ImGuiStyleVar.FrameBorderSize, borderWidth);
         ImGui.pushStyleVar(ImGuiStyleVar.FrameRounding, borderRadius);
 
-        int currentColour;
-        if (activeColour == null) {
-            // Use default button colour if none was provided
-            ImVec4 col = ImGui.getStyle().getColor(ImGuiCol.Button);
-            currentColour = ImGui.colorConvertFloat4ToU32(col.x, col.y, col.z, col.w);
-        } else {
-            currentColour = activeColour.toU32Colour();
+        int colourCount = 0;
+        if (normalColour != null) {
+            ImGui.pushStyleColor(ImGuiCol.Button, normalColour.toU32Colour());
+            colourCount++;
         }
-        ImGui.pushStyleColor(ImGuiCol.Button, currentColour);
+        if (hoveredColour != null) {
+            ImGui.pushStyleColor(ImGuiCol.ButtonHovered, hoveredColour.toU32Colour());
+            colourCount++;
+        }
+        if (activeColour != null) {
+            ImGui.pushStyleColor(ImGuiCol.ButtonActive, activeColour.toU32Colour());
+            colourCount++;
+        }
+
+        if (isToggleable && isToggled) {
+            int replacementColour;
+            if (activeColour == null) {
+                ImVec4 col = ImGui.getStyle().getColor(ImGuiCol.ButtonActive);
+                replacementColour = ImGui.colorConvertFloat4ToU32(col.x, col.y, col.z, col.w);
+            } else {
+                replacementColour = activeColour.toU32Colour();
+            }
+            ImGui.pushStyleColor(ImGuiCol.Button, replacementColour);
+            colourCount++;
+        }
 
         String iconCode = icon != null ? icon.getIconCode() : "";
         String iconSuffix = (icon != null && !label.isEmpty() ? iconSeparator : "");
         if (ImGui.button(iconCode + iconSuffix + label)) {
             onClickedEvent.execute(this, application);
+
+            if (isToggleable) {
+                isToggled = !isToggled;
+                if (isToggled) {
+                    onToggledOnEvent.execute(this, application);
+                } else {
+                    onToggledOffEvent.execute(this, application);
+                }
+            }
         }
 
         if (!tooltip.isEmpty()) {
@@ -106,7 +158,11 @@ public class Button extends Component {
             }
         }
 
-        ImGui.popStyleColor(); // Button colour
+        // Pop button colour styles
+        for (int i = 0; i < colourCount; i++) {
+            ImGui.popStyleColor();
+        }
+
         ImGui.popStyleVar(); // Frame rounding
         ImGui.popStyleVar(); // Frame border size
 
@@ -150,6 +206,22 @@ public class Button extends Component {
         this.tooltip = tooltip;
     }
 
+    public boolean isToggleable() {
+        return isToggleable;
+    }
+
+    public void setToggleable(boolean toggleable) {
+        this.isToggleable = toggleable;
+    }
+
+    public boolean isToggled() {
+        return isToggled;
+    }
+
+    public void setToggled(boolean toggled) {
+        isToggled = toggled;
+    }
+
     public float getBorderWidth() {
         return borderWidth;
     }
@@ -166,6 +238,22 @@ public class Button extends Component {
         this.borderRadius = borderRadius;
     }
 
+    public Colour getNormalColour() {
+        return normalColour;
+    }
+
+    public void setNormalColour(Colour normalColour) {
+        this.normalColour = normalColour;
+    }
+
+    public Colour getHoveredColour() {
+        return hoveredColour;
+    }
+
+    public void setHoveredColour(Colour hoveredColour) {
+        this.hoveredColour = hoveredColour;
+    }
+
     public Colour getActiveColour() {
         return activeColour;
     }
@@ -175,9 +263,23 @@ public class Button extends Component {
     }
 
     /**
-     * This event is called when this MenuItem is clicked on.
+     * This event is called when this Button is clicked on.
      */
     public ComponentEvent getOnClickedEvent() {
         return onClickedEvent;
+    }
+
+    /**
+     * This event is called iff and this Button is toggled ON AND it is toggleable.
+     */
+    public ComponentEvent getOnToggledOnEvent() {
+        return onToggledOnEvent;
+    }
+
+    /**
+     * This event is called iff and this Button is toggled OFF AND it is toggleable.
+     */
+    public ComponentEvent getOnToggledOffEvent() {
+        return onToggledOffEvent;
     }
 }
