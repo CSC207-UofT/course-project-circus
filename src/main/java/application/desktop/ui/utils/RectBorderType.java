@@ -1,4 +1,4 @@
-package application.desktop.ui.components;
+package application.desktop.ui.utils;
 
 /**
  * Rectangle border type.
