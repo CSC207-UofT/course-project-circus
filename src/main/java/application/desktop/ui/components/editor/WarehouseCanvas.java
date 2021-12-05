@@ -3,6 +3,7 @@ package application.desktop.ui.components.editor;
 import application.desktop.DesktopApplication;
 import application.desktop.ui.Colour;
 import application.desktop.ui.FontAwesomeIcon;
+import application.desktop.ui.components.RectBorderType;
 import application.desktop.ui.components.common.Component;
 import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
@@ -26,7 +27,7 @@ public class WarehouseCanvas extends Component {
     private int frameCounter;
 
     private ImVec2 size;
-    private ImVec2 topLeft;
+    private ImVec2 contentTopLeft;
 
     private TileType tileTypeToInsert;
     private TileFactory tileFactory;
@@ -82,7 +83,7 @@ public class WarehouseCanvas extends Component {
         tileFactory = new TileFactory();
 
         size = new ImVec2(minSizeX, minSizeY);
-        topLeft = new ImVec2(0, 0);
+        contentTopLeft = new ImVec2(0, 0);
         panOffset = new ImVec2(0, 0);
         inputMode = WarehouseCanvasInputMode.SELECT_TILE;
 
@@ -111,7 +112,7 @@ public class WarehouseCanvas extends Component {
      * Return the origin of the canvas in screen space.
      */
     private ImVec2 getOrigin() {
-        return new ImVec2(topLeft.x + panOffset.x, topLeft.y + panOffset.y);
+        return new ImVec2(contentTopLeft.x + panOffset.x, contentTopLeft.y + panOffset.y);
     }
 
     /**
@@ -161,7 +162,7 @@ public class WarehouseCanvas extends Component {
         ImVec2 contentAvailable = ImGui.getContentRegionAvail();
         size = new ImVec2(Math.max(contentAvailable.x, minSizeX),
                 Math.max(contentAvailable.y, minSizeY));
-        topLeft = ImGui.getCursorScreenPos();
+        contentTopLeft = ImGui.getCursorScreenPos();
     }
 
     /**
@@ -233,11 +234,9 @@ public class WarehouseCanvas extends Component {
      * Draw the canvas background. Mutates the given ImDrawList.
      */
     private void drawBackground(ImDrawList drawList) {
-        ImVec2 bottomRight = getBottomRightCoordinate();
-        final int borderColour = colourScheme.getBorderColour().toU32Colour();
-        drawList.addRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, borderColour);
-        final int backgroundColour = colourScheme.getBackgroundColour().toU32Colour();
-        drawList.addRectFilled(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, backgroundColour);
+        ImVec2 contentBottomRight = getContentBottomRight();
+        drawRect(drawList, contentTopLeft, contentBottomRight, colourScheme.getBackgroundColour(),
+                colourScheme.getBorderColour(), 1, 0, RectBorderType.Middle);
     }
 
     /**
@@ -248,21 +247,21 @@ public class WarehouseCanvas extends Component {
             return;
         }
 
-        ImVec2 bottomRight = getBottomRightCoordinate();
-        drawList.pushClipRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, true);
+        ImVec2 bottomRight = getContentBottomRight();
+        drawList.pushClipRect(contentTopLeft.x, contentTopLeft.y, bottomRight.x, bottomRight.y, true);
         final int gridLineColour = colourScheme.getGridLineColour().toU32Colour();
 
         // Draw horizontal lines
         for (float x = panOffset.x % gridStep; x < size.x; x += gridStep) {
-            float x1 = topLeft.x + x;
-            float x2 = topLeft.x + x;
-            drawList.addLine(x1, topLeft.y, x2, bottomRight.y, gridLineColour);
+            float x1 = contentTopLeft.x + x;
+            float x2 = contentTopLeft.x + x;
+            drawList.addLine(x1, contentTopLeft.y, x2, bottomRight.y, gridLineColour);
         }
         // Draw vertical lines
         for (float y = panOffset.y % gridStep; y < size.y; y += gridStep) {
-            float y1 = topLeft.y + y;
-            float y2 = topLeft.y + y;
-            drawList.addLine(topLeft.x, y1, bottomRight.x, y2, gridLineColour);
+            float y1 = contentTopLeft.y + y;
+            float y2 = contentTopLeft.y + y;
+            drawList.addLine(contentTopLeft.x, y1, bottomRight.x, y2, gridLineColour);
         }
 
         drawWarehouse(drawList);
@@ -276,23 +275,23 @@ public class WarehouseCanvas extends Component {
         ImVec2 origin = getOrigin();
 
         // Colours
-        int WORLD_BORDER_COLOUR = ImGui.getColorU32(113 / 255f, 129 / 255.0f, 109 / 255.0f, 1.0f);
-        int FLOOR_TILE_COLOUR = ImGui.getColorU32(101 / 255.0f, 101 / 255.0f, 101 / 255.0f, 0.5f);
+        Colour WORLD_BORDER_COLOUR = new Colour(113, 129, 109, 1.0f);
+        Colour FLOOR_TILE_COLOUR = new Colour(101, 101, 101, 0.5f);
 
         // Draw border
-        float borderThickness = 2.0f;
-        drawList.addRect(origin.x - borderThickness * 0.5f,
-                origin.y - borderThickness * 0.5f,
-                origin.x + gridStep * (warehouse.getWidth()) + borderThickness * 0.5f,
-                origin.y + gridStep * (warehouse.getHeight()) + borderThickness * 0.5f,
-                WORLD_BORDER_COLOUR, 10.0f, 0, borderThickness);
+        float worldBorderThickness = 2.0f;
+        float worldBorderRadius = 10.0f;
+        ImVec2 borderBottomRight = new ImVec2(origin.x + gridStep * warehouse.getWidth(),
+                origin.y + gridStep * warehouse.getHeight());
+        drawRect(drawList, origin, borderBottomRight, null, WORLD_BORDER_COLOUR,
+                worldBorderThickness, worldBorderRadius, RectBorderType.Outer);
 
         // Draw tiles
         for (int y = 0; y < warehouse.getHeight(); y++) {
             for (int x = 0; x < warehouse.getWidth(); x++) {
                 ImVec2 topLeft = getTileTopLeft(x, y);
                 ImVec2 bottomRight = getTileBottomRight(x, y);
-                drawList.addRectFilled(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, FLOOR_TILE_COLOUR);
+                drawRect(drawList, topLeft, bottomRight, FLOOR_TILE_COLOUR);
 
                 Tile tile = warehouse.getTileAt(x, y);
                 if (tile instanceof Rack) {
@@ -314,35 +313,152 @@ public class WarehouseCanvas extends Component {
         ImVec2 topLeft = getTileTopLeft(selectedTile.getX(), selectedTile.getY());
         ImVec2 bottomRight = getTileBottomRight(selectedTile.getX(), selectedTile.getY());
 
-        int outlineColour = getCurrentTileHandleColour().toU32Colour();
-        drawList.addRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, outlineColour, 1.0f, 0, 0);
+        Colour outlineColour = getCurrentTileHandleColour();
+        drawRect(drawList, topLeft, bottomRight, null, outlineColour,
+                1, 0, RectBorderType.Outer);
 
         // Draw handles
         if (inputMode.equals(WarehouseCanvasInputMode.MOVE_TILE)) {
-            int white = Colour.WHITE.toU32Colour();
-            float handleSize = 6;
-            // Top handles
-            drawList.addRectFilled(topLeft.x - handleSize * 0.5f, topLeft.y - handleSize * 0.5f,
-                    topLeft.x + handleSize * 0.5f, topLeft.y + handleSize * 0.5f, white);
-            drawList.addRect(topLeft.x - (handleSize + 1) * 0.5f, topLeft.y - (handleSize + 1) * 0.5f,
-                    topLeft.x + (handleSize + 1) * 0.5f, topLeft.y + (handleSize + 1) * 0.5f, outlineColour);
+            ImVec2 handleSize = new ImVec2(6, 6);
+            float handleBorderThickness = 1.5f;
+            // Top left
+            drawRectFromCentre(drawList, topLeft, handleSize,
+                    Colour.WHITE, outlineColour,
+                    handleBorderThickness, 0, RectBorderType.Outer);
+            // Top right
+            drawRectFromCentre(drawList, new ImVec2(bottomRight.x, topLeft.y), handleSize,
+                    Colour.WHITE, outlineColour,
+                    handleBorderThickness, 0, RectBorderType.Outer);
 
-            drawList.addRectFilled(bottomRight.x - handleSize * 0.5f, topLeft.y - handleSize * 0.5f,
-                    bottomRight.x + handleSize * 0.5f, topLeft.y + handleSize * 0.5f, white);
-            drawList.addRect(bottomRight.x - (handleSize + 1) * 0.5f, topLeft.y - (handleSize + 1) * 0.5f,
-                    bottomRight.x + (handleSize + 1) * 0.5f, topLeft.y + (handleSize + 1) * 0.5f, outlineColour);
-
-            // Bottom handles
-            drawList.addRectFilled(topLeft.x - handleSize * 0.5f, bottomRight.y - handleSize * 0.5f,
-                    topLeft.x + handleSize * 0.5f, bottomRight.y + handleSize * 0.5f, white);
-            drawList.addRect(topLeft.x - (handleSize + 1) * 0.5f, bottomRight.y - (handleSize + 1) * 0.5f,
-                    topLeft.x + (handleSize + 1) * 0.5f, bottomRight.y + (handleSize + 1) * 0.5f, outlineColour);
-
-            drawList.addRectFilled(bottomRight.x - handleSize * 0.5f, bottomRight.y - handleSize * 0.5f,
-                    bottomRight.x + handleSize * 0.5f, bottomRight.y + handleSize * 0.5f, white);
-            drawList.addRect(bottomRight.x - (handleSize + 1) * 0.5f, bottomRight.y - (handleSize + 1) * 0.5f,
-                    bottomRight.x + (handleSize + 1) * 0.5f, bottomRight.y + (handleSize + 1) * 0.5f, outlineColour);
+            // Bottom left
+            drawRectFromCentre(drawList, new ImVec2(topLeft.x, bottomRight.y), handleSize,
+                    Colour.WHITE, outlineColour,
+                    handleBorderThickness, 0, RectBorderType.Outer);
+            // Bottom right
+            drawRectFromCentre(drawList, bottomRight, handleSize,
+                    Colour.WHITE, outlineColour,
+                    handleBorderThickness, 0, RectBorderType.Outer);
         }
+    }
+
+    /**
+     * Draw a rectangle from the given top-left coordinate to the given bottom-right coordinate.
+     * @param drawList The draw list to add the rectangle to.
+     * @param topLeft The top-left coordinate of the rectangle.
+     * @param bottomRight The bottom-right coordinate of the rectangle.
+     * @param fill The fill colour of the rectangle. If null, then no fill is drawn.
+     * @param border The border colour of the rectangle. If null, the no border is drawn.
+     * @param borderThickness The thickness of the border.
+     * @param borderRadius The radius of the border.
+     * @param borderType The type of border to draw.
+     */
+    private void drawRect(ImDrawList drawList, ImVec2 topLeft, ImVec2 bottomRight, Colour fill,
+                          Colour border, float borderThickness, float borderRadius, RectBorderType borderType) {
+        // Fill coordinates
+        float x1 = topLeft.x;
+        float y1 = topLeft.y;
+        float x2 = bottomRight.x;
+        float y2 = bottomRight.y;
+        // Border coordinates
+        float bx1 = x1;
+        float by1 = y1;
+        float bx2 = x2;
+        float by2 = y2;
+
+        if (border != null) {
+            borderThickness = Math.max(0, borderThickness);
+            borderRadius = Math.max(0, borderRadius);
+            // Transform coordinates based on border type
+            float halfBorderThickness = borderThickness * 0.5f;
+            if (borderType == RectBorderType.Outer) {
+                bx1 -= halfBorderThickness;
+                by1 -= halfBorderThickness;
+                bx2 += halfBorderThickness;
+                by2 += halfBorderThickness;
+                x1 -= halfBorderThickness;
+                y1 -= halfBorderThickness;
+                x2 += halfBorderThickness;
+                y2 += halfBorderThickness;
+            } else if (borderType == RectBorderType.Inner) {
+                bx1 += halfBorderThickness;
+                by1 += halfBorderThickness;
+                bx2 -= halfBorderThickness;
+                by2 -= halfBorderThickness;
+                x1 += halfBorderThickness;
+                y1 += halfBorderThickness;
+                x2 -= halfBorderThickness;
+                y2 -= halfBorderThickness;
+            }
+            // NOTE: Do nothing if borderType == RectBorderType.Middle since the ImDrawList
+            // draws a middle border by default.
+        }
+
+        if (fill != null) {
+            drawList.addRectFilled(x1, y1, x2, y2,
+                    fill.toU32Colour(), borderRadius);
+        }
+
+        if (border != null) {
+            // Only draw the border if there is a border to draw!
+            drawList.addRect((float)Math.floor(bx1), (float)Math.floor(by1),
+                    (float)Math.ceil(bx2), (float)Math.ceil(by2),
+                    border.toU32Colour(), borderRadius, 0, borderThickness);
+        }
+    }
+
+    /**
+     * Draw a rectangle from the given top-left coordinate to the given bottom-right coordinate with an inner border.
+     * @param drawList The draw list to add the rectangle to.
+     * @param topLeft The top-left coordinate of the rectangle.
+     * @param bottomRight The bottom-right coordinate of the rectangle.
+     * @param fill The fill colour of the rectangle. If null, then no fill is drawn.
+     * @param border The border colour of the rectangle. If null, the no border is drawn.
+     * @param borderThickness The thickness of the border.
+     * @param borderRadius The radius of the border.
+     */
+    private void drawRect(ImDrawList drawList, ImVec2 topLeft, ImVec2 bottomRight, Colour fill,
+                          Colour border, float borderThickness, float borderRadius) {
+        drawRect(drawList, topLeft, bottomRight, fill, border, borderThickness, borderRadius, RectBorderType.Inner);
+    }
+
+    /**
+     * Draw a rectangle from the given top-left coordinate to the given bottom-right coordinate with no border.
+     * @param drawList The draw list to add the rectangle to.
+     * @param topLeft The top-left coordinate of the rectangle.
+     * @param bottomRight The bottom-right coordinate of the rectangle.
+     * @param fill The fill colour of the rectangle. If null, then no fill is drawn.
+     */
+    private void drawRect(ImDrawList drawList, ImVec2 topLeft, ImVec2 bottomRight, Colour fill) {
+        drawRect(drawList, topLeft, bottomRight, fill, null, 0, 0);
+    }
+
+    /**
+     * Draw a rectangle of the given size and whose centre is the given point.
+     * @param drawList The draw list to add the rectangle to.
+     * @param centre The centre of the rectangle.
+     * @param size The size of the rectangle.
+     * @param fill The fill colour of the rectangle. If null, then no fill is drawn.
+     * @param border The border colour of the rectangle. If null, the no border is drawn.
+     * @param borderThickness The thickness of the border. If non-positive, then no border is drawn.
+     * @param borderRadius The radius of the border. If non-positive, then no border radius is used.
+     * @param borderType The type of border to draw.
+     */
+    private void drawRectFromCentre(ImDrawList drawList, ImVec2 centre, ImVec2 size, Colour fill,
+                                    Colour border, float borderThickness, float borderRadius, RectBorderType borderType) {
+        ImVec2 topLeft = new ImVec2(centre.x - size.x * 0.5f, centre.y - size.y * 0.5f);
+        ImVec2 bottomRight = new ImVec2(centre.x + size.x * 0.5f, centre.y + size.y * 0.5f);
+        drawRect(drawList, topLeft, bottomRight, fill, border, borderThickness, borderRadius, borderType);
+    }
+
+    /**
+     * Draw a rectangle of the given size and whose centre is the given point with no border.
+     * @param drawList The draw list to add the rectangle to.
+     * @param centre The centre of the rectangle.
+     * @param size The size of the rectangle.
+     * @param fill The fill colour of the rectangle. If null, then no fill is drawn.
+     */
+    private void drawRectFromCentre(ImDrawList drawList, ImVec2 centre, ImVec2 size, Colour fill) {
+        drawRectFromCentre(drawList, centre, size, fill, null, 0, 0, RectBorderType.Inner);
     }
 
     /**
@@ -387,14 +503,8 @@ public class WarehouseCanvas extends Component {
 
         ImVec2 topLeft = getTileTopLeft(tileX, tileY);
         ImVec2 bottomRight = getTileBottomRight(tileX, tileY);
-        drawList.addRectFilled(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
-                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
-                BACKGROUND_COLOUR.toU32Colour(), 5.0f, 0);
-
-        drawList.addRect(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
-                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
-                BORDER_COLOUR.toU32Colour(),
-                5.0f, 0, thickness);
+        drawRect(drawList, topLeft, bottomRight, BACKGROUND_COLOUR, BORDER_COLOUR,
+                thickness, 5.0f, RectBorderType.Inner);
     }
 
     private void drawReceiveDepot(ImDrawList drawList, int tileX, int tileY) {
@@ -405,14 +515,8 @@ public class WarehouseCanvas extends Component {
 
         ImVec2 topLeft = getTileTopLeft(tileX, tileY);
         ImVec2 bottomRight = getTileBottomRight(tileX, tileY);
-        drawList.addRectFilled(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
-                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
-                BACKGROUND_COLOUR.toU32Colour(), 5.0f, 0);
-
-        drawList.addRect(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
-                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
-                BORDER_COLOUR.toU32Colour(),
-                5.0f, 0, thickness);
+        drawRect(drawList, topLeft, bottomRight, BACKGROUND_COLOUR, BORDER_COLOUR,
+                thickness,5.0f, RectBorderType.Inner);
 
         float iconSize = 17.5f;
         drawList.addText(ImGui.getFont(), iconSize,
@@ -429,14 +533,8 @@ public class WarehouseCanvas extends Component {
 
         ImVec2 topLeft = getTileTopLeft(tileX, tileY);
         ImVec2 bottomRight = getTileBottomRight(tileX, tileY);
-        drawList.addRectFilled(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
-                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
-                BACKGROUND_COLOUR.toU32Colour(), 5.0f, 0);
-
-        drawList.addRect(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
-                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
-                BORDER_COLOUR.toU32Colour(),
-                5.0f, 0, thickness);
+        drawRect(drawList, topLeft, bottomRight, BACKGROUND_COLOUR, BORDER_COLOUR,
+                thickness,5.0f, RectBorderType.Inner);
 
         float iconSize = 17.5f;
         ImFont font = ImGui.getFont();
@@ -448,11 +546,9 @@ public class WarehouseCanvas extends Component {
 
     /**
      * Get the bottom right coordinate of the canvas.
-     *
-     * @return An ImVec2 object representing the bottom right coordinate.
      */
-    private ImVec2 getBottomRightCoordinate() {
-        return new ImVec2(topLeft.x + size.x, topLeft.y + size.y);
+    private ImVec2 getContentBottomRight() {
+        return new ImVec2(contentTopLeft.x + size.x, contentTopLeft.y + size.y);
     }
 
     public Warehouse getWarehouse() {

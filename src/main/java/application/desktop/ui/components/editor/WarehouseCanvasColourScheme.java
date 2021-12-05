@@ -9,7 +9,7 @@ public class WarehouseCanvasColourScheme {
     /**
      * Default border colour of the canvas.
      */
-    private static final Colour DEFAULT_BORDER_COLOUR = Colour.WHITE;
+    private static final Colour DEFAULT_BORDER_COLOUR = new Colour(99, 99, 99);
 
     /**
      * Default background colour of the canvas.
