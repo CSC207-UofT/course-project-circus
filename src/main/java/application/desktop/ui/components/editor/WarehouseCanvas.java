@@ -23,7 +23,7 @@ import java.util.Map;
  */
 public class WarehouseCanvas extends Component {
     /**
-     * The name of the erase tile popup dialog.
+     * The name of the "erase tile popup dialog."
      */
     private static final String ERASE_TILE_POPUP_DIALOG_NAME = "Delete?##erase_tile_dialog_popup";
 
@@ -216,22 +216,47 @@ public class WarehouseCanvas extends Component {
      * Handle user interaction.
      */
     private void handleInteraction() {
-        ImGuiIO io = ImGui.getIO();
         ImGui.invisibleButton("canvas", size.x, size.y, ImGuiButtonFlags.MouseButtonLeft |
                 ImGuiButtonFlags.MouseButtonRight);
+
+        handleLeftClick();
+        handleDragging();
+    }
+
+    private boolean isMovingTile;
+    private ImVec2 moveTileDragDelta;
+
+    private void handleDragging() {
+        ImGuiIO io = ImGui.getIO();
         boolean isHovered = ImGui.isItemHovered();
-        if (isHovered && ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
-            ImGui.setWindowFocus();
+
+        // Move tool
+        if (isHovered && ImGui.isMouseDragging(ImGuiMouseButton.Left, -1) &&
+                inputMode == WarehouseCanvasInputMode.MOVE_TILE && selectedTile != null) {
+            isMovingTile = true;
+            if (moveTileDragDelta == null) {
+                moveTileDragDelta = new ImVec2();
+            }
+
+            moveTileDragDelta.x += io.getMouseDeltaX();
+            moveTileDragDelta.y += io.getMouseDeltaY();
         }
-        // Pan logic
-        // You may decide to make that threshold dynamic based on whether the mouse is hovering something etc.
+
+        if (isMovingTile && ImGui.isMouseReleased(ImGuiMouseButton.Left)) {
+            isMovingTile = false;
+            moveTileDragDelta = null;
+
+            Pair<Integer, Integer> newTileCoords = screenToWarehousePoint(getRelativeMousePosition());
+            if (warehouse.isTileCoordinateInRange(newTileCoords.getFirst(), newTileCoords.getSecond())) {
+                int oldX = selectedTile.getX();
+                int oldY = selectedTile.getY();
+            }
+        }
+
+        // Mouse panning
         if (isHovered && ImGui.isMouseDragging(ImGuiMouseButton.Right, -1)) {
             panOffset.x += io.getMouseDelta().x;
             panOffset.y += io.getMouseDelta().y;
-        }
-
-        if (isHovered && ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
-            handleLeftClick();
         }
     }
 
@@ -239,6 +264,12 @@ public class WarehouseCanvas extends Component {
      * Handle left click interaction.
      */
     private void handleLeftClick() {
+        boolean isHovered = ImGui.isItemHovered();
+        if (!isHovered || !ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
+            return;
+        }
+
+        ImGui.setWindowFocus();
         if (inputMode == WarehouseCanvasInputMode.INSERT_TILE) {
             insertTileAtMousePosition();
         } else if (inputMode == WarehouseCanvasInputMode.ERASE_TILE) {
@@ -253,6 +284,7 @@ public class WarehouseCanvas extends Component {
         }
         // Update selected tile
         selectedTile = getTileFromScreenPoint(getRelativeMousePosition());
+
     }
 
     private void insertTileAtMousePosition() {
@@ -316,10 +348,19 @@ public class WarehouseCanvas extends Component {
                 colourScheme.getWarehouseBorderColour(),
                 worldBorderThickness, worldBorderRadius, RectBorderType.Outer);
 
+        // Draw floors - we need to draw this BEFORE the tiles due to layering
+        for (int y = 0; y < warehouse.getHeight(); y++) {
+            for (int x = 0; x < warehouse.getWidth(); x++) {
+                ImVec2 topLeft = getTileTopLeft(x, y);
+                drawWarehouseFloor(drawList, topLeft);
+            }
+        }
+
         // Draw tiles
         for (int y = 0; y < warehouse.getHeight(); y++) {
             for (int x = 0; x < warehouse.getWidth(); x++) {
-                drawTile(drawList, warehouse.getTileAt(x, y));
+                Tile tile = warehouse.getTileAt(x, y);
+                drawTile(drawList, tile, getTileTopLeft(x, y));
             }
         }
 
@@ -330,17 +371,15 @@ public class WarehouseCanvas extends Component {
      * Draw the given tile.
      * @param drawList The draw list to draw to.
      * @param tile The tile to draw.
+     * @param topLeft The top left point to draw the tile at.
      */
-    private void drawTile(ImDrawList drawList, Tile tile) {
-        int x = tile.getX();
-        int y = tile.getY();
-        // Draw floor
-        ImVec2 topLeft = getTileTopLeft(x, y);
-        ImVec2 bottomRight = getTileBottomRight(x, y);
-        DrawingUtils.drawRect(drawList, topLeft, bottomRight,
-                colourScheme.getWarehouseBackgroundColour());
+    private void drawTile(ImDrawList drawList, Tile tile, ImVec2 topLeft) {
+        if (tile == selectedTile && isMovingTile) {
+            topLeft.x += moveTileDragDelta.x;
+            topLeft.y += moveTileDragDelta.y;
+        }
 
-        // Draw tile
+        ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
         Class<? extends Tile> clazz = tile.getClass();
         Map<Class<? extends Tile>, Colour> tileColours = colourScheme.getWarehouseTileColours();
         if (tileColours.containsKey(clazz)) {
@@ -368,6 +407,17 @@ public class WarehouseCanvas extends Component {
     }
 
     /**
+     * Draw the warehouse floor.
+     * @param drawList The draw list to draw to.
+     * @param topLeft The top left point to draw the tile at.
+     */
+    private void drawWarehouseFloor(ImDrawList drawList, ImVec2 topLeft) {
+        ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
+        DrawingUtils.drawRect(drawList, topLeft, bottomRight,
+                colourScheme.getWarehouseBackgroundColour());
+    }
+
+    /**
      * Draws the select tile.
      * @param drawList The draw list to draw to.
      */
@@ -375,7 +425,12 @@ public class WarehouseCanvas extends Component {
         if (selectedTile == null || selectedTile instanceof EmptyTile) return;
 
         ImVec2 topLeft = getTileTopLeft(selectedTile.getX(), selectedTile.getY());
-        ImVec2 bottomRight = getTileBottomRight(selectedTile.getX(), selectedTile.getY());
+        if (moveTileDragDelta != null) {
+            topLeft.x += moveTileDragDelta.x;
+            topLeft.y += moveTileDragDelta.y;
+        }
+
+        ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
 
         Colour outlineColour = getCurrentTileHandleColour();
         DrawingUtils.drawRect(drawList, topLeft, bottomRight, null, outlineColour,
@@ -425,17 +480,6 @@ public class WarehouseCanvas extends Component {
     private ImVec2 getTileTopLeft(int tileX, int tileY) {
         ImVec2 origin = getOrigin();
         return new ImVec2(origin.x + gridStep * tileX, origin.y + gridStep * tileY);
-    }
-
-    /**
-     * Get the bottom-right coordinate of the tile at the given warehouse space coordinates.
-     * @param tileX The horizontal coordinate of the tile, in warehouse space.
-     * @param tileY The vertical coordinate of the tile, in warehouse space.
-     * @return An ImVec2 representing the bottom-right coordinate of the tile in screen space.
-     */
-    private ImVec2 getTileBottomRight(int tileX, int tileY) {
-        ImVec2 topLeft = getTileTopLeft(tileX, tileY);
-        return new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
     }
 
     /**
