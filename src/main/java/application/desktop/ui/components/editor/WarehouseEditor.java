@@ -1,18 +1,7 @@
 package application.desktop.ui.components.editor;
 
-import application.desktop.DesktopApplication;
-import application.desktop.ui.Colour;
-import application.desktop.ui.FontAwesomeIcon;
-import application.desktop.ui.components.common.*;
-import application.desktop.ui.components.common.buttons.Button;
-import application.desktop.ui.events.ComponentEventData;
+import application.desktop.ui.components.common.Panel;
 import warehouse.Warehouse;
-import warehouse.tiles.TileType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Editor window for the Warehouse.
