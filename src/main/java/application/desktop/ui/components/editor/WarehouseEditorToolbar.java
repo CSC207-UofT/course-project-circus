@@ -4,6 +4,7 @@ import application.desktop.DesktopApplication;
 import application.desktop.ui.Colour;
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.common.MenuBar;
+import application.desktop.ui.components.common.Separator;
 import application.desktop.ui.components.common.Text;
 import application.desktop.ui.components.common.buttons.Button;
 import application.desktop.ui.events.ComponentEventData;
@@ -23,6 +24,7 @@ public class WarehouseEditorToolbar extends MenuBar {
     private final Button insertTileToolButton;
     private final List<Button> toolButtons;
     private final Map<TileType, Button> insertTileTypeButtons;
+    private final Text tilePaletteLabel;
 
     /**
      * Construct a WarehouseEditorToolbar.
@@ -91,13 +93,14 @@ public class WarehouseEditorToolbar extends MenuBar {
         insertTileTypeButtons.put(TileType.SHIP_DEPOT, inputShipDepotButton);
 
         // add items to menu bar
+        tilePaletteLabel = new Text(String.format("  %s\tTile Palette\t", FontAwesomeIcon.Palette.getIconCode()), null, false);
         addChildren(
                 selectTileButton,
                 moveTileButton,
                 insertTileToolButton,
                 eraseTileButton,
-                new Text("|", false),
-                new Text(String.format("%s\tTile Palette\t", FontAwesomeIcon.Palette.getIconCode()), false),
+                new Separator(),
+                tilePaletteLabel,
                 inputRackButton,
                 inputReceiveDepotButton,
                 inputShipDepotButton
@@ -111,6 +114,7 @@ public class WarehouseEditorToolbar extends MenuBar {
             Button button = insertTileTypeButtons.get(tileType);
             button.setToggled(tileType == warehouseEditor.getCanvas().getTileTypeToInsert());
             button.setEnabled(insertTileToolButton.isToggled());
+            tilePaletteLabel.setEnabled(insertTileToolButton.isToggled());
         }
     }
 
