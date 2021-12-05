@@ -13,17 +13,14 @@ public class TileFactory {
      */
     public Tile createTile(TileType type, int x, int y) {
         switch (type) {
-            case EMPTY -> {
-                return new EmptyTile(x, y);}
-            case RACK -> {
+            case EMPTY:
+                return new EmptyTile(x, y);
+            case RACK:
                 return new Rack(x, y);
-            }
-            case RECEIVE_DEPOT -> {
+            case RECEIVE_DEPOT:
                 return new ReceiveDepot(x, y);
-            }
-            case SHIP_DEPOT -> {
+            case SHIP_DEPOT:
                 return new ShipDepot(x, y);
-            }
         }
         return null;
     }
