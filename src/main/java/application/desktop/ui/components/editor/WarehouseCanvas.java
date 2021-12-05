@@ -9,6 +9,9 @@ import application.desktop.ui.components.common.Component;
 import imgui.*;
 import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
+import imgui.flag.ImGuiStyleVar;
+import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImBoolean;
 import utils.Pair;
 import warehouse.*;
 import warehouse.tiles.*;
@@ -19,6 +22,11 @@ import java.util.Map;
  * A canvas that visualizes the Warehouse.
  */
 public class WarehouseCanvas extends Component {
+    /**
+     * The name of the erase tile popup dialog.
+     */
+    private static final String ERASE_TILE_POPUP_DIALOG_NAME = "Delete?##erase_tile_dialog_popup";
+
     private Warehouse warehouse;
     private WarehouseCanvasColourScheme colourScheme;
 
@@ -47,6 +55,8 @@ public class WarehouseCanvas extends Component {
      * The currently selected tile, or null if no tile is selected.
      */
     private Tile selectedTile;
+
+    private ImBoolean rememberEraseTilePopupChoice;
 
     /**
      * Construct a new WarehouseCanvas with a default colour scheme.
@@ -91,6 +101,7 @@ public class WarehouseCanvas extends Component {
         inputMode = WarehouseCanvasInputMode.SELECT_TILE;
 
         frameCounter = 0;
+        rememberEraseTilePopupChoice = new ImBoolean(false);
     }
 
     @Override
@@ -108,6 +119,39 @@ public class WarehouseCanvas extends Component {
         ImDrawList drawList = ImGui.getWindowDrawList();
         drawBackground(drawList);
         drawCanvas(drawList);
+
+        drawEraseTilePopupDialog();
+    }
+
+    /**
+     * Draw the "erase tile popup dialog." Confirms if the user wants to delete the tile.
+     */
+    private void drawEraseTilePopupDialog() {
+        if (selectedTile == null || !ImGui.beginPopup(ERASE_TILE_POPUP_DIALOG_NAME,
+                ImGuiWindowFlags.AlwaysAutoResize)) {
+            return;
+        }
+
+        ImGui.text("All those beautiful tiles will be deleted.\nThis operation cannot be undone!\n\n");
+        ImGui.separator();
+
+        ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 0, 0);
+        ImGui.checkbox("Don't ask me next time", rememberEraseTilePopupChoice);
+        ImGui.popStyleVar();
+
+        if (ImGui.button("OK", 120 ,0)) {
+            warehouse.setTile(new EmptyTile(selectedTile.getX(), selectedTile.getY()));
+            selectedTile = null;
+            ImGui.closeCurrentPopup();
+        }
+
+        ImGui.setItemDefaultFocus();
+        ImGui.sameLine();
+
+        if (ImGui.button("Cancel", 120, 0)) {
+            ImGui.closeCurrentPopup();
+        }
+        ImGui.endPopup();
     }
 
 
@@ -179,8 +223,7 @@ public class WarehouseCanvas extends Component {
         if (isHovered && ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
             ImGui.setWindowFocus();
         }
-
-        // Pan (we use a zero mouse threshold when there's no context menu)
+        // Pan logic
         // You may decide to make that threshold dynamic based on whether the mouse is hovering something etc.
         if (isHovered && ImGui.isMouseDragging(ImGuiMouseButton.Right, -1)) {
             panOffset.x += io.getMouseDelta().x;
@@ -196,14 +239,27 @@ public class WarehouseCanvas extends Component {
      * Handle left click interaction.
      */
     private void handleLeftClick() {
-        selectedTile = getTileFromScreenPoint(getRelativeMousePosition());
         if (inputMode == WarehouseCanvasInputMode.INSERT_TILE) {
-            Pair<Integer, Integer> tileCoords = screenToWarehousePoint(getRelativeMousePosition());
-            Tile tileToInsert = tileFactory.createTile(tileTypeToInsert, tileCoords.getFirst(), tileCoords.getSecond());
-            if (tileToInsert != null) {
-                warehouse.setTile(tileToInsert);
-                selectedTile = tileToInsert;
+            insertTileAtMousePosition();
+        } else if (inputMode == WarehouseCanvasInputMode.ERASE_TILE) {
+            Tile tile = getTileFromScreenPoint(getRelativeMousePosition());
+            if (tile != null && !(tile instanceof EmptyTile)) {
+                if (rememberEraseTilePopupChoice.get()) {
+                    warehouse.setTile(new EmptyTile(tile.getX(), tile.getY()));
+                } else {
+                    ImGui.openPopup(ERASE_TILE_POPUP_DIALOG_NAME);
+                }
             }
+        }
+        // Update selected tile
+        selectedTile = getTileFromScreenPoint(getRelativeMousePosition());
+    }
+
+    private void insertTileAtMousePosition() {
+        Pair<Integer, Integer> tileCoords = screenToWarehousePoint(getRelativeMousePosition());
+        Tile tileToInsert = tileFactory.createTile(tileTypeToInsert, tileCoords.getFirst(), tileCoords.getSecond());
+        if (tileToInsert != null) {
+            warehouse.setTile(tileToInsert);
         }
     }
 
@@ -403,6 +459,10 @@ public class WarehouseCanvas extends Component {
 
     public void setColourScheme(WarehouseCanvasColourScheme colourScheme) {
         this.colourScheme = colourScheme;
+    }
+
+    public WarehouseCanvasInputMode getInputMode() {
+        return inputMode;
     }
 
     public void setInputMode(WarehouseCanvasInputMode inputMode) {

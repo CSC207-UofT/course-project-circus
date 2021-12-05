@@ -7,7 +7,7 @@ public class WarehouseInspectorPanel extends Panel {
     /**
      * The id of this panel.
      */
-    private static final String PANEL_ID = "Inspector##inspector_panel";
+    private static final String PANEL_ID = "Properties##inspector_panel";
 
     private final WarehouseEditor warehouseEditor;
 
