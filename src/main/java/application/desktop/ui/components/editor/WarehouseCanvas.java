@@ -13,6 +13,8 @@ import utils.Pair;
 import warehouse.*;
 import warehouse.tiles.*;
 
+import java.util.Map;
+
 /**
  * A canvas that visualizes the Warehouse.
  */
@@ -178,37 +180,11 @@ public class WarehouseCanvas extends Component {
             ImGui.setWindowFocus();
         }
 
-//        // Add first and second point
-//        if (isHovered && !adding_line && ImGui.isMouseClicked(ImGuiMouseButton.Left))
-//        {
-//            points.add(mousePosition);
-//            points.add(mousePosition);
-//            adding_line = true;
-//        }
-//        if (adding_line)
-//        {
-//            points.set(points.size() - 1, mousePosition);
-////            points.back() = mouse_pos_in_canvas;
-//            if (!ImGui.isMouseDown(ImGuiMouseButton.Left))
-//                adding_line = false;
-//        }
-
         // Pan (we use a zero mouse threshold when there's no context menu)
         // You may decide to make that threshold dynamic based on whether the mouse is hovering something etc.
         if (isHovered && ImGui.isMouseDragging(ImGuiMouseButton.Right, -1)) {
             panOffset.x += io.getMouseDelta().x;
             panOffset.y += io.getMouseDelta().y;
-        }
-
-        // Context menu (under default mouse threshold)
-        ImVec2 dragDelta = ImGui.getMouseDragDelta(ImGuiMouseButton.Right);
-        if (ImGui.isMouseReleased(ImGuiMouseButton.Right) && dragDelta.x == 0.0f && dragDelta.y == 0.0f) {
-            ImGui.openPopupOnItemClick("context");
-        }
-
-        if (ImGui.beginPopup("context")) {
-            ImGui.text("context menu");
-            ImGui.endPopup();
         }
 
         if (isHovered && ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
@@ -275,37 +251,64 @@ public class WarehouseCanvas extends Component {
     private void drawWarehouse(ImDrawList drawList) {
         ImVec2 origin = getOrigin();
 
-        // Colours
-        Colour WORLD_BORDER_COLOUR = new Colour(113, 129, 109, 1.0f);
-        Colour FLOOR_TILE_COLOUR = new Colour(101, 101, 101, 0.5f);
-
         // Draw border
         float worldBorderThickness = 2.0f;
         float worldBorderRadius = 10.0f;
         ImVec2 borderBottomRight = new ImVec2(origin.x + gridStep * warehouse.getWidth(),
                 origin.y + gridStep * warehouse.getHeight());
-        DrawingUtils.drawRect(drawList, origin, borderBottomRight, null, WORLD_BORDER_COLOUR,
+        DrawingUtils.drawRect(drawList, origin, borderBottomRight, null,
+                colourScheme.getWarehouseBorderColour(),
                 worldBorderThickness, worldBorderRadius, RectBorderType.Outer);
 
         // Draw tiles
         for (int y = 0; y < warehouse.getHeight(); y++) {
             for (int x = 0; x < warehouse.getWidth(); x++) {
-                ImVec2 topLeft = getTileTopLeft(x, y);
-                ImVec2 bottomRight = getTileBottomRight(x, y);
-                DrawingUtils.drawRect(drawList, topLeft, bottomRight, FLOOR_TILE_COLOUR);
-
-                Tile tile = warehouse.getTileAt(x, y);
-                if (tile instanceof Rack) {
-                    drawRack(drawList, x, y);
-                } else if (tile instanceof ReceiveDepot) {
-                    drawReceiveDepot(drawList, x, y);
-                } else if (tile instanceof ShipDepot) {
-                    drawShipDepot(drawList, x, y);
-                }
+                drawTile(drawList, warehouse.getTileAt(x, y));
             }
         }
 
         drawSelectedTile(drawList);
+    }
+
+    /**
+     * Draw the given tile.
+     * @param drawList The draw list to draw to.
+     * @param tile The tile to draw.
+     */
+    private void drawTile(ImDrawList drawList, Tile tile) {
+        int x = tile.getX();
+        int y = tile.getY();
+        // Draw floor
+        ImVec2 topLeft = getTileTopLeft(x, y);
+        ImVec2 bottomRight = getTileBottomRight(x, y);
+        DrawingUtils.drawRect(drawList, topLeft, bottomRight,
+                colourScheme.getWarehouseBackgroundColour());
+
+        // Draw tile
+        Class<? extends Tile> clazz = tile.getClass();
+        Map<Class<? extends Tile>, Colour> tileColours = colourScheme.getWarehouseTileColours();
+        if (tileColours.containsKey(clazz)) {
+            Colour backgroundColour = tileColours.get(clazz);
+            Colour borderColour = new Colour(backgroundColour, 1);
+            DrawingUtils.drawRect(drawList, topLeft, bottomRight,
+                    backgroundColour, borderColour,
+                    colourScheme.getWarehouseTileBorderThickness(), colourScheme.getWarehouseTileBorderRadius(),
+                    RectBorderType.Inner);
+        }
+
+        Map<Class<? extends Tile>, FontAwesomeIcon> tileIcons = colourScheme.getWarehouseTileIcons();
+        if (tileIcons.containsKey(clazz)) {
+            FontAwesomeIcon icon = tileIcons.get(clazz);
+            //float iconSize = 17.5f;
+            int iconColour = colourScheme.getWarehouseTileIconColour().toU32Colour();
+
+            ImVec2 textSize = new ImVec2();
+            ImGui.calcTextSize(textSize, icon.getIconCode());
+            drawList.addText(ImGui.getFont(), 14,
+                    (topLeft.x + bottomRight.x - textSize.x + 2) / 2,
+                    (topLeft.y + bottomRight.y - textSize.y) / 2,
+                    iconColour, icon.getIconCode());
+        }
     }
 
     private void drawSelectedTile(ImDrawList drawList) {
@@ -342,8 +345,6 @@ public class WarehouseCanvas extends Component {
         }
     }
 
-
-
     /**
      * Get the colour of the tile handle outline.
      */
@@ -377,54 +378,6 @@ public class WarehouseCanvas extends Component {
         ImVec2 topLeft = getTileTopLeft(tileX, tileY);
         float gridStep = getGridStep();
         return new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
-    }
-
-    private void drawRack(ImDrawList drawList, int tileX, int tileY) {
-        float thickness = 2.0f;
-        Colour BACKGROUND_COLOUR = new Colour(68, 118, 160, 0.2f);
-        Colour BORDER_COLOUR = new Colour(BACKGROUND_COLOUR, 1.0f);
-
-        ImVec2 topLeft = getTileTopLeft(tileX, tileY);
-        ImVec2 bottomRight = getTileBottomRight(tileX, tileY);
-        DrawingUtils.drawRect(drawList, topLeft, bottomRight, BACKGROUND_COLOUR, BORDER_COLOUR,
-                thickness, 5.0f, RectBorderType.Inner);
-    }
-
-    private void drawReceiveDepot(ImDrawList drawList, int tileX, int tileY) {
-        float thickness = 2.0f;
-        Colour BACKGROUND_COLOUR = new Colour(207, 192, 121, 0.2f);
-        Colour BORDER_COLOUR = new Colour(BACKGROUND_COLOUR, 1.0f);
-        Colour ICON_COLOUR = new Colour(223, 224, 223, 0.6f);
-
-        ImVec2 topLeft = getTileTopLeft(tileX, tileY);
-        ImVec2 bottomRight = getTileBottomRight(tileX, tileY);
-        DrawingUtils.drawRect(drawList, topLeft, bottomRight, BACKGROUND_COLOUR, BORDER_COLOUR,
-                thickness,5.0f, RectBorderType.Inner);
-
-        float iconSize = 17.5f;
-        drawList.addText(ImGui.getFont(), iconSize,
-                (topLeft.x + bottomRight.x - iconSize) / 2,
-                (topLeft.y + bottomRight.y - iconSize) / 2,
-                ICON_COLOUR.toU32Colour(), FontAwesomeIcon.SignInAlt.getIconCode());
-    }
-
-    private void drawShipDepot(ImDrawList drawList, int tileX, int tileY) {
-        float thickness = 2.0f;
-        Colour BACKGROUND_COLOUR = new Colour(166, 109, 113, 0.2f);
-        Colour BORDER_COLOUR = new Colour(BACKGROUND_COLOUR, 1.0f);
-        Colour ICON_COLOUR = new Colour(223, 224, 223, 0.6f);
-
-        ImVec2 topLeft = getTileTopLeft(tileX, tileY);
-        ImVec2 bottomRight = getTileBottomRight(tileX, tileY);
-        DrawingUtils.drawRect(drawList, topLeft, bottomRight, BACKGROUND_COLOUR, BORDER_COLOUR,
-                thickness,5.0f, RectBorderType.Inner);
-
-        float iconSize = 17.5f;
-        ImFont font = ImGui.getFont();
-        drawList.addText(font, iconSize,
-                (topLeft.x + bottomRight.x - iconSize) / 2 + 3,
-                (topLeft.y + bottomRight.y - iconSize) / 2,
-                ICON_COLOUR.toU32Colour(), FontAwesomeIcon.SignOutAlt.getIconCode());
     }
 
     /**
