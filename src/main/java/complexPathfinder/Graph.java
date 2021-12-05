@@ -24,9 +24,9 @@ public class Graph<T extends GraphNode> {
      * @param id id of intended node
      * @return the target node
      */
-    public T getNode(int id) {
+    public T getNode(String id) {
         return nodes.stream()
-                .filter(node -> node.hashCode() == id)
+                .filter(node -> node.getId() == id)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No node found with ID"));
     }
@@ -38,8 +38,7 @@ public class Graph<T extends GraphNode> {
      */
     public Set<T> getConnections(T node) {
         return connections.get(node.getId()).stream()
-                // TODO: Stop using ids, and integrate nodes with Java hashing.
-                .map((String x)-> getNode(Integer.parseInt(x)))
+                .map(this::getNode)
                 .collect(Collectors.toSet());
     }
 }

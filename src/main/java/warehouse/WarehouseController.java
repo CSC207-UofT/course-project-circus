@@ -65,40 +65,7 @@ public class WarehouseController {
      * Returns a set of available TileNodes for the pathfinder
      * @return the TileNodes
      */
-    public ArrayList<Tile> getNodes()
-    {
-        ArrayList<Tile> nodes = new ArrayList<>();
 
-        Tile[][] tiles = this.getWarehouse().getTiles();
-        for(int i = 0; i < tiles.length; i ++)
-        {
-            for (int j = 0; j < tiles[i].length; j++)
-            {
-                if (tiles[i][j].isEmpty())
-                    nodes.add(tiles[i][j]);
-            }
-        }
-
-        return nodes;
-    }
-
-    public ArrayList<Tile> getConnections(Tile t) throws TileOutOfBoundsException {
-        ArrayList<Tile> connections = new ArrayList<>();
-
-        if(this.getWarehouse().getTileAt(t.getX(), t.getY()+1).isEmpty())
-            connections.add(this.getWarehouse().getTileAt(t.getX(), t.getY()+1));
-        if(t.getY()-1 >= 0) {
-            if (this.getWarehouse().getTileAt(t.getX(), t.getY() - 1).isEmpty())
-                connections.add(this.getWarehouse().getTileAt(t.getX(), t.getY() - 1));
-        }
-        if(this.getWarehouse().getTileAt(t.getX()+1, t.getY()).isEmpty())
-            connections.add(this.getWarehouse().getTileAt(t.getX()+1, t.getY()));
-        if(t.getX()-1 >=0) {
-            if (this.getWarehouse().getTileAt(t.getX() - 1, t.getY()).isEmpty())
-                connections.add(this.getWarehouse().getTileAt(t.getX() - 1, t.getY()));
-        }
-        return connections;
-    }
 
     /**
      * Getter Method for warehouse
