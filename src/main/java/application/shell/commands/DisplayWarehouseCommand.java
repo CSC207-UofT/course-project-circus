@@ -19,6 +19,7 @@ import java.util.Map;
 public class DisplayWarehouseCommand extends ShellCommand {
     private final static Map<Class<? extends Tile>, Character> TILE_SYMBOLS = new HashMap<>();
     private final static Character UNKNOWN_TILE_SYMBOL = '?';
+
     static {
 
         TILE_SYMBOLS.put(EmptyTile.class, '.');
@@ -56,16 +57,12 @@ public class DisplayWarehouseCommand extends ShellCommand {
         for (int y = 0; y < warehouse.getHeight(); y++) {
             stringBuilder.append(String.format(" %d", y));
             for (int x = 0; x < warehouse.getWidth(); x++) {
-                try {
-                    stringBuilder.append(' ');
+                stringBuilder.append(' ');
 
-                    Tile tile = warehouse.getTileAt(x, y);
-                    Class<? extends Tile> clazz = tile.getClass();
-                    char symbol = TILE_SYMBOLS.getOrDefault(clazz, UNKNOWN_TILE_SYMBOL);
-                    stringBuilder.append(symbol);
-                } catch (TileOutOfBoundsException e) {
-                    e.printStackTrace();
-                }
+                Tile tile = warehouse.getTileAt(x, y);
+                Class<? extends Tile> clazz = tile.getClass();
+                char symbol = TILE_SYMBOLS.getOrDefault(clazz, UNKNOWN_TILE_SYMBOL);
+                stringBuilder.append(symbol);
             }
             stringBuilder.append("\n");
         }

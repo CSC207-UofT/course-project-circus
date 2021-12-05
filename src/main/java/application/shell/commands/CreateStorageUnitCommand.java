@@ -52,8 +52,8 @@ public class CreateStorageUnitCommand extends ShellCommand {
         CreateStorageUnitArgContainer args = (CreateStorageUnitArgContainer) argContainer;
         Warehouse warehouse = application.getWarehouseController().getWarehouse();
         // Get tile
-        try {
-            Tile tile = warehouse.getTileAt(args.getX(), args.getY());
+        Tile tile = warehouse.getTileAt(args.getX(), args.getY());
+        if (tile != null) {
             // Make sure we can add a StorageUnit to the tile.
             String type = args.getType().toLowerCase();
             if (tile instanceof StorageTile) {
@@ -82,8 +82,8 @@ public class CreateStorageUnitCommand extends ShellCommand {
                 warehouse.setTile(newTile);
                 return String.format("Created %s at (%d, %d)", type, args.getX(), args.getY());
             }
-        } catch (TileOutOfBoundsException e) {
-            return e.getMessage();
+        } else {
+            return String.format("invalid tile coordinates: (%d, %d)", args.getX(), args.getY());
         }
     }
 

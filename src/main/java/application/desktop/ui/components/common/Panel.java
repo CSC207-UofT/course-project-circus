@@ -79,7 +79,7 @@ public class Panel extends Component {
     }
 
     @Override
-    protected void postDraw(DesktopApplication application) {
+    protected void conditionalPostDraw(DesktopApplication application) {
         ImGui.end();
     }
 

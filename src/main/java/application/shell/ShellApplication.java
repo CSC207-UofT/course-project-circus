@@ -3,8 +3,6 @@ package application.shell;
 import application.shell.commands.*;
 import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandExecutor;
-import warehouse.TileOutOfBoundsException;
-import warehouse.inventory.Item;
 import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 import serialization.FileObjectSaver;

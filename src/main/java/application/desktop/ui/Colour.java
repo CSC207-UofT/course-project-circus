@@ -7,7 +7,8 @@ import imgui.ImGui;
  */
 public class Colour {
     public static final Colour WHITE = new Colour(1.0f, 1.0f, 1.0f);
-    public static final Colour BLACK = new Colour(0, 0, 0);
+    public static final Colour BLACK = new Colour(0.0f, 0.0f, 0.0f);
+    public static final Colour TRANSPARENT = new Colour(0.0f, 0.0f, 0.0f, 0.0f);
 
     private float r;
     private float g;

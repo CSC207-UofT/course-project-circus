@@ -2,11 +2,11 @@ package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Component;
+import application.desktop.ui.components.editor.WarehouseEditorPanel;
 import imgui.ImGui;
 import imgui.ImGuiWindowClass;
 import imgui.flag.ImGuiDockNodeFlags;
 import imgui.flag.ImGuiWindowFlags;
-import imgui.type.ImBoolean;
 
 /**
  * Sidebar component for the DesktopApplication.

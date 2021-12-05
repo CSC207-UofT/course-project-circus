@@ -6,10 +6,8 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
-import warehouse.storage.StorageUnit;
 import warehouse.tiles.StorageTile;
 import warehouse.tiles.Tile;
-import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
 
 /**
@@ -39,15 +37,15 @@ public class DisplayStorageUnitInfoCommand extends ShellCommand {
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
         DisplayStorageUnitInfoCommandArgContainer args = (DisplayStorageUnitInfoCommandArgContainer) argContainer;
         Warehouse warehouse = application.getWarehouseController().getWarehouse();
-        try {
-            Tile tile = warehouse.getTileAt(args.getX(), args.getY());
+        Tile tile = warehouse.getTileAt(args.getX(), args.getY());
+        if (tile != null) {
             if (tile instanceof StorageTile) {
                 return ((StorageTile)tile).getStorageUnit().toString();
             } else {
                 return String.format("the tile at (%d, %d) is not a StorageTile", args.getX(), args.getY());
             }
-        } catch (TileOutOfBoundsException e) {
-            return e.getMessage();
+        } else {
+            return String.format("invalid tile coordinates: (%d, %d)", args.getX(), args.getY());
         }
     }
 

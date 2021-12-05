@@ -29,7 +29,7 @@ class CustomOrder extends Order {
     public boolean isReady() {
         return isReady;
     }
-};
+}
 
 /**
  * Test the OrderQueue.
