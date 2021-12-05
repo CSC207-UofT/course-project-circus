@@ -1,10 +1,12 @@
 package warehouse;
 
 
-import inventory.InventoryCatalogue;
-import inventory.Item;
-import orders.Order;
-import orders.OrderQueue;
+import warehouse.inventory.PartCatalogue;
+import warehouse.inventory.Item;
+import warehouse.tiles.Tile;
+import warehouse.transactions.Order;
+import warehouse.storage.ReceiveDepot;
+import warehouse.transactions.Receivable;
 
 /**
  * This class will be in charge of the WareHouse as a whole and will be the class that the User interacts with
@@ -18,49 +20,48 @@ public class WarehouseController {
     /**
      * Available items serviced by the Warehouse.
      */
-    private final InventoryCatalogue inventoryCatalogue;
-    /**
-     * Warehouse's current order queue.
-     */
-    private final OrderQueue orderQueue;
+    private final PartCatalogue partCatalogue;
 
     /**
      * Constructs an instance of the WarehouseController.
      */
-    public WarehouseController(Warehouse warehouse, InventoryCatalogue inventoryCatalogue)
+    public WarehouseController(Warehouse warehouse, PartCatalogue partCatalogue)
     {
         this.warehouse = warehouse;
-        this.inventoryCatalogue = inventoryCatalogue;
-        this.orderQueue = new OrderQueue();
+        this.partCatalogue = partCatalogue;
     }
 
-    //TODO: Update once Robot functionality is completed.
     /**
-     * Insert an Item into the Warehouse into an available Rack - first add to order queue + update status once
-     * item is successfully added.
-     * @param item The Item to insert.
-     * @return the Tile containing the StorageUnit that the item was inserted into, or null if it could not be inserted.
+     *
+     * @param item The item to insert
+     * @param intermediate The depot to keep this Item
+     * @return The Order for this Item.
      */
-    public Tile insertItem(Item item) {
-        Order order = new Order(item);
-        orderQueue.addOrder(order);
-        Tile tile = warehouse.findRackFor(item);
-        order.setDestination(tile);
-        if (tile == null) {
-            // Can't insert this item!
-            return null;
-        } else {
-            tile.getStorageUnit().addItem(item);
-            orderQueue.completeOrder();
-            return tile;
-        }
+    public Order insertItem(Item item, Receivable intermediate) {
+        // TODO: Implement me!
+        return null;
+    }
+
+    /**
+     * Receive an Item.
+     * @param item The item to receive.
+     * @return a ReceiveDepot that can received the given Item, or null if the Item can't be received.
+     */
+    public ReceiveDepot receiveItem(Item item) {
+        // TODO: Implement me
+        return null;
     }
 
     public Warehouse getWarehouse() {
         return warehouse;
     }
 
-    public InventoryCatalogue getInventoryCatalogue() {
-        return inventoryCatalogue;
+    public PartCatalogue getPartCatalogue() {
+        return partCatalogue;
     }
+
+    public static boolean IsWalkable(Warehouse map, Tile tile) {
+        if (tile.getY() < 0 || tile.getY() > map.getHeight() - 1) return false;
+        if (tile.getX() < 0 || tile.getX() > map.getWidth() - 1) return false;
+        return map.getTileAt(tile.getX(), tile.getY()).isEmpty();
 }
