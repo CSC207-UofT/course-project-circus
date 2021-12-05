@@ -16,4 +16,8 @@ public enum WarehouseCanvasInputMode {
      * Insert a tile.
      */
     INSERT_TILE,
+    /**
+     * Erase a tile.
+     */
+    ERASE_TILE
 }
