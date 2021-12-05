@@ -22,10 +22,10 @@ public class WarehouseCanvas extends Component {
     private Warehouse warehouse;
     private WarehouseCanvasColourScheme colourScheme;
 
-    private float gridStep;
-    private float minSizeX;
-    private float minSizeY;
-    private boolean showGrid;
+    private final float gridStep;
+    private final float minSizeX;
+    private final float minSizeY;
+    private final boolean showGrid;
 
     private int frameCounter;
 
@@ -33,7 +33,7 @@ public class WarehouseCanvas extends Component {
     private ImVec2 contentTopLeft;
 
     private TileType tileTypeToInsert;
-    private TileFactory tileFactory;
+    private final TileFactory tileFactory;
 
     /**
      * Offset applied to canvas elements to enable scrolling.
@@ -311,6 +311,10 @@ public class WarehouseCanvas extends Component {
         }
     }
 
+    /**
+     * Draws the select tile.
+     * @param drawList The draw list to draw to.
+     */
     private void drawSelectedTile(ImDrawList drawList) {
         if (selectedTile == null || selectedTile instanceof EmptyTile) return;
 
@@ -364,7 +368,6 @@ public class WarehouseCanvas extends Component {
      */
     private ImVec2 getTileTopLeft(int tileX, int tileY) {
         ImVec2 origin = getOrigin();
-        float gridStep = getGridStep();
         return new ImVec2(origin.x + gridStep * tileX, origin.y + gridStep * tileY);
     }
 
@@ -376,7 +379,6 @@ public class WarehouseCanvas extends Component {
      */
     private ImVec2 getTileBottomRight(int tileX, int tileY) {
         ImVec2 topLeft = getTileTopLeft(tileX, tileY);
-        float gridStep = getGridStep();
         return new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
     }
 
@@ -403,34 +405,6 @@ public class WarehouseCanvas extends Component {
         this.colourScheme = colourScheme;
     }
 
-    public float getGridStep() {
-        return gridStep;
-    }
-
-    public void setGridStep(float gridStep) {
-        this.gridStep = gridStep;
-    }
-
-    public float getMinSizeX() {
-        return minSizeX;
-    }
-
-    public void setMinSizeX(float minSizeX) {
-        this.minSizeX = minSizeX;
-    }
-
-    public float getMinSizeY() {
-        return minSizeY;
-    }
-
-    public void setMinSizeY(float minSizeY) {
-        this.minSizeY = minSizeY;
-    }
-
-    public WarehouseCanvasInputMode getInputMode() {
-        return inputMode;
-    }
-
     public void setInputMode(WarehouseCanvasInputMode inputMode) {
         this.inputMode = inputMode;
     }
@@ -441,21 +415,5 @@ public class WarehouseCanvas extends Component {
 
     public void setTileTypeToInsert(TileType tileTypeToInsert) {
         this.tileTypeToInsert = tileTypeToInsert;
-    }
-
-    public Tile getSelectedTile() {
-        return selectedTile;
-    }
-
-    public void setSelectedTile(Tile selectedTile) {
-        this.selectedTile = selectedTile;
-    }
-
-    public boolean isShowGrid() {
-        return showGrid;
-    }
-
-    public void setShowGrid(boolean showGrid) {
-        this.showGrid = showGrid;
     }
 }
