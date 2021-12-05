@@ -51,7 +51,7 @@ public class PartCatalogueTest {
     }
 
     /**
-     * Testing getPartById
+     * Testing getPartById -- retrieving Part by its ID
      */
     @Test
     void getPartById() {
