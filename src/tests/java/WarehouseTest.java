@@ -7,14 +7,8 @@ public class WarehouseTest {
     @Test
     public void testGetTileAt() {
         Warehouse warehouse = new Warehouse(10, 10);
-        try {
-            assertEquals(warehouse.getTileAt(0, 0), warehouse.getTileAt(0, 0));
-        } catch (TileOutOfBoundsException e) {
-            e.printStackTrace();
-        }
-        assertThrows(TileOutOfBoundsException.class, () -> {
-            warehouse.getTileAt(11, 10);
-        });
+        assertEquals(warehouse.getTileAt(0, 0), warehouse.getTileAt(0, 0));
+        assertNull(warehouse.getTileAt(11, 10));
     }
 
     @Test
