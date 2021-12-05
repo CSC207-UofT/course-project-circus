@@ -97,7 +97,7 @@ public class WarehouseEditorToolbar extends MenuBar {
                 insertTileToolButton,
                 eraseTileButton,
                 new Text("|", false),
-                new Text("Tile Palette:\t", false),
+                new Text(String.format("%s\tTile Palette\t", FontAwesomeIcon.Palette.getIconCode()), false),
                 inputRackButton,
                 inputReceiveDepotButton,
                 inputShipDepotButton
