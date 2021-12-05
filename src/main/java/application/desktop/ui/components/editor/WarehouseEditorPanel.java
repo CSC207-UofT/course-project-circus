@@ -32,6 +32,13 @@ public class WarehouseEditorPanel extends Panel {
         this.warehouse = warehouse;
         canvas = new WarehouseCanvas(warehouse);
 
+        toolButtons = new ArrayList<>();
+        tileInputButtons = new ArrayList<>();
+
+        initComponents();
+    }
+
+    private void initComponents() {
         // Create tool buttons
         Button selectTileButton = new Button("", FontAwesomeIcon.MousePointer, "Select tool");
         selectTileButton.setToggleable(true);
@@ -57,7 +64,7 @@ public class WarehouseEditorPanel extends Panel {
         eraseTileButton.getOnToggledOnEvent().addListener(this::onEraseTileButtonToggledOn);
         eraseTileButton.getOnToggledOffEvent().addListener(this::onEraseTileButtonToggledOff);
 
-        toolButtons = new ArrayList<>();
+        toolButtons.clear();
         toolButtons.add(selectTileButton);
         toolButtons.add(moveTileButton);
         toolButtons.add(insertTileButton);
@@ -79,12 +86,12 @@ public class WarehouseEditorPanel extends Panel {
         inputShipDepotButton.setEnabled(false);
         inputShipDepotButton.getOnClickedEvent().addListener(this::onInputShipDepotButtonClicked);
 
-        tileInputButtons = new ArrayList<>();
+        tileInputButtons.clear();
         tileInputButtons.add(inputRackButton);
         tileInputButtons.add(inputReceiveDepotButton);
         tileInputButtons.add(inputShipDepotButton);
 
-        // Initialise UI
+        // Toolbar
         addChild(new MenuBar(
                 selectTileButton,
                 moveTileButton,
@@ -96,6 +103,7 @@ public class WarehouseEditorPanel extends Panel {
                 inputReceiveDepotButton,
                 inputShipDepotButton
         ));
+        // Canvas
         addChild(canvas);
     }
 
@@ -105,12 +113,14 @@ public class WarehouseEditorPanel extends Panel {
     private void onSelectTileButtonToggledOn(ComponentEventData data) {
         Button source = (Button) data.getSource();
         onToolButtonToggledOn(source, false);
+        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     /**
      * Called when the "select tile" button is toggled OFF.
      */
     private void onSelectTileButtonToggledOff(ComponentEventData data) {
+        canvas.setInputMode(WarehouseCanvasInputMode.NONE);
     }
 
     /**
@@ -119,12 +129,14 @@ public class WarehouseEditorPanel extends Panel {
     private void onMoveTileButtonToggledOn(ComponentEventData data) {
         Button source = (Button) data.getSource();
         onToolButtonToggledOn(source, false);
+        canvas.setInputMode(WarehouseCanvasInputMode.MOVE_TILE);
     }
 
     /**
      * Called when the "move tile" button is toggled OFF.
      */
     private void onMoveTileButtonToggledOff(ComponentEventData data) {
+        canvas.setInputMode(WarehouseCanvasInputMode.NONE);
     }
 
     /**
@@ -149,7 +161,7 @@ public class WarehouseEditorPanel extends Panel {
     private void onEraseTileButtonToggledOn(ComponentEventData data) {
         Button source = (Button) data.getSource();
         onToolButtonToggledOn(source, false);
-        canvas.setInputMode(WarehouseCanvasInputMode.EMPTY);
+        canvas.setInputMode(WarehouseCanvasInputMode.PLACE_EMPTY);
     }
 
     /**
@@ -178,23 +190,20 @@ public class WarehouseEditorPanel extends Panel {
      * Called when the "input rack tile" button is clicked.
      */
     private void onInputRackButtonClicked(ComponentEventData data) {
-        // TODO: Check to make sure that the insert tile button is actually toggled!
-        canvas.setInputMode(WarehouseCanvasInputMode.RACK);
+        canvas.setInputMode(WarehouseCanvasInputMode.PLACE_RACK);
     }
 
     /**
      * Called when the "input receive depot tile" button is clicked.
      */
     private void onInputReceiveDepotButtonClicked(ComponentEventData data) {
-        // TODO: Check to make sure that the insert tile button is actually toggled!
-        canvas.setInputMode(WarehouseCanvasInputMode.RECEIVE_DEPOT);
+        canvas.setInputMode(WarehouseCanvasInputMode.PLACE_RECEIVE_DEPOT);
     }
 
     /**
      * Called when the "input ship depot tile button" is clicked.
      */
     private void onInputShipDepotButtonClicked(ComponentEventData data) {
-        // TODO: Check to make sure that the insert tile button is actually toggled!
-        canvas.setInputMode(WarehouseCanvasInputMode.SHIP_DEPOT);
+        canvas.setInputMode(WarehouseCanvasInputMode.PLACE_SHIP_DEPOT);
     }
 }

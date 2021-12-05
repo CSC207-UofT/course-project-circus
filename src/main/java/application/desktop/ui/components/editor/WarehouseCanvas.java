@@ -9,10 +9,7 @@ import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiMouseButton;
 import utils.Pair;
 import warehouse.*;
-import warehouse.tiles.Rack;
-import warehouse.tiles.ReceiveDepot;
-import warehouse.tiles.ShipDepot;
-import warehouse.tiles.Tile;
+import warehouse.tiles.*;
 
 /**
  * A canvas that visualizes the Warehouse.
@@ -252,8 +249,21 @@ public class WarehouseCanvas extends Component {
 
 
         if (isHovered && ImGui.isMouseClicked(ImGuiMouseButton.Left)) {
-            // TODO: Interaction
-            selectedTile = getTileFromScreenPoint(getRelativeMousePosition());
+            Pair<Integer, Integer> tileCoords = screenToWarehousePoint(getRelativeMousePosition());
+            int tileX = tileCoords.getFirst();
+            int tileY = tileCoords.getSecond();
+            if (warehouse.isTileCoordinateInRange(tileX, tileY)) {
+                Tile newTile = null;
+                switch (inputMode) {
+                    case PLACE_EMPTY -> newTile = new EmptyTile(tileX, tileY);
+                    case PLACE_RACK -> newTile = new Rack(tileX, tileY);
+                    case PLACE_RECEIVE_DEPOT -> newTile = new ReceiveDepot(tileX, tileY);
+                    case PLACE_SHIP_DEPOT -> newTile = new ShipDepot(tileX, tileY);
+                }
+                if (newTile != null) {
+                    warehouse.setTile(newTile);
+                }
+            }
         }
     }
 
@@ -330,14 +340,12 @@ public class WarehouseCanvas extends Component {
                 drawList.addRectFilled(x1, y1, x2, y2, FLOOR_TILE_COLOUR);
 
                 Tile tile = warehouse.getTileAt(x, y);
-                boolean isSelected = isTileSelected(x, y);
+                boolean isSelected = isTileSelected(x, y) && inputMode != WarehouseCanvasInputMode.NONE;
                 if (tile instanceof Rack) {
                     drawRack(drawList, x1, y1, x2, y2, isSelected);
                 } else if (tile instanceof ReceiveDepot) {
-                    // #ffd885
                     drawReceiveDepot(drawList, x1, y1, x2, y2, isSelected);
                 } else if (tile instanceof ShipDepot) {
-                    // #a66d71
                     drawShipDepot(drawList, x1, y1, x2, y2, isSelected);
                 }
             }

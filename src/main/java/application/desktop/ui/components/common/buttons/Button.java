@@ -133,6 +133,8 @@ public class Button extends Component {
             colourCount++;
         }
 
+        boolean previousToggleState = isToggled;
+
         String iconCode = icon != null ? icon.getIconCode() : "";
         String iconSuffix = (icon != null && !label.isEmpty() ? iconSeparator : "");
         if (ImGui.button(iconCode + iconSuffix + label)) {
@@ -140,11 +142,14 @@ public class Button extends Component {
 
             if (isToggleable) {
                 isToggled = !isToggled;
-                if (isToggled) {
-                    onToggledOnEvent.execute(this, application);
-                } else {
-                    onToggledOffEvent.execute(this, application);
-                }
+            }
+        }
+
+        if (isToggleable && previousToggleState != isToggled) {
+            if (isToggled) {
+                onToggledOnEvent.execute(this, application);
+            } else {
+                onToggledOffEvent.execute(this, application);
             }
         }
 

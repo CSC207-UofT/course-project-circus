@@ -11,17 +11,25 @@ public enum WarehouseCanvasInputMode {
     /**
      * Input empty tiles, e.g. clicking on a non-empty tile erases it.
      */
-    EMPTY,
+    PLACE_EMPTY,
     /**
      * Input a rack.
      */
-    RACK,
+    PLACE_RACK,
     /**
      * Input a receive depot.
      */
-    RECEIVE_DEPOT,
+    PLACE_RECEIVE_DEPOT,
     /**
      * Input a ship depot
      */
-    SHIP_DEPOT
+    PLACE_SHIP_DEPOT,
+    /**
+     * Move a tile
+     */
+    MOVE_TILE,
+    /**
+     * Select a tile
+     */
+    SELECT_TILE
 }
