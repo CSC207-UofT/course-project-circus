@@ -1,9 +1,8 @@
-package application.desktop.ui.components.common.buttons;
+package application.desktop.ui.components.common;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.Colour;
 import application.desktop.ui.FontAwesomeIcon;
-import application.desktop.ui.components.common.Component;
 import application.desktop.ui.events.ComponentEvent;
 import imgui.ImGui;
 import imgui.ImVec4;

@@ -6,7 +6,7 @@ import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.common.MenuBar;
 import application.desktop.ui.components.common.Separator;
 import application.desktop.ui.components.common.Text;
-import application.desktop.ui.components.common.buttons.Button;
+import application.desktop.ui.components.common.Button;
 import application.desktop.ui.events.ComponentEventData;
 import warehouse.tiles.TileType;
 
