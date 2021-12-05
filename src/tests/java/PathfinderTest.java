@@ -10,6 +10,8 @@ import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 import warehouse.storage.Rack;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PathfinderTest {
@@ -19,12 +21,11 @@ public class PathfinderTest {
 
         PartCatalogue catalogue = new PartCatalogue();
         Warehouse map = new Warehouse(10, 10);
-        map.getTileAt(0,1).setStorageUnit(new Rack(5));
-        map.getTileAt(1,1).setStorageUnit(new Rack(5));
-        map.getTileAt(2,1).setStorageUnit(new Rack(5));
+        map.getTileAt(0, 1).setStorageUnit(new Rack(5));
+        map.getTileAt(1, 1).setStorageUnit(new Rack(5));
+        map.getTileAt(2, 1).setStorageUnit(new Rack(5));
         WarehouseController controller = new WarehouseController(map, catalogue);
-        PathfinderController check = new PathfinderController(map.getTiles(),map.getTileAt(0,0),map.getTileAt(6,6));
-        
-
+        PathfinderController check = new PathfinderController(map.getTiles(), map.getTileAt(0, 0), map.getTileAt(6, 6));
+        System.out.print(check.getPath());
     }
 }

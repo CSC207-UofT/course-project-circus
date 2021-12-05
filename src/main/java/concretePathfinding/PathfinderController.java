@@ -4,6 +4,7 @@ import complexPathfinder.*;
 import warehouse.Tile;
 import warehouse.TileOutOfBoundsException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,10 +31,14 @@ public class PathfinderController {
         this.to = new TileNode(to);
     }
 
-    public List getPath(){
+    public ArrayList<Tile> getPath(){
         Pathfinder pathfinder = new Pathfinder(this.graph, this.nextNodeScorer, this.targetNodeScorer);
-
-        return pathfinder.findPath(this.from, this.to);
+        ArrayList<TileNode> result = (ArrayList<TileNode>) pathfinder.findPath(this.from, this.to);
+        ArrayList<Tile> path = new ArrayList<>();
+        for (TileNode t: result){
+            path.add(t.getT());
+        }
+        return path;
     }
 
 
