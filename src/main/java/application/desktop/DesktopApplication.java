@@ -174,7 +174,7 @@ public class DesktopApplication extends Application {
                     0.33f, null, dockMainId);
 
             imgui.internal.ImGui.dockBuilderDockWindow("Sidebar", dockIdLeft);
-            imgui.internal.ImGui.dockBuilderDockWindow("Warehouse Layout", dockMainId.get());
+            imgui.internal.ImGui.dockBuilderDockWindow("Warehouse", dockMainId.get());
             imgui.internal.ImGui.dockBuilderFinish(dockspaceId);
         }
         ImGui.dockSpace(dockspaceId, 0.0f, 0.0f);
