@@ -130,14 +130,14 @@ public class WarehouseEditorPanel extends Panel {
     private void onSelectTileButtonToggledOn(ComponentEventData data) {
         Button source = (Button) data.getSource();
         onToolButtonToggledOn(source);
-        canvas.setInputMode(WarehouseCanvasInputMode.NONE);
+        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     /**
      * Called when the "select tile" button is toggled OFF.
      */
     private void onSelectTileButtonToggledOff(ComponentEventData data) {
-        canvas.setInputMode(WarehouseCanvasInputMode.NONE);
+        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     /**
@@ -153,7 +153,7 @@ public class WarehouseEditorPanel extends Panel {
      * Called when the "move tile" button is toggled OFF.
      */
     private void onMoveTileButtonToggledOff(ComponentEventData data) {
-        canvas.setInputMode(WarehouseCanvasInputMode.NONE);
+        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     /**
@@ -172,7 +172,7 @@ public class WarehouseEditorPanel extends Panel {
      * Called when the "insert tile" button is toggled OFF.
      */
     private void onInsertTileButtonToggledOff(ComponentEventData data) {
-        canvas.setInputMode(WarehouseCanvasInputMode.NONE);
+        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     /**
@@ -189,7 +189,7 @@ public class WarehouseEditorPanel extends Panel {
      * Called when the "erase tile" button is toggled Off.
      */
     private void onEraseTileButtonToggledOff(ComponentEventData data) {
-        canvas.setInputMode(WarehouseCanvasInputMode.NONE);
+        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     private void onToolButtonToggledOn(Button source) {

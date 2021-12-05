@@ -7,7 +7,7 @@ public enum WarehouseCanvasInputMode {
     /**
      * No input.
      */
-    NONE,
+    SELECT_TILE,
     /**
      * Move a tile
      */

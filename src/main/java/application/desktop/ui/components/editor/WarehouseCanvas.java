@@ -18,13 +18,9 @@ public class WarehouseCanvas extends Component {
     private Warehouse warehouse;
     private WarehouseCanvasColourScheme colourScheme;
 
-    private float cellSize;
+    private float gridStep;
     private float minSizeX;
     private float minSizeY;
-
-    private float minZoom;
-    private float maxZoom;
-    private float zoomStep;
     private boolean showGrid;
 
     private int frameCounter;
@@ -40,10 +36,6 @@ public class WarehouseCanvas extends Component {
      */
     private final ImVec2 panOffset;
     /**
-     * Scale multiplier for zooming.
-     */
-    private float zoom;
-    /**
      * Current input mode of this WarehouseCanvas.
      */
     private WarehouseCanvasInputMode inputMode;
@@ -58,11 +50,9 @@ public class WarehouseCanvas extends Component {
      * @param warehouse The Warehouse to visualise.
      */
     public WarehouseCanvas(Warehouse warehouse) {
-        this(warehouse,
-                WarehouseCanvasColourScheme.DEFAULT,
-                64.0f,
-                100.0f,
-                100.0f, 0.05f, 3.0f, 0.1f,
+        this(warehouse, WarehouseCanvasColourScheme.DEFAULT,
+                32.0f,
+                100.0f, 100.0f,
                 true);
     }
 
@@ -71,28 +61,21 @@ public class WarehouseCanvas extends Component {
      *
      * @param warehouse    The Warehouse to visualise.
      * @param colourScheme The colour scheme of this WarehouseCanvas.
-     * @param cellSize     The size of a grid cell in screen coordinates.
+     * @param gridStep     The size of a grid cell in screen coordinates.
      * @param minSizeX     The minimum horizontal size of the canvas, in pixels.
      * @param minSizeY     The minimum vertical size of the canvas, in pixels.
-     * @param minZoom      The minimum scale allowed zooming out.
-     * @param maxZoom      The maximum scale allowed zooming in.
-     * @param zoomStep     The amount to step when zooming.
      * @param showGrid     Whether to show the grid.
      */
     public WarehouseCanvas(Warehouse warehouse,
                            WarehouseCanvasColourScheme colourScheme,
-                           float cellSize,
+                           float gridStep,
                            float minSizeX, float minSizeY,
-                           float minZoom, float maxZoom, float zoomStep,
                            boolean showGrid) {
         this.warehouse = warehouse;
         this.colourScheme = colourScheme;
-        this.cellSize = cellSize;
+        this.gridStep = gridStep;
         this.minSizeX = minSizeX;
         this.minSizeY = minSizeY;
-        this.minZoom = minZoom;
-        this.maxZoom = maxZoom;
-        this.zoomStep = zoomStep;
         this.showGrid = showGrid;
 
         tileTypeToInsert = TileType.RACK;
@@ -101,8 +84,7 @@ public class WarehouseCanvas extends Component {
         size = new ImVec2(minSizeX, minSizeY);
         topLeft = new ImVec2(0, 0);
         panOffset = new ImVec2(0, 0);
-        zoom = 1.0f;
-        inputMode = WarehouseCanvasInputMode.NONE;
+        inputMode = WarehouseCanvasInputMode.SELECT_TILE;
 
         frameCounter = 0;
     }
@@ -115,7 +97,6 @@ public class WarehouseCanvas extends Component {
         // NOTE: The frame counter is a hacky way of centering the contents on load. It works by waiting for the second
         // frame, so that all the contents have been rendered and updated at least once.
         if (frameCounter <= 1) {
-            zoomToFit();
             panToCentre();
             frameCounter += 1;
         }
@@ -143,24 +124,14 @@ public class WarehouseCanvas extends Component {
     }
 
     /**
-     * Return the size of the Warehouse in pixel space.
-     */
-    private ImVec2 getWarehouseSizeInPixels() {
-        float gridStep = getGridStep();
-        return new ImVec2(gridStep * warehouse.getWidth(), gridStep * warehouse.getHeight());
-    }
-
-    /**
      * Return the coordinates of the tile at the given point in warehouse space.
      * @remark Note that it is NOT guaranteed that the warehouse space coordinates correspond to an actual tile
      * in the warehouse, e.g. the returned coordinates may be out of bounds!
      * @param p The point in screen space to convert to warehouse space.
      */
     private Pair<Integer, Integer> screenToWarehousePoint(ImVec2 p) {
-        ImVec2 pixelWarehouseSize = getWarehouseSizeInPixels();
-        float gridStep = getGridStep();
-        int tileX = (int) ((p.x + pixelWarehouseSize.x / 2) / gridStep);
-        int tileY = (int) ((p.y  + pixelWarehouseSize.y / 2) / gridStep);
+        int tileX = (int) Math.floor(p.x / gridStep);
+        int tileY = (int) Math.floor(p.y / gridStep);
         return new Pair<>(tileX, tileY);
     }
 
@@ -177,19 +148,10 @@ public class WarehouseCanvas extends Component {
      * Update the panOffset so that the contents are centered in the canvas. Mutates panOffset.
      */
     private void panToCentre() {
-        float gridStep = getGridStep();
         panOffset.x = gridStep * (float) Math.floor(warehouse.getWidth() / 2.0f)
-                + (size.x - gridStep * warehouse.getWidth()) / 2.0f;
+                + size.x / 2.0f - gridStep * warehouse.getWidth();
         panOffset.y = gridStep * (float) Math.floor(warehouse.getHeight() / 2.0f)
-                + (size.y - gridStep * warehouse.getHeight()) / 2.0f;
-    }
-
-    /**
-     * Update the zoom scale so that the contents fit on the screen. Mutates the zoom.
-     */
-    private void zoomToFit() {
-        ImVec2 pixelWarehouseSize = getWarehouseSizeInPixels();
-        zoom = Math.min(pixelWarehouseSize.x / size.x, pixelWarehouseSize.y / size.y);
+                + size.y / 2.0f - gridStep * warehouse.getHeight();
     }
 
     /**
@@ -236,12 +198,6 @@ public class WarehouseCanvas extends Component {
             panOffset.y += io.getMouseDelta().y;
         }
 
-        // Zoom
-        if (isHovered) {
-            zoom += Math.signum(io.getMouseWheel()) * zoomStep;
-            zoom = Math.max(Math.min(zoom, maxZoom), minZoom);
-        }
-
         // Context menu (under default mouse threshold)
         ImVec2 dragDelta = ImGui.getMouseDragDelta(ImGuiMouseButton.Right);
         if (ImGui.isMouseReleased(ImGuiMouseButton.Right) && dragDelta.x == 0.0f && dragDelta.y == 0.0f) {
@@ -268,6 +224,7 @@ public class WarehouseCanvas extends Component {
             Tile tileToInsert = tileFactory.createTile(tileTypeToInsert, tileCoords.getFirst(), tileCoords.getSecond());
             if (tileToInsert != null) {
                 warehouse.setTile(tileToInsert);
+                selectedTile = tileToInsert;
             }
         }
     }
@@ -294,7 +251,6 @@ public class WarehouseCanvas extends Component {
         ImVec2 bottomRight = getBottomRightCoordinate();
         drawList.pushClipRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, true);
         final int gridLineColour = colourScheme.getGridLineColour().toU32Colour();
-        float gridStep = getGridStep();
 
         // Draw horizontal lines
         for (float x = panOffset.x % gridStep; x < size.x; x += gridStep) {
@@ -318,121 +274,176 @@ public class WarehouseCanvas extends Component {
      */
     private void drawWarehouse(ImDrawList drawList) {
         ImVec2 origin = getOrigin();
-        float gridStep = getGridStep();
 
         // Colours
         int WORLD_BORDER_COLOUR = ImGui.getColorU32(113 / 255f, 129 / 255.0f, 109 / 255.0f, 1.0f);
         int FLOOR_TILE_COLOUR = ImGui.getColorU32(101 / 255.0f, 101 / 255.0f, 101 / 255.0f, 0.5f);
 
-        float centreOffsetX = -(float) Math.floor(warehouse.getWidth() / 2.0f);
-        float centreOffsetY = -(float) Math.floor(warehouse.getHeight() / 2.0f);
-
         // Draw border
-        float borderThickness = 4.0f * zoom;
-        drawList.addRect(origin.x + gridStep * centreOffsetX - borderThickness * 0.5f,
-                origin.y + gridStep * centreOffsetY - borderThickness * 0.5f,
-                origin.x + gridStep * (warehouse.getWidth() + centreOffsetX) + borderThickness * 0.5f,
-                origin.y + gridStep * (warehouse.getHeight() + centreOffsetY) + borderThickness * 0.5f,
+        float borderThickness = 2.0f;
+        drawList.addRect(origin.x - borderThickness * 0.5f,
+                origin.y - borderThickness * 0.5f,
+                origin.x + gridStep * (warehouse.getWidth()) + borderThickness * 0.5f,
+                origin.y + gridStep * (warehouse.getHeight()) + borderThickness * 0.5f,
                 WORLD_BORDER_COLOUR, 10.0f, 0, borderThickness);
 
         // Draw tiles
         for (int y = 0; y < warehouse.getHeight(); y++) {
             for (int x = 0; x < warehouse.getWidth(); x++) {
-                float x1 = origin.x + gridStep * (x + centreOffsetX);
-                float y1 = origin.y + gridStep * (y + centreOffsetY);
-                float x2 = x1 + gridStep;
-                float y2 = y1 + gridStep;
-                drawList.addRectFilled(x1, y1, x2, y2, FLOOR_TILE_COLOUR);
+                ImVec2 topLeft = getTileTopLeft(x, y);
+                ImVec2 bottomRight = getTileBottomRight(x, y);
+                drawList.addRectFilled(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, FLOOR_TILE_COLOUR);
 
                 Tile tile = warehouse.getTileAt(x, y);
                 if (tile instanceof Rack) {
-                    drawRack(drawList, x1, y1, x2, y2);
+                    drawRack(drawList, x, y);
                 } else if (tile instanceof ReceiveDepot) {
-                    drawReceiveDepot(drawList, x1, y1, x2, y2);
+                    drawReceiveDepot(drawList, x, y);
                 } else if (tile instanceof ShipDepot) {
-                    drawShipDepot(drawList, x1, y1, x2, y2);
+                    drawShipDepot(drawList, x, y);
                 }
             }
         }
 
-        // Draw selected tile outline
-        if (selectedTile != null) {
-            drawList.addRect(x1, y1, x2, y2,
-                    colourScheme.getSelectionOutlineColour().toU32Colour(),
-                    5.0f, 0, 1.5f);
+        drawSelectedTile(drawList);
+    }
+
+    private void drawSelectedTile(ImDrawList drawList) {
+        if (selectedTile == null || selectedTile instanceof EmptyTile) return;
+
+        ImVec2 topLeft = getTileTopLeft(selectedTile.getX(), selectedTile.getY());
+        ImVec2 bottomRight = getTileBottomRight(selectedTile.getX(), selectedTile.getY());
+
+        int outlineColour = getCurrentTileHandleColour().toU32Colour();
+        drawList.addRect(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y, outlineColour, 1.0f, 0, 0);
+
+        // Draw handles
+        if (inputMode.equals(WarehouseCanvasInputMode.MOVE_TILE)) {
+            int white = Colour.WHITE.toU32Colour();
+            float handleSize = 6;
+            // Top handles
+            drawList.addRectFilled(topLeft.x - handleSize * 0.5f, topLeft.y - handleSize * 0.5f,
+                    topLeft.x + handleSize * 0.5f, topLeft.y + handleSize * 0.5f, white);
+            drawList.addRect(topLeft.x - (handleSize + 1) * 0.5f, topLeft.y - (handleSize + 1) * 0.5f,
+                    topLeft.x + (handleSize + 1) * 0.5f, topLeft.y + (handleSize + 1) * 0.5f, outlineColour);
+
+            drawList.addRectFilled(bottomRight.x - handleSize * 0.5f, topLeft.y - handleSize * 0.5f,
+                    bottomRight.x + handleSize * 0.5f, topLeft.y + handleSize * 0.5f, white);
+            drawList.addRect(bottomRight.x - (handleSize + 1) * 0.5f, topLeft.y - (handleSize + 1) * 0.5f,
+                    bottomRight.x + (handleSize + 1) * 0.5f, topLeft.y + (handleSize + 1) * 0.5f, outlineColour);
+
+            // Bottom handles
+            drawList.addRectFilled(topLeft.x - handleSize * 0.5f, bottomRight.y - handleSize * 0.5f,
+                    topLeft.x + handleSize * 0.5f, bottomRight.y + handleSize * 0.5f, white);
+            drawList.addRect(topLeft.x - (handleSize + 1) * 0.5f, bottomRight.y - (handleSize + 1) * 0.5f,
+                    topLeft.x + (handleSize + 1) * 0.5f, bottomRight.y + (handleSize + 1) * 0.5f, outlineColour);
+
+            drawList.addRectFilled(bottomRight.x - handleSize * 0.5f, bottomRight.y - handleSize * 0.5f,
+                    bottomRight.x + handleSize * 0.5f, bottomRight.y + handleSize * 0.5f, white);
+            drawList.addRect(bottomRight.x - (handleSize + 1) * 0.5f, bottomRight.y - (handleSize + 1) * 0.5f,
+                    bottomRight.x + (handleSize + 1) * 0.5f, bottomRight.y + (handleSize + 1) * 0.5f, outlineColour);
         }
     }
 
-    private void drawRack(ImDrawList drawList, float x1, float y1, float x2, float y2) {
-        float thickness = 4.0f * zoom;
-        Colour RACK_BACKGROUND_COLOUR = new Colour(68, 118, 160, 0.2f);
-        Colour RACK_BORDER_COLOUR = new Colour(RACK_BACKGROUND_COLOUR, 1.0f);
+    /**
+     * Get the colour of the tile handle outline.
+     */
+    private Colour getCurrentTileHandleColour() {
+        if (inputMode == WarehouseCanvasInputMode.MOVE_TILE) {
+            return colourScheme.getMoveOutlineColour();
+        } else {
+            return colourScheme.getSelectionOutlineColour();
+        }
+    }
 
-        // Draw rack
-        drawList.addRectFilled(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
-                x2 - thickness * 0.5f, y2 - thickness * 0.5f,
-                RACK_BACKGROUND_COLOUR.toU32Colour(), 5.0f, 0);
+    /**
+     * Get the top-left coordinate of the tile at the given warehouse space coordinates.
+     * @param tileX The horizontal coordinate of the tile, in warehouse space.
+     * @param tileY The vertical coordinate of the tile, in warehouse space.
+     * @return An ImVec2 representing the top-left coordinate of the tile in screen space.
+     */
+    private ImVec2 getTileTopLeft(int tileX, int tileY) {
+        ImVec2 origin = getOrigin();
+        float gridStep = getGridStep();
+        return new ImVec2(origin.x + gridStep * tileX, origin.y + gridStep * tileY);
+    }
 
-        drawList.addRect(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
-                x2 - thickness * 0.5f, y2 - thickness * 0.5f,
-                RACK_BORDER_COLOUR.toU32Colour(),
+    /**
+     * Get the bottom-right coordinate of the tile at the given warehouse space coordinates.
+     * @param tileX The horizontal coordinate of the tile, in warehouse space.
+     * @param tileY The vertical coordinate of the tile, in warehouse space.
+     * @return An ImVec2 representing the bottom-right coordinate of the tile in screen space.
+     */
+    private ImVec2 getTileBottomRight(int tileX, int tileY) {
+        ImVec2 topLeft = getTileTopLeft(tileX, tileY);
+        float gridStep = getGridStep();
+        return new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
+    }
+
+    private void drawRack(ImDrawList drawList, int tileX, int tileY) {
+        float thickness = 2.0f;
+        Colour BACKGROUND_COLOUR = new Colour(68, 118, 160, 0.2f);
+        Colour BORDER_COLOUR = new Colour(BACKGROUND_COLOUR, 1.0f);
+
+        ImVec2 topLeft = getTileTopLeft(tileX, tileY);
+        ImVec2 bottomRight = getTileBottomRight(tileX, tileY);
+        drawList.addRectFilled(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
+                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
+                BACKGROUND_COLOUR.toU32Colour(), 5.0f, 0);
+
+        drawList.addRect(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
+                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
+                BORDER_COLOUR.toU32Colour(),
                 5.0f, 0, thickness);
     }
 
-    private void drawReceiveDepot(ImDrawList drawList, float x1, float y1, float x2, float y2) {
-        float thickness = 4.0f * zoom;
+    private void drawReceiveDepot(ImDrawList drawList, int tileX, int tileY) {
+        float thickness = 2.0f;
         Colour BACKGROUND_COLOUR = new Colour(207, 192, 121, 0.2f);
         Colour BORDER_COLOUR = new Colour(BACKGROUND_COLOUR, 1.0f);
         Colour ICON_COLOUR = new Colour(223, 224, 223, 0.6f);
 
-        // Draw receive depot
-        drawList.addRectFilled(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
-                x2 - thickness * 0.5f, y2 - thickness * 0.5f,
+        ImVec2 topLeft = getTileTopLeft(tileX, tileY);
+        ImVec2 bottomRight = getTileBottomRight(tileX, tileY);
+        drawList.addRectFilled(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
+                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
                 BACKGROUND_COLOUR.toU32Colour(), 5.0f, 0);
 
-        drawList.addRect(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
-                x2 - thickness * 0.5f, y2 - thickness * 0.5f,
+        drawList.addRect(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
+                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
                 BORDER_COLOUR.toU32Colour(),
                 5.0f, 0, thickness);
 
-        float iconSize = 35 * zoom;
-        drawList.addText(ImGui.getFont(), iconSize, (x1 + x2 - iconSize) / 2, (y1 + y2 - iconSize) / 2,
+        float iconSize = 17.5f;
+        drawList.addText(ImGui.getFont(), iconSize,
+                (topLeft.x + bottomRight.x - iconSize) / 2,
+                (topLeft.y + bottomRight.y - iconSize) / 2,
                 ICON_COLOUR.toU32Colour(), FontAwesomeIcon.SignInAlt.getIconCode());
     }
 
-    private void drawShipDepot(ImDrawList drawList, float x1, float y1, float x2, float y2) {
-        float thickness = 4.0f * zoom;
+    private void drawShipDepot(ImDrawList drawList, int tileX, int tileY) {
+        float thickness = 2.0f;
         Colour BACKGROUND_COLOUR = new Colour(166, 109, 113, 0.2f);
         Colour BORDER_COLOUR = new Colour(BACKGROUND_COLOUR, 1.0f);
         Colour ICON_COLOUR = new Colour(223, 224, 223, 0.6f);
 
-        // Draw receive depot
-        drawList.addRectFilled(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
-                x2 - thickness * 0.5f, y2 - thickness * 0.5f,
+        ImVec2 topLeft = getTileTopLeft(tileX, tileY);
+        ImVec2 bottomRight = getTileBottomRight(tileX, tileY);
+        drawList.addRectFilled(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
+                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
                 BACKGROUND_COLOUR.toU32Colour(), 5.0f, 0);
 
-        drawList.addRect(x1 + thickness * 0.5f, y1 + thickness * 0.5f,
-                x2 - thickness * 0.5f, y2 - thickness * 0.5f,
+        drawList.addRect(topLeft.x + thickness * 0.5f, topLeft.y + thickness * 0.5f,
+                bottomRight.x - thickness * 0.5f, bottomRight.y - thickness * 0.5f,
                 BORDER_COLOUR.toU32Colour(),
                 5.0f, 0, thickness);
 
-        float iconSize = 35 * zoom;
+        float iconSize = 17.5f;
         ImFont font = ImGui.getFont();
-        drawList.addText(font, iconSize, (x1 + x2 - iconSize) / 2 + 3, (y1 + y2 - iconSize) / 2,
+        drawList.addText(font, iconSize,
+                (topLeft.x + bottomRight.x - iconSize) / 2 + 3,
+                (topLeft.y + bottomRight.y - iconSize) / 2,
                 ICON_COLOUR.toU32Colour(), FontAwesomeIcon.SignOutAlt.getIconCode());
-    }
-
-    /**
-     * Return whether the given tile is selected.
-     * @param x The horizontal coordinate of the tile (in warehouse space).
-     * @param y The vertical coordinate of the tile (in warehouse space).
-     */
-    private boolean isTileSelected(int x, int y) {
-        if (selectedTile == null) {
-            return false;
-        } else {
-            return selectedTile.getX() == x && selectedTile.getY() == y;
-        }
     }
 
     /**
@@ -442,13 +453,6 @@ public class WarehouseCanvas extends Component {
      */
     private ImVec2 getBottomRightCoordinate() {
         return new ImVec2(topLeft.x + size.x, topLeft.y + size.y);
-    }
-
-    /**
-     * Get the actual size of a single grid cell, in pixels. This accounts for zooming.
-     */
-    private float getGridStep() {
-        return cellSize * zoom;
     }
 
     public Warehouse getWarehouse() {
@@ -467,12 +471,12 @@ public class WarehouseCanvas extends Component {
         this.colourScheme = colourScheme;
     }
 
-    public float getCellSize() {
-        return cellSize;
+    public float getGridStep() {
+        return gridStep;
     }
 
-    public void setCellSize(float cellSize) {
-        this.cellSize = cellSize;
+    public void setGridStep(float gridStep) {
+        this.gridStep = gridStep;
     }
 
     public float getMinSizeX() {
@@ -489,38 +493,6 @@ public class WarehouseCanvas extends Component {
 
     public void setMinSizeY(float minSizeY) {
         this.minSizeY = minSizeY;
-    }
-
-    public float getMinZoom() {
-        return minZoom;
-    }
-
-    public void setMinZoom(float minZoom) {
-        this.minZoom = minZoom;
-    }
-
-    public float getMaxZoom() {
-        return maxZoom;
-    }
-
-    public void setMaxZoom(float maxZoom) {
-        this.maxZoom = maxZoom;
-    }
-
-    public float getZoomStep() {
-        return zoomStep;
-    }
-
-    public void setZoomStep(float zoomStep) {
-        this.zoomStep = zoomStep;
-    }
-
-    public float getZoom() {
-        return zoom;
-    }
-
-    public void setZoom(float zoom) {
-        this.zoom = zoom;
     }
 
     public WarehouseCanvasInputMode getInputMode() {

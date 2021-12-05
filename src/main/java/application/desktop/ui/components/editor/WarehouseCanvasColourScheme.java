@@ -24,19 +24,25 @@ public class WarehouseCanvasColourScheme {
     /**
      * Default selection outline colour.
      */
-    private static final Colour DEFAULT_SELECTION_OUTLINE_COLOUR = new Colour(223, 224, 223);
+    private static final Colour DEFAULT_SELECTION_OUTLINE_COLOUR = new Colour(177, 255, 101);
+    /**
+     * Default selection outline colour.
+     */
+    private static final Colour DEFAULT_MOVE_OUTLINE_COLOUR = new Colour(255, 88, 255);
 
 
     /**
      * Default colour scheme for the WarehouseCanvas.
      */
     public static final WarehouseCanvasColourScheme DEFAULT = new WarehouseCanvasColourScheme(
-            DEFAULT_BORDER_COLOUR, DEFAULT_BACKGROUND_COLOUR, DEFAULT_GRID_LINE_COLOUR, DEFAULT_SELECTION_OUTLINE_COLOUR);
+            DEFAULT_BORDER_COLOUR, DEFAULT_BACKGROUND_COLOUR, DEFAULT_GRID_LINE_COLOUR,
+            DEFAULT_SELECTION_OUTLINE_COLOUR, DEFAULT_MOVE_OUTLINE_COLOUR);
 
     private Colour borderColour;
     private Colour backgroundColour;
     private Colour gridLineColour;
     private Colour selectionOutlineColour;
+    private Colour moveOutlineColour;
 
     /**
      * Construct a new WarehouseCanvas with a custom colour scheme.
@@ -45,11 +51,13 @@ public class WarehouseCanvasColourScheme {
      * @param gridLineColour The colour of the canvas grid lines.
      */
     public WarehouseCanvasColourScheme(Colour borderColour, Colour backgroundColour,
-                                       Colour gridLineColour, Colour selectionOutlineColour) {
+                                       Colour gridLineColour,
+                                       Colour selectionOutlineColour, Colour moveOutlineColour) {
         this.borderColour = borderColour;
         this.backgroundColour = backgroundColour;
         this.gridLineColour = gridLineColour;
         this.selectionOutlineColour = selectionOutlineColour;
+        this.moveOutlineColour = moveOutlineColour;
     }
 
     public Colour getBorderColour() {
@@ -82,5 +90,13 @@ public class WarehouseCanvasColourScheme {
 
     public void setSelectionOutlineColour(Colour selectionOutlineColour) {
         this.selectionOutlineColour = selectionOutlineColour;
+    }
+
+    public Colour getMoveOutlineColour() {
+        return moveOutlineColour;
+    }
+
+    public void setMoveOutlineColour(Colour moveOutlineColour) {
+        this.moveOutlineColour = moveOutlineColour;
     }
 }
