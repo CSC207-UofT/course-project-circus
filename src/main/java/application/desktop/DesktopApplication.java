@@ -1,7 +1,7 @@
 package application.desktop;
 
 import application.desktop.ui.FontAwesomeIcon;
-import application.desktop.ui.components.Toolbar;
+import application.desktop.ui.components.ApplicationToolbar;
 import application.desktop.ui.components.common.Panel;
 import application.desktop.ui.components.editor.WarehouseEditor;
 import imgui.ImFontConfig;
@@ -48,7 +48,7 @@ public class DesktopApplication extends Application {
     private final static float DEFAULT_FONT_SIZE = 16.0f;
 
     private boolean hasInitialisedDockspaceLayout;
-    private final Toolbar toolbar;
+    private final ApplicationToolbar toolbar;
     private final WarehouseEditor warehouseEditor;
     private final Panel sidebar;
 
@@ -57,7 +57,7 @@ public class DesktopApplication extends Application {
      */
     public DesktopApplication() {
         // TODO: Dependency injection
-        toolbar = new Toolbar();
+        toolbar = new ApplicationToolbar();
 
         // Create dummy warehouse
         Warehouse warehouse = new Warehouse(12, 12);
