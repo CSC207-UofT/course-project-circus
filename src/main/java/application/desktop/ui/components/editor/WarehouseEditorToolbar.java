@@ -3,10 +3,10 @@ package application.desktop.ui.components.editor;
 import application.desktop.DesktopApplication;
 import application.desktop.ui.Colour;
 import application.desktop.ui.FontAwesomeIcon;
-import application.desktop.ui.components.common.*;
+import application.desktop.ui.components.common.MenuBar;
+import application.desktop.ui.components.common.Text;
 import application.desktop.ui.components.common.buttons.Button;
 import application.desktop.ui.events.ComponentEventData;
-import warehouse.Warehouse;
 import warehouse.tiles.TileType;
 
 import java.util.ArrayList;
@@ -15,32 +15,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Editor window for the Warehouse.
+ * Toolbar for the WarehouseEditor.
  */
-public class WarehouseEditorPanel extends Panel {
-    private final WarehouseCanvas canvas;
+public class WarehouseEditorToolbar extends MenuBar {
+    private final WarehouseEditor warehouseEditor;
 
-    private Button insertTileToolButton;
+    private final Button insertTileToolButton;
     private final List<Button> toolButtons;
     private final Map<TileType, Button> insertTileTypeButtons;
 
     /**
-     * Construct a new WarehouseEditorPanel given a Warehouse.
-     * @param warehouse The Warehouse to edit.
+     * Construct a WarehouseEditorToolbar.
+     * @param warehouseEditor The root WarehouseEditor panel.
      */
-    public WarehouseEditorPanel(Warehouse warehouse) {
-        super("Warehouse Layout");
-        setShowMenuBar(true);
-        setCloseable(false);
-
-        canvas = new WarehouseCanvas(warehouse);
+    public WarehouseEditorToolbar(WarehouseEditor warehouseEditor) {
+        this.warehouseEditor = warehouseEditor;
         toolButtons = new ArrayList<>();
         insertTileTypeButtons = new HashMap<>();
 
-        initComponents();
-    }
-
-    private void initComponents() {
         // Create tool buttons
         Button selectTileButton = new Button("", FontAwesomeIcon.MousePointer, "Select tool");
         selectTileButton.setToggleable(true);
@@ -98,8 +90,8 @@ public class WarehouseEditorPanel extends Panel {
         insertTileTypeButtons.put(TileType.RECEIVE_DEPOT, inputReceiveDepotButton);
         insertTileTypeButtons.put(TileType.SHIP_DEPOT, inputShipDepotButton);
 
-        // Toolbar
-        addChild(new MenuBar(
+        // add items to menu bar
+        addChildren(
                 selectTileButton,
                 moveTileButton,
                 insertTileToolButton,
@@ -109,19 +101,17 @@ public class WarehouseEditorPanel extends Panel {
                 inputRackButton,
                 inputReceiveDepotButton,
                 inputShipDepotButton
-        ));
-        // Canvas
-        addChild(canvas);
+        );
     }
 
     @Override
-    protected void drawContent(DesktopApplication application) {
+    protected void handleEvents(DesktopApplication application) {
+        super.handleEvents(application);
         for (TileType tileType : insertTileTypeButtons.keySet()) {
             Button button = insertTileTypeButtons.get(tileType);
-            button.setToggled(tileType == canvas.getTileTypeToInsert());
+            button.setToggled(tileType == warehouseEditor.getCanvas().getTileTypeToInsert());
             button.setEnabled(insertTileToolButton.isToggled());
         }
-        super.drawContent(application);
     }
 
     /**
@@ -130,14 +120,14 @@ public class WarehouseEditorPanel extends Panel {
     private void onSelectTileButtonToggledOn(ComponentEventData data) {
         Button source = (Button) data.getSource();
         onToolButtonToggledOn(source);
-        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
+        warehouseEditor.getCanvas().setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     /**
      * Called when the "select tile" button is toggled OFF.
      */
     private void onSelectTileButtonToggledOff(ComponentEventData data) {
-        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
+        warehouseEditor.getCanvas().setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     /**
@@ -146,14 +136,14 @@ public class WarehouseEditorPanel extends Panel {
     private void onMoveTileButtonToggledOn(ComponentEventData data) {
         Button source = (Button) data.getSource();
         onToolButtonToggledOn(source);
-        canvas.setInputMode(WarehouseCanvasInputMode.MOVE_TILE);
+        warehouseEditor.getCanvas().setInputMode(WarehouseCanvasInputMode.MOVE_TILE);
     }
 
     /**
      * Called when the "move tile" button is toggled OFF.
      */
     private void onMoveTileButtonToggledOff(ComponentEventData data) {
-        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
+        warehouseEditor.getCanvas().setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     /**
@@ -162,6 +152,7 @@ public class WarehouseEditorPanel extends Panel {
     private void onInsertTileButtonToggledOn(ComponentEventData data) {
         Button source = (Button) data.getSource();
         onToolButtonToggledOn(source);
+        WarehouseCanvas canvas = warehouseEditor.getCanvas();
         canvas.setInputMode(WarehouseCanvasInputMode.INSERT_TILE);
         if (!insertTileTypeButtons.containsKey(canvas.getTileTypeToInsert())) {
             canvas.setTileTypeToInsert(TileType.RACK);
@@ -172,7 +163,7 @@ public class WarehouseEditorPanel extends Panel {
      * Called when the "insert tile" button is toggled OFF.
      */
     private void onInsertTileButtonToggledOff(ComponentEventData data) {
-        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
+        warehouseEditor.getCanvas().setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     /**
@@ -181,6 +172,7 @@ public class WarehouseEditorPanel extends Panel {
     private void onEraseTileButtonToggledOn(ComponentEventData data) {
         Button source = (Button) data.getSource();
         onToolButtonToggledOn(source);
+        WarehouseCanvas canvas = warehouseEditor.getCanvas();
         canvas.setInputMode(WarehouseCanvasInputMode.INSERT_TILE);
         canvas.setTileTypeToInsert(TileType.EMPTY);
     }
@@ -189,7 +181,7 @@ public class WarehouseEditorPanel extends Panel {
      * Called when the "erase tile" button is toggled Off.
      */
     private void onEraseTileButtonToggledOff(ComponentEventData data) {
-        canvas.setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
+        warehouseEditor.getCanvas().setInputMode(WarehouseCanvasInputMode.SELECT_TILE);
     }
 
     private void onToolButtonToggledOn(Button source) {
@@ -203,20 +195,20 @@ public class WarehouseEditorPanel extends Panel {
      * Called when the "input rack tile" button is clicked.
      */
     private void onInputRackButtonClicked(ComponentEventData data) {
-        canvas.setTileTypeToInsert(TileType.RACK);
+        warehouseEditor.getCanvas().setTileTypeToInsert(TileType.RACK);
     }
 
     /**
      * Called when the "input receive depot tile" button is clicked.
      */
     private void onInputReceiveDepotButtonClicked(ComponentEventData data) {
-        canvas.setTileTypeToInsert(TileType.RECEIVE_DEPOT);
+        warehouseEditor.getCanvas().setTileTypeToInsert(TileType.RECEIVE_DEPOT);
     }
 
     /**
      * Called when the "input ship depot tile button" is clicked.
      */
     private void onInputShipDepotButtonClicked(ComponentEventData data) {
-        canvas.setTileTypeToInsert(TileType.SHIP_DEPOT);
+        warehouseEditor.getCanvas().setTileTypeToInsert(TileType.SHIP_DEPOT);
     }
 }

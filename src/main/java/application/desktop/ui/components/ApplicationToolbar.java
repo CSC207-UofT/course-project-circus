@@ -5,11 +5,11 @@ import application.desktop.ui.components.common.*;
 /**
  * Main toolbar component for the DesktopApplication.
  */
-public class Toolbar extends MenuBar {
+public class ApplicationToolbar extends MenuBar {
     /**
-     * Construct a new Toolbar.
+     * Construct a new ApplicationToolbar.
      */
-    public Toolbar() {
+    public ApplicationToolbar() {
         // Create menu items
         MenuItem newMenuItem = new MenuItem("New");
         MenuItem openMenuItem = new MenuItem("Open");
