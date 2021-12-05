@@ -16,23 +16,15 @@ public class PathfinderTest {
 
     @Test
     public void testPathfinder() throws TileOutOfBoundsException {
-//        Warehouse warehouse = new Warehouse(10, 10);
-//        PartCatalogue ic = new PartCatalogue();
-//        Part p = new Part("Cucumber", "A vegetable");
-//        ic.addPart(p);
-//        WarehouseController wc = new WarehouseController(warehouse, ic);
-//        Item item = new Item(p);
-//        Tile destinationTile = warehouse.findRackFor(item);
-//        assertEquals(destinationTile, wc.insertItem(item));
 
+        PartCatalogue catalogue = new PartCatalogue();
         Warehouse map = new Warehouse(10, 10);
         map.getTileAt(0,1).setStorageUnit(new Rack(5));
         map.getTileAt(1,1).setStorageUnit(new Rack(5));
         map.getTileAt(2,1).setStorageUnit(new Rack(5));
+        WarehouseController controller = new WarehouseController(map, catalogue);
+        PathfinderController check = new PathfinderController(map.getTiles(),map.getTileAt(0,0),map.getTileAt(6,6));
+        
 
-
-//        Set nodes = map.
-//
-//        Graph g = new Graph()
     }
 }

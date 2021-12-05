@@ -1,79 +1,39 @@
 package concretePathfinding;
-import complexPathfinder.Graph;
+
+import complexPathfinder.*;
 import warehouse.Tile;
 import warehouse.TileOutOfBoundsException;
 
-import java.util.*;
+import java.util.List;
 
 /**
- * This class will be the class that the warehouse controller interacts with
- *
+ * This class will be in charge of the Pathfinder as a whole and will be the class that the Warehouse interacts with
+ * rather than other more basic classes.
  */
-public class PathfinderController<T> {
-
-    private final Tile[][] map;
-
-
-    public PathfinderController(Tile[][] tiles) {
-        this.map = tiles;
-    }
+public class PathfinderController {
+    private final Graph graph ;
+    private final TileScorer nextNodeScorer;
+    private final TileScorer targetNodeScorer;
+    private TileNode from;
+    private TileNode to;
 
     /**
-     *
-     * @return the set of empty TileNodes in the warehouse
+     * Constructs an instance of the PathfinderController.
+     * @param map - 2D array of all tiles in the warehouse
      */
-    public Set<TileNode> getNodes()
-    {
-        Set<TileNode> nodes = new HashSet<>();
 
-        for (Tile[] tile : this.map) {
-            for (Tile value : tile) {
-                if (value.isEmpty())
-                    nodes.add(new TileNode(value));
-            }
-        }
-
-        return nodes;
-    }
-    /**
-     * @param TileNode in the warehouse
-     * @return Set of Id's of all connected nodes.
-     * @throws TileOutOfBoundsException
-     */
-    public Set<String> getConnections(TileNode node) throws TileOutOfBoundsException {
-        Set<String> connections = new HashSet<String>();
-
-        if(node.getT().getY()< map[0].length-1) {
-            if (this.map[node.getT().getX()][node.getT().getY() + 1].isEmpty())
-                connections.add((new TileNode(this.map[node.getT().getX()][node.getT().getY() + 1])).getId());
-        }
-        if(node.getT().getY()-1 >= 0) {
-            if(this.map[node.getT().getX()][node.getT().getY()-1].isEmpty())
-                connections.add((new TileNode(this.map[node.getT().getX()][node.getT().getY()-1])).getId());
-        }
-        if(node.getT().getX()< map.length-1) {
-            if (this.map[node.getT().getX() + 1][node.getT().getY()].isEmpty())
-                connections.add((new TileNode(this.map[node.getT().getX() + 1][node.getT().getY()])).getId());
-        }
-        if(node.getT().getX()-1 >=0) {
-            if  (this.map[node.getT().getX() - 1][node.getT().getY()].isEmpty())
-                connections.add((new TileNode(this.map[node.getT().getX() - 1][node.getT().getY()]).getId()));
-        }
-        return connections;
+    public PathfinderController(Tile[][] map, Tile from, Tile to) throws TileOutOfBoundsException {
+        this.graph =  new GraphCreator(map).getGraph();
+        this.nextNodeScorer = new TileScorer();
+        this.targetNodeScorer = new TileScorer();
+        this.from = new TileNode(from);
+        this.to = new TileNode(to);
     }
 
-    /**
-     *
-     * @return returns the graph of the warehouse
-     * @throws TileOutOfBoundsException
-     */
-    public Graph getGraph() throws TileOutOfBoundsException {
-        Set<TileNode> tileSet = this.getNodes();
-        Map<String, Set<String>> connections = new HashMap<String, Set<String>>();
-        for (TileNode t: tileSet){
-            connections.put(t.getId(), this.getConnections(t));
-        }
-        return(new Graph(tileSet, connections));
+    public List getPath(){
+        Pathfinder pathfinder = new Pathfinder(this.graph, this.nextNodeScorer, this.targetNodeScorer);
+
+        return pathfinder.findPath(this.from, this.to);
     }
 
 
