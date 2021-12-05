@@ -37,6 +37,9 @@ public class ItemTest {
         assertEquals(part, item.getPart());
     }
 
+    /**
+     * Testing toSting method after instantiation
+     */
     @Test
     void testToString() {
         Part part = new Part("1", "Empty", "An Empty Part");
