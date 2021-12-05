@@ -5,6 +5,10 @@ import warehouse.TileOutOfBoundsException;
 
 import java.util.*;
 
+/**
+ * This class will be the class that the warehouse controller interacts with
+ *
+ */
 public class PathfinderController<T> {
 
     private final Tile[][] map;
@@ -14,6 +18,10 @@ public class PathfinderController<T> {
         this.map = tiles;
     }
 
+    /**
+     *
+     * @return the set of empty TileNodes in the warehouse
+     */
     public Set<TileNode> getNodes()
     {
         Set<TileNode> nodes = new HashSet<>();
@@ -27,7 +35,11 @@ public class PathfinderController<T> {
 
         return nodes;
     }
-
+    /**
+     * @param TileNode in the warehouse
+     * @return Set of Id's of all connected nodes.
+     * @throws TileOutOfBoundsException
+     */
     public Set<String> getConnections(TileNode node) throws TileOutOfBoundsException {
         Set<String> connections = new HashSet<String>();
 
@@ -50,6 +62,11 @@ public class PathfinderController<T> {
         return connections;
     }
 
+    /**
+     *
+     * @return returns the graph of the warehouse
+     * @throws TileOutOfBoundsException
+     */
     public Graph getGraph() throws TileOutOfBoundsException {
         Set<TileNode> tileSet = this.getNodes();
         Map<String, Set<String>> connections = new HashMap<String, Set<String>>();
@@ -58,5 +75,6 @@ public class PathfinderController<T> {
         }
         return(new Graph(tileSet, connections));
     }
+
 
 }
