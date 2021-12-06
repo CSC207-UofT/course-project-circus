@@ -289,8 +289,8 @@ public class WarehouseCanvas extends Component {
                     } else {
                         ImGui.openPopup(ERASE_TILE_POPUP_DIALOG_NAME);
                     }
-                } else if (robotMapper.isRobotAt(tile)) {
-                    robotMapper.removeRobotsAt(tile);
+                } else if (robotMapper.isRobotAt(tile.getPosition())) {
+                    robotMapper.removeRobotsAt(tile.getPosition());
                 }
 
             }
@@ -307,7 +307,9 @@ public class WarehouseCanvas extends Component {
     private void insertTileAtMousePosition() {
         Pair<Integer, Integer> tileCoords = screenToWarehousePoint(getRelativeMousePosition());
         Tile tileToInsert = tileFactory.createTile(tileTypeToInsert, tileCoords.getFirst(), tileCoords.getSecond());
-        if (tileToInsert != null) {
+        RobotMapper robotMapper = warehouseState.getRobotMapper();
+        // Make sure the tile isn't null AND there are no robots on the tile
+        if (tileToInsert != null && !robotMapper.isRobotAt(tileToInsert.getPosition())){
             warehouseState.getWarehouse().setTile(tileToInsert);
         }
     }
@@ -319,7 +321,7 @@ public class WarehouseCanvas extends Component {
     private void placeRobotAtMousePosition() {
         Tile tile = getTileFromScreenPoint(getRelativeMousePosition());
         if (tile != null && warehouseState.getWarehouse().isEmpty(tile)) {
-            warehouseState.getRobotMapper().addRobotAt(new Robot(), tile);
+            warehouseState.getRobotMapper().addRobotAt(new Robot(), tile.getPosition());
         }
     }
 
@@ -369,8 +371,8 @@ public class WarehouseCanvas extends Component {
         RobotMapper robotMapper = warehouseState.getRobotMapper();
         List<Robot> robots = robotMapper.getRobots();
         for (Robot robot : robots) {
-            Tile robotTile = robotMapper.getRobotPosition(robot);
-            ImVec2 topLeft = getTileTopLeft(robotTile.getX(), robotTile.getY());
+            TilePosition robotPosition = robotMapper.getRobotPosition(robot);
+            ImVec2 topLeft = getTileTopLeft(robotPosition.getX(), robotPosition.getY());
             ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
             // TODO: Move styles to colour scheme
             DrawingUtils.drawRect(drawList, topLeft, bottomRight,

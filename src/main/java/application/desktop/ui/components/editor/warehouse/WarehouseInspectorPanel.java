@@ -210,7 +210,7 @@ public class WarehouseInspectorPanel extends Panel {
             ImGui.tableSetupScrollFreeze(0, 1); // Make row always visible
             ImGui.tableHeadersRow();
 
-            List<Robot> robots = robotMapper.getRobotsAt(tile);
+            List<Robot> robots = robotMapper.getRobotsAt(tile.getPosition());
             for (int i = 0; i < robots.size(); i++) {
                 ImGui.pushID(i);
                 ImGui.tableNextRow();
