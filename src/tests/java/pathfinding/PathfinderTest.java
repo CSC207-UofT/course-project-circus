@@ -1,3 +1,5 @@
+package pathfinding;
+
 import org.junit.jupiter.api.Test;
 import pathfinding.concretePathfinding.*;
 import warehouse.Warehouse;

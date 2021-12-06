@@ -1,3 +1,4 @@
+package warehouse.storage;
 
 import org.junit.jupiter.api.Test;
 import warehouse.inventory.Item;
