@@ -77,4 +77,13 @@ public class Tile {
     public Message<TileStorageUnitChangedMessageData> getOnStorageUnitChangedMessage() {
         return onStorageUnitChangedMessage;
     }
+
+    /**
+     * String representation of a Tile.
+     * @return the string representation of a Tile
+     */
+    public String toString()
+    {
+        return "X: " + this.getX() + ", Y: " + this.getY();
+    }
 }
