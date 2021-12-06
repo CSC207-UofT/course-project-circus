@@ -62,7 +62,7 @@ public class WarehouseEditorToolbar extends MenuBar {
         toolButtons.put(WarehouseCanvasInputMode.SELECT_TILE, selectTileToolButton);
         toolButtons.put(WarehouseCanvasInputMode.MOVE_TILE, moveTileButton);
         toolButtons.put(WarehouseCanvasInputMode.INSERT_TILE, insertTileToolButton);
-        toolButtons.put(WarehouseCanvasInputMode.ERASE_TILE, eraseTileButton);
+        toolButtons.put(WarehouseCanvasInputMode.ERASE_OBJECT, eraseTileButton);
         toolButtons.put(WarehouseCanvasInputMode.PLACE_ROBOT, placeRobotButton);
         addChildren(
                 selectTileToolButton,
@@ -155,7 +155,7 @@ public class WarehouseEditorToolbar extends MenuBar {
      */
     private void onEraseTileButtonClicked(ComponentEventData data) {
         WarehouseCanvas canvas = warehouseEditor.getCanvas();
-        canvas.setInputMode(WarehouseCanvasInputMode.ERASE_TILE);
+        canvas.setInputMode(WarehouseCanvasInputMode.ERASE_OBJECT);
     }
 
     /**

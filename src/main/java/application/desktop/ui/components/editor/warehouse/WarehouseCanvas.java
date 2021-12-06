@@ -277,15 +277,22 @@ public class WarehouseCanvas extends Component {
         ImGui.setWindowFocus();
         if (inputMode == WarehouseCanvasInputMode.INSERT_TILE) {
             insertTileAtMousePosition();
-        } else if (inputMode == WarehouseCanvasInputMode.ERASE_TILE) {
+        } else if (inputMode == WarehouseCanvasInputMode.ERASE_OBJECT) {
             Tile tile = getTileFromScreenPoint(getRelativeMousePosition());
-            Warehouse warehouse = warehouseState.getWarehouse();
-            if (tile != null && !warehouse.isEmpty(tile)) {
-                if (rememberEraseTilePopupChoice.get()) {
-                    warehouse.setTile(new EmptyTile(tile.getX(), tile.getY()));
-                } else {
-                    ImGui.openPopup(ERASE_TILE_POPUP_DIALOG_NAME);
+            if (tile != null) {
+                Warehouse warehouse = warehouseState.getWarehouse();
+                RobotMapper robotMapper = warehouseState.getRobotMapper();
+
+                if (!warehouse.isEmpty(tile)) {
+                    if (rememberEraseTilePopupChoice.get()) {
+                        warehouse.setTile(new EmptyTile(tile.getX(), tile.getY()));
+                    } else {
+                        ImGui.openPopup(ERASE_TILE_POPUP_DIALOG_NAME);
+                    }
+                } else if (robotMapper.isRobotAt(tile)) {
+                    robotMapper.removeRobotsAt(tile);
                 }
+
             }
         } else if (inputMode == WarehouseCanvasInputMode.PLACE_ROBOT) {
             placeRobotAtMousePosition();
@@ -313,7 +320,7 @@ public class WarehouseCanvas extends Component {
     private void placeRobotAtMousePosition() {
         Tile tile = getTileFromScreenPoint(getRelativeMousePosition());
         if (tile != null && warehouseState.getWarehouse().isEmpty(tile)) {
-            warehouseState.getRobotController().addRobotAt(new Robot(), tile);
+            warehouseState.getRobotMapper().addRobotAt(new Robot(), tile);
         }
     }
 
@@ -360,10 +367,10 @@ public class WarehouseCanvas extends Component {
      * Draw the robots in the warehouse.
      */
     private void drawRobots(ImDrawList drawList) {
-        RobotMapper robotController = warehouseState.getRobotController();
-        List<Robot> robots = robotController.getRobots();
+        RobotMapper robotMapper = warehouseState.getRobotMapper();
+        List<Robot> robots = robotMapper.getRobots();
         for (Robot robot : robots) {
-            Tile robotTile = robotController.getRobotPosition(robot);
+            Tile robotTile = robotMapper.getRobotPosition(robot);
             ImVec2 topLeft = getTileTopLeft(robotTile.getX(), robotTile.getY());
             ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
             // TODO: Move styles to colour scheme

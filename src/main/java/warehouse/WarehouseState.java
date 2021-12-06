@@ -9,17 +9,17 @@ import warehouse.robots.RobotMapper;
 public class WarehouseState {
     private final Warehouse warehouse;
     private final PartCatalogue partCatalogue;
-    private final RobotMapper robotController;
+    private final RobotMapper robotMapper;
 
     /**
      * Construct a WarehouseState.
      * @param warehouse The warehouse.
      * @param partCatalogue The part catalogue.
      */
-    public WarehouseState(Warehouse warehouse, PartCatalogue partCatalogue, RobotMapper robotController) {
+    public WarehouseState(Warehouse warehouse, PartCatalogue partCatalogue, RobotMapper robotMapper) {
         this.warehouse = warehouse;
         this.partCatalogue = partCatalogue;
-        this.robotController = robotController;
+        this.robotMapper = robotMapper;
     }
 
     public Warehouse getWarehouse() {
@@ -30,7 +30,7 @@ public class WarehouseState {
         return partCatalogue;
     }
 
-    public RobotMapper getRobotController() {
-        return robotController;
+    public RobotMapper getRobotMapper() {
+        return robotMapper;
     }
 }
