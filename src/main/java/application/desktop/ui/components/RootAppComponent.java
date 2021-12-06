@@ -3,7 +3,7 @@ package application.desktop.ui.components;
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Component;
 import application.desktop.ui.components.common.Panel;
-import application.desktop.ui.components.editor.inventory.PartCatalogueEditor;
+import application.desktop.ui.components.editor.PartCatalogueEditor;
 import application.desktop.ui.components.editor.warehouse.WarehouseEditor;
 import imgui.ImGui;
 import imgui.flag.ImGuiCond;

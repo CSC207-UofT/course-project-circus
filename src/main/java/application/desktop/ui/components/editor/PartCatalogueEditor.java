@@ -1,4 +1,4 @@
-package application.desktop.ui.components.editor.inventory;
+package application.desktop.ui.components.editor;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.*;
