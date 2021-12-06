@@ -153,10 +153,22 @@ public class WarehouseInspectorPanel extends Panel {
                 ImGui.pushStyleColor(ImGuiCol.Button, ImGui.colorConvertFloat4ToU32(0, 0, 0, 0));
                 if (ImGui.smallButton(FontAwesomeIcon.PencilAlt.getIconCode())) {
                     // Edit item button
+                    // Tooltips
+                    ImGui.beginTooltip();
+                    ImGui.pushTextWrapPos(ImGui.getFontSize() * 17.5f);
+                    ImGui.textUnformatted("Edit this item");
+                    ImGui.popTextWrapPos();
+                    ImGui.endTooltip();
                 }
                 ImGui.sameLine();
                 if (ImGui.smallButton(FontAwesomeIcon.TrashAlt.getIconCode())) {
                     // Remove item button
+                    // Tooltips
+                    ImGui.beginTooltip();
+                    ImGui.pushTextWrapPos(ImGui.getFontSize() * 17.5f);
+                    ImGui.textUnformatted("Instantly removes this item from this tile's storage unit");
+                    ImGui.popTextWrapPos();
+                    ImGui.endTooltip();
                 }
                 ImGui.popStyleColor();
 
