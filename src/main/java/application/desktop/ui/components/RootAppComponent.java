@@ -3,6 +3,7 @@ package application.desktop.ui.components;
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Component;
 import application.desktop.ui.components.common.Panel;
+import application.desktop.ui.components.editor.OrderEditor;
 import application.desktop.ui.components.editor.PartCatalogueEditor;
 import application.desktop.ui.components.editor.warehouse.WarehouseEditor;
 import imgui.ImGui;
@@ -33,13 +34,13 @@ public class RootAppComponent extends Component {
     private final AppToolbar toolbar;
     private final PartCatalogueEditor partCatalogueEditor;
     private final WarehouseEditor warehouseEditor;
-    private final Panel sidebar;
+    private final OrderEditor orderEditor;
 
     public RootAppComponent(DesktopApplication application) {
         toolbar = new AppToolbar(application);
         partCatalogueEditor = new PartCatalogueEditor(application.getState().getPartCatalogue());
         warehouseEditor = new WarehouseEditor(application.getState());
-        sidebar = new Panel("Sidebar##sidebar");
+        orderEditor = new OrderEditor(application.getState().getOrderQueue());
     }
 
     /**
@@ -76,7 +77,7 @@ public class RootAppComponent extends Component {
             int dockIdLeft = imgui.internal.ImGui.dockBuilderSplitNode(dockMainId.get(), ImGuiDir.Left,
                     0.33f, null, dockMainId);
 
-            imgui.internal.ImGui.dockBuilderDockWindow(sidebar.getTitle(), dockIdLeft);
+            imgui.internal.ImGui.dockBuilderDockWindow(orderEditor.getTitle(), dockIdLeft);
             imgui.internal.ImGui.dockBuilderDockWindow(partCatalogueEditor.getTitle(), dockMainId.get());
             imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditor.getTitle(), dockMainId.get());
 
@@ -99,7 +100,7 @@ public class RootAppComponent extends Component {
         toolbar.draw(application);
         warehouseEditor.draw(application);
         partCatalogueEditor.draw(application);
-        sidebar.draw(application);
+        orderEditor.draw(application);
         // End dockspace window
         ImGui.end();
     }
