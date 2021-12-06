@@ -1,5 +1,5 @@
-package concretePathfinding;
-import complexPathfinder.*;
+package pathfinding.concretePathfinding;
+import pathfinding.complexPathfinder.*;
 
 public class TileScorer implements Scorer<TileNode> {
 

@@ -1,5 +1,5 @@
 import org.junit.jupiter.api.Test;
-import concretePathfinding.*;
+import pathfinding.concretePathfinding.*;
 import warehouse.Warehouse;
 import warehouse.tiles.Rack;
 

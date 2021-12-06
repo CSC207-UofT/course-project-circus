@@ -1,4 +1,4 @@
-package complexPathfinder;
+package pathfinding.complexPathfinder;
 
 import java.util.Map;
 import java.util.Objects;
