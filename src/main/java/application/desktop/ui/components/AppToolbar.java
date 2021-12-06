@@ -2,9 +2,12 @@ package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.*;
+import imgui.ImGui;
 import imgui.extension.imguifiledialog.ImGuiFileDialog;
 import imgui.extension.imguifiledialog.flag.ImGuiFileDialogFlags;
+import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImInt;
 import serialization.FileObjectLoader;
 import serialization.FileObjectSaver;
 import warehouse.WarehouseState;
@@ -19,11 +22,18 @@ public class AppToolbar extends MenuBar {
 
     private String saveFilepath;
 
+    private boolean openNewPopup;
+    private final ImInt newWarehouseWidth;
+    private final ImInt newWarehouseHeight;
+
     /**
      * Construct a new AppToolbar.
      */
     public AppToolbar(DesktopApplication application) {
         this.application = application;
+
+        this.newWarehouseWidth = new ImInt(12);
+        this.newWarehouseHeight = new ImInt(12);
 
         // Create menu items
         MenuItem newMenuItem = new MenuItem("New");
@@ -44,7 +54,9 @@ public class AppToolbar extends MenuBar {
 
         // Register event listeners
         newMenuItem.getOnClickedEvent().addListener((data) -> {
-            application.setState(DesktopApplication.makeEmptyWarehouseState());
+            openNewPopup = true;
+            newWarehouseWidth.set(12);
+            newWarehouseHeight.set(12);
         });
         openMenuItem.getOnClickedEvent().addListener((data) -> {
             FileObjectLoader<WarehouseState> stateLoader = application.getWarehouseStateLoader();
@@ -97,6 +109,41 @@ public class AppToolbar extends MenuBar {
     protected void drawContent(DesktopApplication application) {
         super.drawContent(application);
         int dialogWindowFlags = ImGuiWindowFlags.NoCollapse;
+        drawNewWarehouseDialog(dialogWindowFlags);
+        drawSaveDialog(dialogWindowFlags);
+        drawLoadDialog( dialogWindowFlags);
+    }
+
+    private void drawNewWarehouseDialog(int dialogWindowFlags) {
+        if (openNewPopup) {
+            ImGui.openPopup("New Warehouse##new_warehouse_popup");
+            openNewPopup = false;
+        }
+
+        dialogWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
+        if (ImGui.beginPopupModal("New Warehouse##new_warehouse_popup", dialogWindowFlags)) {
+            ImGui.textDisabled("Warehouse Size...");
+            ImGui.inputInt("Width", newWarehouseWidth);
+            ImGui.inputInt("Height", newWarehouseHeight);
+
+            ImGui.spacing();
+
+            if (ImGui.button("OK")) {
+                application.setState(DesktopApplication.makeEmptyWarehouseState(
+                        newWarehouseWidth.get(), newWarehouseHeight.get()));
+                ImGui.closeCurrentPopup();
+            }
+            ImGui.setItemDefaultFocus();
+            ImGui.sameLine();
+            if (ImGui.button("Cancel")) {
+                ImGui.closeCurrentPopup();
+            }
+
+            ImGui.endPopup();
+        }
+    }
+
+    private void drawSaveDialog(int dialogWindowFlags) {
         if (ImGuiFileDialog.display("SaveDialog", dialogWindowFlags, 0, 350, Float.MAX_VALUE, Float.MAX_VALUE)) {
             if (ImGuiFileDialog.isOk()) {
                 boolean isSaveAsDialog = ImGuiFileDialog.getUserDatas() == -1;
@@ -111,7 +158,9 @@ public class AppToolbar extends MenuBar {
 
             ImGuiFileDialog.close();
         }
+    }
 
+    private void drawLoadDialog(int dialogWindowFlags) {
         if (ImGuiFileDialog.display("LoadDialog", dialogWindowFlags, 0, 350, Float.MAX_VALUE, Float.MAX_VALUE)) {
             if (ImGuiFileDialog.isOk()) {
                 String filepath = ImGuiFileDialog.getCurrentPath() + "/" + ImGuiFileDialog.getCurrentFileName();
