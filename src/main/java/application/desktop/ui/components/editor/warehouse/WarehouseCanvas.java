@@ -422,7 +422,7 @@ public class WarehouseCanvas extends Component {
      * @param drawList The draw list to draw to.
      */
     private void drawSelectedTile(ImDrawList drawList) {
-        if (selectedTile == null || selectedTile instanceof EmptyTile) return;
+        if (selectedTile == null) return;
 
         ImVec2 topLeft = getTileTopLeft(selectedTile.getX(), selectedTile.getY());
         if (moveTileDragDelta != null) {
@@ -489,35 +489,67 @@ public class WarehouseCanvas extends Component {
         return new ImVec2(contentTopLeft.x + size.x, contentTopLeft.y + size.y);
     }
 
+    /**
+     * Get the warehouse drawn by this canvas.
+     */
     public Warehouse getWarehouse() {
         return warehouse;
     }
 
+    /**
+     * Sets the warehouse that is drawn and edited by this canvas.
+     */
     public void setWarehouse(Warehouse warehouse) {
         this.warehouse = warehouse;
     }
 
+    /**
+     * Gets the current colour scheme of the canvas.
+     */
     public WarehouseCanvasColourScheme getColourScheme() {
         return colourScheme;
     }
 
+    /**
+     * Sets the colour scheme of the canvas. This configures all styles.
+     */
     public void setColourScheme(WarehouseCanvasColourScheme colourScheme) {
         this.colourScheme = colourScheme;
     }
 
+    /**
+     * Gets the current input mode.
+     */
     public WarehouseCanvasInputMode getInputMode() {
         return inputMode;
     }
 
+    /**
+     * Sets the input mode of the canvas, e.g. which tool to use.
+     */
     public void setInputMode(WarehouseCanvasInputMode inputMode) {
         this.inputMode = inputMode;
     }
 
+    /**
+     * Gets the tile type currently being inserted.
+     */
     public TileType getTileTypeToInsert() {
         return tileTypeToInsert;
     }
 
+    /**
+     * Sets the type of Tile to insert when the user uses the "insert tile" tool.
+     */
     public void setTileTypeToInsert(TileType tileTypeToInsert) {
         this.tileTypeToInsert = tileTypeToInsert;
+    }
+
+    /**
+     * Get the currently selected Tile.
+     * @return The currently selected Tile, or null if no Tile is selected.
+     */
+    public Tile getSelectedTile() {
+        return selectedTile;
     }
 }
