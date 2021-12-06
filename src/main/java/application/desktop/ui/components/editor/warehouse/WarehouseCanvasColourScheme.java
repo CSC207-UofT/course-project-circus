@@ -1,4 +1,4 @@
-package application.desktop.ui.components.editor;
+package application.desktop.ui.components.editor.warehouse;
 
 import application.desktop.ui.Colour;
 import application.desktop.ui.FontAwesomeIcon;

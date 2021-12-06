@@ -3,7 +3,8 @@ package application.desktop;
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.ApplicationToolbar;
 import application.desktop.ui.components.common.Panel;
-import application.desktop.ui.components.editor.WarehouseEditor;
+import application.desktop.ui.components.editor.inventory.PartCatalogueEditor;
+import application.desktop.ui.components.editor.warehouse.WarehouseEditor;
 import imgui.ImFontConfig;
 import imgui.ImFontGlyphRangesBuilder;
 import imgui.ImGui;
@@ -17,13 +18,9 @@ import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
 import warehouse.Warehouse;
-import warehouse.storage.StorageUnit;
-import warehouse.storage.containers.InMemoryStorageUnitContainer;
-import warehouse.storage.strategies.MultiTypeStorageUnitStrategy;
-import warehouse.storage.strategies.SingleTypeStorageStrategy;
-import warehouse.tiles.Rack;
-import warehouse.tiles.ReceiveDepot;
-import warehouse.tiles.ShipDepot;
+import warehouse.WarehouseController;
+import warehouse.WarehouseState;
+import warehouse.inventory.PartCatalogue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -47,10 +44,16 @@ public class DesktopApplication extends Application {
      */
     private final static float DEFAULT_FONT_SIZE = 16.0f;
 
-    private Warehouse warehouse;
+    /**
+     * Current warehouse state.
+     */
+    private WarehouseState state;
+    private WarehouseController warehouseController;
 
     private boolean hasInitialisedDockspaceLayout;
+
     private ApplicationToolbar toolbar;
+    private PartCatalogueEditor partCatalogueEditor;
     private WarehouseEditor warehouseEditor;
     private Panel sidebar;
 
@@ -58,15 +61,17 @@ public class DesktopApplication extends Application {
      * Construct a DesktopApplication.
      */
     public DesktopApplication() {
-        setWarehouse(new Warehouse(12, 12));
+        // Initialise default warehouse state.
+        setState(new WarehouseState(new Warehouse(12, 12), new PartCatalogue()));
     }
 
     /**
      * Initialise components for the given warehouse.
      */
-    private void initComponents(Warehouse warehouse) {
+    private void initComponents() {
         toolbar = new ApplicationToolbar();
-        warehouseEditor = new WarehouseEditor(warehouse);
+        partCatalogueEditor = new PartCatalogueEditor(state.getPartCatalogue());
+        warehouseEditor = new WarehouseEditor(state.getWarehouse());
         sidebar = new Panel("Sidebar##sidebar");
     }
 
@@ -148,6 +153,7 @@ public class DesktopApplication extends Application {
                     0.33f, null, dockMainId);
 
             imgui.internal.ImGui.dockBuilderDockWindow(sidebar.getTitle(), dockIdLeft);
+            imgui.internal.ImGui.dockBuilderDockWindow(partCatalogueEditor.getTitle(), dockMainId.get());
             imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditor.getTitle(), dockMainId.get());
 
             int dockIdLeftDown = imgui.internal.ImGui.dockBuilderSplitNode(dockIdLeft, ImGuiDir.Down,
@@ -166,6 +172,7 @@ public class DesktopApplication extends Application {
         initDockspace();
         // Render components
         toolbar.draw(this);
+        partCatalogueEditor.draw(this);
         warehouseEditor.draw(this);
         sidebar.draw(this);
         // End dockspace window
@@ -182,19 +189,33 @@ public class DesktopApplication extends Application {
     }
 
     /**
-     * Get the currently loaded warehouse.
+     * Get the warehouse state.
      */
-    public Warehouse getWarehouse() {
-        return warehouse;
+    public WarehouseState getState() {
+        return state;
     }
 
     /**
-     * Set the currently loaded warehouse.
-     * @param warehouse The new warehouse.
+     * Set the warehouse state.
      */
-    public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
-        initComponents(warehouse);
+    public void setState(WarehouseState state) {
+        this.state = state;
+        warehouseController = new WarehouseController(state);
+        initComponents();
+    }
+
+    /**
+     * Get the WarehouseController.
+     */
+    public WarehouseController getWarehouseController() {
+        return warehouseController;
+    }
+
+    /**
+     * Set the WarehouseController.
+     */
+    public void setWarehouseController(WarehouseController warehouseController) {
+        this.warehouseController = warehouseController;
     }
 
     /**

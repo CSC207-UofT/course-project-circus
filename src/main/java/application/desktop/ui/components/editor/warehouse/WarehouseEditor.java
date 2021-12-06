@@ -1,4 +1,4 @@
-package application.desktop.ui.components.editor;
+package application.desktop.ui.components.editor.warehouse;
 
 import application.desktop.ui.components.common.Panel;
 import warehouse.Warehouse;
@@ -35,14 +35,23 @@ public class WarehouseEditor extends Panel {
 
     }
 
+    /**
+     * Get the Warehouse.
+     */
     public Warehouse getWarehouse() {
         return warehouse;
     }
 
+    /**
+     * Get the WarehouseCanvas component.
+     */
     public WarehouseCanvas getCanvas() {
         return canvas;
     }
 
+    /**
+     * Get the WarehouseInspectorPanel.
+     */
     public WarehouseInspectorPanel getInspector() {
         return inspector;
     }

@@ -16,9 +16,7 @@ import warehouse.tiles.ShipDepot;
  * Controls the Warehouse.
  */
 public class WarehouseController {
-    private final Warehouse warehouse;
-    private final PartCatalogue partCatalogue;
-
+    private final WarehouseState state;
     private final StorageTileAssignmentPolicy<ReceiveDepot> receiveDepotAssignmentPolicy;
     private final StorageTileAssignmentPolicy<ShipDepot> shipDepotAssignmentPolicy;
     private final StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy;
@@ -27,19 +25,17 @@ public class WarehouseController {
 
     /**
      * Construct a WarehouseController.
-     * @param warehouse The Warehouse to manage.
-     * @param partCatalogue Available parts serviced by the Warehouse.
+     * @param state The warehouse state.
      * @param receiveDepotAssignmentPolicy The policy for assigning incoming items to a ReceiveDepot.
      * @param shipDepotAssignmentPolicy The policy for assigning outgoing items to a ShipDepot.
      * @param rackAssignmentPolicy The policy for assigning items to a Rack.
      */
-    public WarehouseController(Warehouse warehouse, PartCatalogue partCatalogue,
+    public WarehouseController(WarehouseState state,
                                StorageTileAssignmentPolicy<ReceiveDepot> receiveDepotAssignmentPolicy,
                                StorageTileAssignmentPolicy<ShipDepot> shipDepotAssignmentPolicy,
                                StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy)
     {
-        this.warehouse = warehouse;
-        this.partCatalogue = partCatalogue;
+        this.state = state;
         // Assignment policies
         this.receiveDepotAssignmentPolicy = receiveDepotAssignmentPolicy;
         this.shipDepotAssignmentPolicy = shipDepotAssignmentPolicy;
@@ -50,14 +46,13 @@ public class WarehouseController {
 
     /**
      * Construct a WarehouseController with basic assignment policies.
-     * @param warehouse The Warehouse to manage.
-     * @param partCatalogue Available parts serviced by the Warehouse.
+     * @param state The warehouse state to manage.
      */
-    public WarehouseController(Warehouse warehouse, PartCatalogue partCatalogue) {
-        this(warehouse, partCatalogue,
-                new BasicReceiveDepotAssignmentPolicy(warehouse),
-                new BasicShipDepotAssignmentPolicy(warehouse),
-                new BasicRackAssignmentPolicy(warehouse));
+    public WarehouseController(WarehouseState state) {
+        this(state,
+                new BasicReceiveDepotAssignmentPolicy(state.getWarehouse()),
+                new BasicShipDepotAssignmentPolicy(state.getWarehouse()),
+                new BasicRackAssignmentPolicy(state.getWarehouse()));
     }
 
     /**
@@ -80,24 +75,9 @@ public class WarehouseController {
     }
 
     /**
-     * Returns a set of available TileNodes for the pathfinder
-     * @return the TileNodes
+     * Get the warehouse state for this WarehouseController.
      */
-
-
-    /**
-     * Getter Method for warehouse
-     * @return warehouse
-     */
-    public Warehouse getWarehouse() {
-        return warehouse;
-    }
-
-    /**
-     * Getter method for Part Catalogue
-     * @return partCatalogue
-     */
-    public PartCatalogue getPartCatalogue() {
-        return partCatalogue;
+    public WarehouseState getState() {
+        return state;
     }
 }

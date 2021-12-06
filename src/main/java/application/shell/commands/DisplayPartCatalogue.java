@@ -17,7 +17,7 @@ import java.util.List;
 public class DisplayPartCatalogue extends ShellCommand {
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer args) {
-        PartCatalogue partCatalogue = application.getWarehouseController().getPartCatalogue();
+        PartCatalogue partCatalogue = application.getWarehouseController().getState().getPartCatalogue();
         StringBuilder stringBuilder = new StringBuilder();
         List<Part> parts = partCatalogue.getParts();
         // Create header line

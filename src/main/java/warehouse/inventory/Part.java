@@ -29,7 +29,7 @@ public class Part {
      * @param description The description of this Part.
      */
     public Part(String name, String description) {
-        this(name, description, UUID.randomUUID().toString());
+        this(UUID.randomUUID().toString(), name, description);
     }
 
     /**

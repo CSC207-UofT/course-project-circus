@@ -41,7 +41,7 @@ public class CreatePartCommand extends ShellCommand {
         CreatePartCommandArgContainer args = (CreatePartCommandArgContainer) argContainer;
         Part part = new Part(args.getId(), args.getName(), args.getDescription());
         // Add it to the catalogue.
-        boolean result = application.getWarehouseController().getPartCatalogue().addPart(part);
+        boolean result = application.getWarehouseController().getState().getPartCatalogue().addPart(part);
         if (result) {
             return String.format("Created %s and added it to the part catalogue.", part);
         } else {

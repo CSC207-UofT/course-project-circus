@@ -1,4 +1,4 @@
-package application.desktop.ui.components.editor;
+package application.desktop.ui.components.editor.warehouse;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.Colour;

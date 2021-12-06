@@ -30,7 +30,7 @@ public class DisplayWarehouseCommand extends ShellCommand {
 
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer args) {
-        Warehouse warehouse = application.getWarehouseController().getWarehouse();
+        Warehouse warehouse = application.getWarehouseController().getState().getWarehouse();
         StringBuilder stringBuilder = new StringBuilder();
         // Create legend bar
         int legendWidth = 2 * (warehouse.getWidth() + 1);

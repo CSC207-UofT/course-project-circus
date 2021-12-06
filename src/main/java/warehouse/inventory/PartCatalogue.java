@@ -49,4 +49,11 @@ public class PartCatalogue {
     public Part getPartById(String id) {
         return parts.getOrDefault(id, null);
     }
+
+    /**
+     * Remove the Part with the given id.
+     */
+    public void removePartById(String id) {
+        parts.remove(id);
+    }
 }
