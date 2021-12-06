@@ -1,9 +1,10 @@
 package warehouse;
 
-import warehouse.inventory.Item;
-import messaging.Message;
-import warehouse.storage.Rack;
-import warehouse.storage.StorageUnit;
+import warehouse.tiles.EmptyTile;
+import warehouse.tiles.Tile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A 2D representation of a warehouse as a grid of Tiles.
@@ -12,10 +13,6 @@ public class Warehouse {
     private final int width;
     private final int height;
     private final Tile[][] tiles;
-
-    private final Message<TileStorageUnitChangedMessageData> anyStorageUnitChangedMessage;
-    private final Message<ItemDistributedMessageData> itemDistributedMessage;
-    private final Message<ItemReceivedMessageData> itemReceivedMessage;
 
     /**
      * Construct an empty layout with the given width and height.
@@ -26,35 +23,11 @@ public class Warehouse {
         this.width = width;
         this.height = height;
         this.tiles = new Tile[width][height];
-        // Messaging
-        anyStorageUnitChangedMessage = new Message<>();
-        anyStorageUnitChangedMessage.addListener(this::onTileStorageUnitChanged);
-        itemDistributedMessage = new Message<>();
-        itemReceivedMessage = new Message<>();
         // Initialise tiles
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                tiles[x][y] = new Tile(x, y);
-                // Hook into onStorageUnitChanged message
-                tiles[x][y].getOnStorageUnitChangedMessage().addListener(anyStorageUnitChangedMessage);
+                tiles[x][y] = new EmptyTile(x, y);
             }
-        }
-    }
-
-    /**
-     * Called when a tile's storage unit changes.
-     * @param data Message data.
-     */
-    private void onTileStorageUnitChanged(TileStorageUnitChangedMessageData data) {
-        StorageUnit oldStorageUnit = data.getOldStorageUnit();
-        if (oldStorageUnit != null) {
-            oldStorageUnit.getOnItemDistributedMessage().removeListener(itemDistributedMessage);
-            oldStorageUnit.getOnItemReceivedMessage().removeListener(itemReceivedMessage);
-        }
-        StorageUnit newStorageUnit = data.getTile().getStorageUnit();
-        if (newStorageUnit != null) {
-            newStorageUnit.getOnItemDistributedMessage().addListener(itemDistributedMessage);
-            newStorageUnit.getOnItemReceivedMessage().addListener(itemReceivedMessage);
         }
     }
 
@@ -62,33 +35,26 @@ public class Warehouse {
      * Get the tile at the specified coordinate.
      * @param x The horizontal coordinate of the tile.
      * @param y The vertical coordinate of the tile.
-     * @return The tile at the specified coordinate.
-     * @throws TileOutOfBoundsException if the specified coordinates is out of bounds.
+     * @return The tile at the specified coordinate, or null if the coordinates are invalid.
      */
-    public Tile getTileAt(int x, int y) throws TileOutOfBoundsException {
+    public Tile getTileAt(int x, int y) {
         if (isTileCoordinateInRange(x, y)) {
             return tiles[x][y];
         } else {
-            throw new TileOutOfBoundsException(x, y, width, height);
+            return null;
         }
     }
 
     /**
-     * Find an available Rack for the given Item.
-     * @return a Tile object with a Rack that can contain the given Item.
+     * Set a Tile in the Warehouse. The Warehouse tile corresponding to the position of the given Tile will be updated.
+     * @param tile The new Tile.
      */
-    public Tile findRackFor(Item item) {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                Tile tile = tiles[x][y];
-                StorageUnit storageUnit = tile.getStorageUnit();
-                if (tile.isEmpty() || !(storageUnit instanceof Rack)) continue;
-                if (storageUnit.canAddItem(item)) {
-                    return tile;
-                }
-            }
+    public void setTile(Tile tile) {
+        int x = tile.getX();
+        int y = tile.getY();
+        if (isTileCoordinateInRange(x, y)) {
+            tiles[x][y] = tile;
         }
-        return null;
     }
 
     /**
@@ -118,24 +84,21 @@ public class Warehouse {
     }
 
     /**
-     * This event is called whenever the StorageUnit of a tile in this Warehouse is changed.
+     * Find all tiles of Type clazz in this Warehouse.
+     * @param clazz The type of the Tile to find.
+     * @return An Iterable of Tile objects.
      */
-    public Message<TileStorageUnitChangedMessageData> getAnyStorageUnitChangedMessage() {
-        return anyStorageUnitChangedMessage;
-    }
-
-    /**
-     * This event is called when any Distributable in this Warehouse distributes an Item.
-     */
-    public Message<ItemDistributedMessageData> getItemDistributedMessage() {
-        return itemDistributedMessage;
-    }
-
-    /**
-     * This event is called when any Receivable in this Warehouse distributes an Item.
-     */
-    public Message<ItemReceivedMessageData> getItemReceivedMessage() {
-        return itemReceivedMessage;
+    public <T extends Tile> Iterable<T> findTilesOfType(Class<T> clazz) {
+        List<T> tiles = new ArrayList<T>();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                Tile tile = this.tiles[x][y];
+                if (clazz.isInstance(tile)) {
+                    tiles.add(clazz.cast(tile));
+                }
+            }
+        }
+        return tiles;
     }
 
     /**

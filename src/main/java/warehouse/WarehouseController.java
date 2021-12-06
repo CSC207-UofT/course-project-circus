@@ -1,63 +1,81 @@
 package warehouse;
 
-
-import concretePathfinding.TileNode;
-import org.lwjgl.system.CallbackI;
 import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
-import warehouse.orders.Order;
-import warehouse.orders.OrderQueue;
-
-import java.lang.reflect.Array;
-import java.util.*;
+import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
+import warehouse.logistics.assignment.BasicReceiveDepotAssignmentPolicy;
+import warehouse.logistics.assignment.BasicShipDepotAssignmentPolicy;
+import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
+import warehouse.logistics.orders.OrderQueue;
+import warehouse.logistics.orders.PlaceOrder;
+import warehouse.tiles.Rack;
+import warehouse.tiles.ReceiveDepot;
+import warehouse.tiles.ShipDepot;
 
 /**
- * This class will be in charge of the WareHouse as a whole and will be the class that the User interacts with
- * rather than other more basic classes.
+ * Controls the Warehouse.
  */
 public class WarehouseController {
-    /**
-     * The Warehouse to manage.
-     */
     private final Warehouse warehouse;
-    /**
-     * Available items serviced by the Warehouse.
-     */
     private final PartCatalogue partCatalogue;
-    /**
-     * Warehouse's current order queue.
-     */
+
+    private final StorageTileAssignmentPolicy<ReceiveDepot> receiveDepotAssignmentPolicy;
+    private final StorageTileAssignmentPolicy<ShipDepot> shipDepotAssignmentPolicy;
+    private final StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy;
+
     private final OrderQueue orderQueue;
 
     /**
-     * Constructs an instance of the WarehouseController.
+     * Construct a WarehouseController.
+     * @param warehouse The Warehouse to manage.
+     * @param partCatalogue Available parts serviced by the Warehouse.
+     * @param receiveDepotAssignmentPolicy The policy for assigning incoming items to a ReceiveDepot.
+     * @param shipDepotAssignmentPolicy The policy for assigning outgoing items to a ShipDepot.
+     * @param rackAssignmentPolicy The policy for assigning items to a Rack.
      */
-    public WarehouseController(Warehouse warehouse, PartCatalogue partCatalogue)
+    public WarehouseController(Warehouse warehouse, PartCatalogue partCatalogue,
+                               StorageTileAssignmentPolicy<ReceiveDepot> receiveDepotAssignmentPolicy,
+                               StorageTileAssignmentPolicy<ShipDepot> shipDepotAssignmentPolicy,
+                               StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy)
     {
         this.warehouse = warehouse;
         this.partCatalogue = partCatalogue;
-        this.orderQueue = new OrderQueue();
+        // Assignment policies
+        this.receiveDepotAssignmentPolicy = receiveDepotAssignmentPolicy;
+        this.shipDepotAssignmentPolicy = shipDepotAssignmentPolicy;
+        this.rackAssignmentPolicy = rackAssignmentPolicy;
+        // Initialise order queue
+        orderQueue = new OrderQueue();
     }
 
-    //TODO: Update once Robot functionality is completed.
     /**
-     * Insert an Item into the Warehouse into an available Rack - first add to order queue + update status once
-     * item is successfully added.
-     * @param item The Item to insert.
-     * @return the Tile containing the StorageUnit that the item was inserted into, or null if it could not be inserted.
+     * Construct a WarehouseController with basic assignment policies.
+     * @param warehouse The Warehouse to manage.
+     * @param partCatalogue Available parts serviced by the Warehouse.
      */
-    public Tile insertItem(Item item) {
-        Order order = new Order(item);
-        orderQueue.addOrder(order);
-        Tile tile = warehouse.findRackFor(item);
-        order.setDestination(tile);
-        if (tile == null) {
-            // Can't insert this item!
+    public WarehouseController(Warehouse warehouse, PartCatalogue partCatalogue) {
+        this(warehouse, partCatalogue,
+                new BasicReceiveDepotAssignmentPolicy(warehouse),
+                new BasicShipDepotAssignmentPolicy(warehouse),
+                new BasicRackAssignmentPolicy(warehouse));
+    }
+
+    /**
+     * Receive an Item from the outside world. This will place the Item into an available ReceiveDepot, and then issue
+     * an Order for the Item to be moved from that ReceiveDepot to an available StorageUnit in the Warehouse.
+     * @param item The Item to insert.
+     * @return a PlaceOrder representing a request to move the Item to an available StorageUnit in the Warehouse,
+     * or null if the Item cannot be inserted into the Warehouse.
+     */
+    public PlaceOrder receiveItem(Item item) {
+        ReceiveDepot receiveDepot = receiveDepotAssignmentPolicy.assign(item);
+        if (receiveDepot == null) {
+            // Item could not be assigned to a ReceiveDepot (source)!
             return null;
         } else {
-            tile.getStorageUnit().addItem(item);
-            orderQueue.completeOrder();
-            return tile;
+            PlaceOrder order = new PlaceOrder(receiveDepot, item, rackAssignmentPolicy);
+            orderQueue.add(order);
+            return order;
         }
     }
 

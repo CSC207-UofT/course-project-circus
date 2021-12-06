@@ -5,7 +5,6 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandExecutor;
 import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
-import warehouse.inventory.Item;
 import serialization.FileObjectSaver;
 import serialization.JsonFileObjectSaver;
 import warehouse.Warehouse;
@@ -43,7 +42,7 @@ public class ShellApplication {
         commandExecutor = new ShellCommandExecutor(this, new ShellCommand[]{
                 new CreatePartCommand(),
                 new CreateStorageUnitCommand(),
-                new InsertItemCommand(),
+                new ReceiveItemCommand(),
                 new DisplayWarehouseCommand(),
                 new DisplayStorageUnitInfoCommand(),
                 new DisplayPartCatalogue(),

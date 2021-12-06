@@ -1,10 +1,9 @@
 package concretePathfinding;
 import complexPathfinder.*;
-import warehouse.*;
+import warehouse.tiles.Tile;
 
 public class TileNode implements GraphNode {
-
-    private Tile t;
+    private final Tile tile;
 
     /**
      * Creates an instance of a TileNode
@@ -13,7 +12,7 @@ public class TileNode implements GraphNode {
      */
     public TileNode(Tile tile)
     {
-        t = tile;
+        this.tile = tile;
     }
 
     /**
@@ -22,15 +21,14 @@ public class TileNode implements GraphNode {
      */
     @Override
     public String getId() {
-        return Integer.toString(t.getX()) + "," + Integer.toString(t.getY());
+        return tile.getX() + "," + tile.getY();
     }
 
     /**
-     * Getter method for Tile t
-     * @return Tile t
+     * Getter method for the tile
      */
-    public Tile getT() {
-        return t;
+    public Tile getTile() {
+        return tile;
     }
 
 }

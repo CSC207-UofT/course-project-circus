@@ -1,7 +1,7 @@
 package concretePathfinding;
 import complexPathfinder.Graph;
-import warehouse.Tile;
-import warehouse.TileOutOfBoundsException;
+import warehouse.tiles.EmptyTile;
+import warehouse.tiles.Tile;
 
 import java.util.*;
 
@@ -9,8 +9,7 @@ import java.util.*;
  * This class will be an assistant class to the PathfinderController which will help it with Graph construction.
  *
  */
-public class GraphCreator<T> {
-
+public class GraphCreator {
     private final Tile[][] map;
 
     /**
@@ -28,58 +27,65 @@ public class GraphCreator<T> {
     public Set<TileNode> getNodes()
     {
         Set<TileNode> nodes = new HashSet<>();
-
         for (Tile[] tile : this.map) {
             for (Tile value : tile) {
-                if (value.isEmpty())
+                if (isEmpty(value)) {
                     nodes.add(new TileNode(value));
+                }
             }
         }
 
         return nodes;
     }
+
     /**
      * @param node TileNode in the warehouse layout.
      * @return Set of Id's of all connected nodes.
-     * @throws TileOutOfBoundsException if the tile location is out of Bounds
      */
-    public Set<String> getConnections(TileNode node) throws TileOutOfBoundsException {
-        Set<String> connections = new HashSet<String>();
-
-        if(node.getT().getY()< map[0].length-1) {
-            if (this.map[node.getT().getX()][node.getT().getY() + 1].isEmpty())
-                connections.add((new TileNode(this.map[node.getT().getX()][node.getT().getY() + 1])).getId());
+    public Set<String> getConnections(TileNode node) {
+        Set<String> connections = new HashSet<>();
+        if(node.getTile().getY() < map[0].length-1) {
+            if (isEmpty(this.map[node.getTile().getX()][node.getTile().getY() + 1])) {
+                connections.add((new TileNode(this.map[node.getTile().getX()][node.getTile().getY() + 1])).getId());
+            }
         }
-        if(node.getT().getY()-1 >= 0) {
-            if(this.map[node.getT().getX()][node.getT().getY()-1].isEmpty())
-                connections.add((new TileNode(this.map[node.getT().getX()][node.getT().getY()-1])).getId());
+        if(node.getTile().getY() - 1 >= 0) {
+            if(isEmpty(this.map[node.getTile().getX()][node.getTile().getY()-1])) {
+                connections.add((new TileNode(this.map[node.getTile().getX()][node.getTile().getY()-1])).getId());
+            }
         }
-        if(node.getT().getX()< map.length-1) {
-            if (this.map[node.getT().getX() + 1][node.getT().getY()].isEmpty())
-                connections.add((new TileNode(this.map[node.getT().getX() + 1][node.getT().getY()])).getId());
+        if(node.getTile().getX()< map.length-1) {
+            if (isEmpty(this.map[node.getTile().getX() + 1][node.getTile().getY()])) {
+                connections.add((new TileNode(this.map[node.getTile().getX() + 1][node.getTile().getY()])).getId());
+            }
         }
-        if(node.getT().getX()-1 >=0) {
-            if  (this.map[node.getT().getX() - 1][node.getT().getY()].isEmpty())
-                connections.add((new TileNode(this.map[node.getT().getX() - 1][node.getT().getY()]).getId()));
+        if(node.getTile().getX()-1 >=0) {
+            if  (isEmpty(this.map[node.getTile().getX() - 1][node.getTile().getY()])) {
+                connections.add((new TileNode(this.map[node.getTile().getX() - 1][node.getTile().getY()]).getId()));
+            }
         }
         return connections;
     }
 
     /**
-     *
-     * @return returns the graph of the warehouse
-     * @throws TileOutOfBoundsException
+     * Return whether the given tile is empty.
+     * @param tile The tile to check.
+     * @return True if the tile is empty, and False otherwise.
      */
-    public Graph getGraph() throws TileOutOfBoundsException {
-        Set<TileNode> tileSet = this.getNodes();
-        Map<String, Set<String>> connections = new HashMap<String, Set<String>>();
-        for (TileNode t: tileSet){
-            connections.put(t.getId(), this.getConnections(t));
-        }
-        return(new Graph(tileSet, connections));
+    private boolean isEmpty(Tile tile) {
+        return tile instanceof EmptyTile;
     }
 
-
-
-
+    /**
+     *
+     * @return returns the graph of the warehouse
+     */
+    public Graph<TileNode> getGraph() {
+        Set<TileNode> tileSet = this.getNodes();
+        Map<String, Set<String>> connections = new HashMap<String, Set<String>>();
+        for (TileNode t : tileSet) {
+            connections.put(t.getId(), this.getConnections(t));
+        }
+        return new Graph<>(tileSet, connections);
+    }
 }

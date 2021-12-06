@@ -1,11 +1,9 @@
 package concretePathfinding;
 
 import complexPathfinder.*;
-import warehouse.Tile;
-import warehouse.TileOutOfBoundsException;
+import warehouse.tiles.Tile;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This class will be in charge of the Pathfinder as a whole and will be the class that the Warehouse interacts with
@@ -23,7 +21,7 @@ public class PathfinderController {
      * @param map - 2D array of all tiles in the warehouse
      */
 
-    public PathfinderController(Tile[][] map, Tile from, Tile to) throws TileOutOfBoundsException {
+    public PathfinderController(Tile[][] map, Tile from, Tile to) {
         this.nextNodeScorer = new TileScorer();
         this.targetNodeScorer = new TileScorer();
         this.from = new TileNode(from);
@@ -31,12 +29,15 @@ public class PathfinderController {
         this.map = map;
     }
 
-    public ArrayList<Tile> getPath() throws TileOutOfBoundsException {
-        Pathfinder pathfinder = new Pathfinder(new GraphCreator(this.map).getGraph(), this.nextNodeScorer, this.targetNodeScorer);
+    public ArrayList<Tile> getPath() {
+        Pathfinder<TileNode> pathfinder = new Pathfinder<>(
+                new GraphCreator(this.map).getGraph(),
+                this.nextNodeScorer, this.targetNodeScorer);
+
         ArrayList<TileNode> result = (ArrayList<TileNode>) pathfinder.findPath(this.from, this.to);
         ArrayList<Tile> path = new ArrayList<>();
-        for (TileNode t: result){
-            path.add(t.getT());
+        for (TileNode t : result){
+            path.add(t.getTile());
         }
         return path;
     }

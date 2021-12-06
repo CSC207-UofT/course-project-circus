@@ -1,11 +1,13 @@
 package application.desktop;
 
-import application.desktop.ui.FontAwesomeIcons;
-import application.desktop.ui.components.Sidebar;
-import application.desktop.ui.components.WarehouseEditorPanel;
-import application.desktop.ui.components.common.*;
-import application.desktop.ui.components.Toolbar;
-import imgui.*;
+import application.desktop.ui.FontAwesomeIcon;
+import application.desktop.ui.components.ApplicationToolbar;
+import application.desktop.ui.components.common.Panel;
+import application.desktop.ui.components.editor.WarehouseEditor;
+import imgui.ImFontConfig;
+import imgui.ImFontGlyphRangesBuilder;
+import imgui.ImGui;
+import imgui.ImGuiIO;
 import imgui.app.Application;
 import imgui.app.Configuration;
 import imgui.flag.*;
@@ -14,17 +16,20 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
-import warehouse.storage.Rack;
-import warehouse.TileOutOfBoundsException;
 import warehouse.Warehouse;
+import warehouse.storage.StorageUnit;
+import warehouse.storage.containers.InMemoryStorageUnitContainer;
+import warehouse.storage.strategies.MultiTypeStorageUnitStrategy;
+import warehouse.storage.strategies.SingleTypeStorageStrategy;
+import warehouse.tiles.Rack;
+import warehouse.tiles.ReceiveDepot;
+import warehouse.tiles.ShipDepot;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.IntBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -42,29 +47,27 @@ public class DesktopApplication extends Application {
      */
     private final static float DEFAULT_FONT_SIZE = 16.0f;
 
-    private final List<Component> components;
+    private Warehouse warehouse;
+
     private boolean hasInitialisedDockspaceLayout;
+    private ApplicationToolbar toolbar;
+    private WarehouseEditor warehouseEditor;
+    private Panel sidebar;
 
     /**
      * Construct a DesktopApplication.
      */
     public DesktopApplication() {
-        components = new ArrayList<>();
-        components.add(new Toolbar());
+        setWarehouse(new Warehouse(12, 12));
+    }
 
-        // Create dummy warehouse
-        Warehouse warehouse = new Warehouse(12, 12);
-        try {
-            warehouse.getTileAt(1, 1).setStorageUnit(new Rack(10));
-            warehouse.getTileAt(2, 1).setStorageUnit(new Rack(10));
-            warehouse.getTileAt(3, 1).setStorageUnit(new Rack(10));
-        } catch (TileOutOfBoundsException e) {
-            e.printStackTrace();
-        }
-
-        WarehouseEditorPanel warehouseLayoutEditor = new WarehouseEditorPanel(warehouse);
-        components.add(warehouseLayoutEditor);
-        components.add(new Sidebar(warehouseLayoutEditor));
+    /**
+     * Initialise components for the given warehouse.
+     */
+    private void initComponents(Warehouse warehouse) {
+        toolbar = new ApplicationToolbar();
+        warehouseEditor = new WarehouseEditor(warehouse);
+        sidebar = new Panel("Sidebar##sidebar");
     }
 
     @Override
@@ -91,7 +94,7 @@ public class DesktopApplication extends Application {
     private void initFonts(final ImGuiIO io) {
         final ImFontGlyphRangesBuilder rangesBuilder = new ImFontGlyphRangesBuilder(); // Glyphs ranges provide
         rangesBuilder.addRanges(io.getFonts().getGlyphRangesDefault());
-        rangesBuilder.addRanges(FontAwesomeIcons._IconRange);
+        rangesBuilder.addRanges(FontAwesomeIcon._IconRange);
 
         // Font config for additional fonts
         // This is a natively allocated struct so don't forget to call destroy after atlas is built
@@ -108,20 +111,6 @@ public class DesktopApplication extends Application {
                 14, fontConfig, glyphRanges);
         io.getFonts().build();
         fontConfig.destroy();
-    }
-
-    /**
-     * Draw the UI.
-     */
-    @Override
-    public void process() {
-        initDockspace();
-        // Render components
-        for (Component component : components) {
-            component.draw(this);
-        }
-        // End dockspace window
-        ImGui.end();
     }
 
     /**
@@ -158,11 +147,29 @@ public class DesktopApplication extends Application {
             int dockIdLeft = imgui.internal.ImGui.dockBuilderSplitNode(dockMainId.get(), ImGuiDir.Left,
                     0.33f, null, dockMainId);
 
-            imgui.internal.ImGui.dockBuilderDockWindow("Sidebar", dockIdLeft);
-            imgui.internal.ImGui.dockBuilderDockWindow("Warehouse Layout", dockMainId.get());
+            imgui.internal.ImGui.dockBuilderDockWindow(sidebar.getTitle(), dockIdLeft);
+            imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditor.getTitle(), dockMainId.get());
+
+            int dockIdLeftDown = imgui.internal.ImGui.dockBuilderSplitNode(dockIdLeft, ImGuiDir.Down,
+                    0.5f, null, dockMainId);
+            imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditor.getInspector().getTitle(), dockIdLeftDown);
             imgui.internal.ImGui.dockBuilderFinish(dockspaceId);
         }
         ImGui.dockSpace(dockspaceId, 0.0f, 0.0f);
+    }
+
+    /**
+     * Draw the UI.
+     */
+    @Override
+    public void process() {
+        initDockspace();
+        // Render components
+        toolbar.draw(this);
+        warehouseEditor.draw(this);
+        sidebar.draw(this);
+        // End dockspace window
+        ImGui.end();
     }
 
     /**
@@ -172,6 +179,22 @@ public class DesktopApplication extends Application {
         long window = glfwGetCurrentContext();
         glfwSetWindowShouldClose(window, true);
         System.exit(0);
+    }
+
+    /**
+     * Get the currently loaded warehouse.
+     */
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    /**
+     * Set the currently loaded warehouse.
+     * @param warehouse The new warehouse.
+     */
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+        initComponents(warehouse);
     }
 
     /**

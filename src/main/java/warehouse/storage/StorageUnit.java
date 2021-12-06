@@ -2,29 +2,19 @@ package warehouse.storage;
 
 import warehouse.inventory.Item;
 import messaging.Message;
-import query.Query;
-import warehouse.Distributable;
-import warehouse.ItemDistributedMessageData;
-import warehouse.ItemReceivedMessageData;
-import warehouse.Receivable;
 import warehouse.storage.containers.StorageUnitContainer;
 import warehouse.storage.strategies.StorageUnitStrategy;
-
-import java.util.List;
 
 /**
  * A container that can store items.
  */
-public class StorageUnit implements Receivable, Distributable {
+public class StorageUnit {
     private final int capacity;
     private final StorageUnitStrategy strategy;
     private final StorageUnitContainer container;
 
     private final Message<StorageUnitItemMessageData> onItemAddedMessage;
     private final Message<StorageUnitItemMessageData> onItemRemovedMessage;
-
-    private final Message<ItemReceivedMessageData> onItemReceivedMessage;
-    private final Message<ItemDistributedMessageData> onItemDistributedMessage;
 
     /**
      * Construct a StorageUnit with the given strategy.
@@ -40,8 +30,6 @@ public class StorageUnit implements Receivable, Distributable {
 
         onItemAddedMessage = new Message<>();
         onItemRemovedMessage = new Message<>();
-        onItemReceivedMessage = new Message<>();
-        onItemDistributedMessage = new Message<>();
     }
 
     /**
@@ -104,36 +92,6 @@ public class StorageUnit implements Receivable, Distributable {
         return (hasInfiniteCapacity() || getSize() < capacity) && strategy.canAddItem(this, item);
     }
 
-    @Override
-    public boolean receiveItem(Item item) {
-        if (addItem(item)) {
-            onItemReceivedMessage.execute(new ItemReceivedMessageData(item, this));
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public Item distributeItem(Query<Item> itemQuery) {
-        List<Item> queryResult = query(itemQuery);
-        if (queryResult.size() == 0) {
-            // Throw exception
-            return null;
-        }
-        // Try removing the item
-        Item item = queryResult.get(0);
-        if (!removeItem(item)) {
-            return null;
-        }
-        onItemDistributedMessage.execute(new ItemDistributedMessageData(item, this));
-        return item;
-    }
-
-    @Override
-    public Iterable<Item> getQueryItems() {
-        return container.getItems();
-    }
-
     public StorageUnitStrategy getStrategy() {
         return strategy;
     }
@@ -148,14 +106,6 @@ public class StorageUnit implements Receivable, Distributable {
 
     public Message<StorageUnitItemMessageData> getOnItemRemovedMessage() {
         return onItemRemovedMessage;
-    }
-
-    public Message<ItemReceivedMessageData> getOnItemReceivedMessage() {
-        return onItemReceivedMessage;
-    }
-
-    public Message<ItemDistributedMessageData> getOnItemDistributedMessage() {
-        return onItemDistributedMessage;
     }
 
     @Override
