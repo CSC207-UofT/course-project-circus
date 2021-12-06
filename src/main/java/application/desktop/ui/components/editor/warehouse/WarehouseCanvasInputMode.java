@@ -1,4 +1,4 @@
-package application.desktop.ui.components.editor;
+package application.desktop.ui.components.editor.warehouse;
 
 /**
  * Input mode of the WarehouseCanvas.
