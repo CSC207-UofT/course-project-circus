@@ -6,8 +6,10 @@ import imgui.ImGui;
 import imgui.extension.imguifiledialog.ImGuiFileDialog;
 import imgui.extension.imguifiledialog.flag.ImGuiFileDialogFlags;
 import imgui.flag.ImGuiButtonFlags;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;
+import imgui.type.ImString;
 import serialization.FileObjectLoader;
 import serialization.FileObjectSaver;
 import warehouse.WarehouseState;
@@ -23,6 +25,7 @@ public class AppToolbar extends MenuBar {
     private String saveFilepath;
 
     private boolean openNewPopup;
+    private final ImString newWarehouseName;
     private final ImInt newWarehouseWidth;
     private final ImInt newWarehouseHeight;
 
@@ -34,6 +37,7 @@ public class AppToolbar extends MenuBar {
 
         this.newWarehouseWidth = new ImInt(12);
         this.newWarehouseHeight = new ImInt(12);
+        this.newWarehouseName = new ImString();
 
         // Create menu items
         MenuItem newMenuItem = new MenuItem("New");
@@ -122,7 +126,8 @@ public class AppToolbar extends MenuBar {
 
         dialogWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
         if (ImGui.beginPopupModal("New Warehouse##new_warehouse_popup", dialogWindowFlags)) {
-            ImGui.textDisabled("Warehouse Size...");
+            ImGui.inputTextWithHint("Name", "Artem's Powerhouse of Production", newWarehouseName,
+                    ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.CallbackAlways);
             ImGui.inputInt("Width", newWarehouseWidth);
             ImGui.inputInt("Height", newWarehouseHeight);
 
