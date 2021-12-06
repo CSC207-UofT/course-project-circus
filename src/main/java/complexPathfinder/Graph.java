@@ -1,6 +1,7 @@
 package complexPathfinder;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -22,13 +23,15 @@ public class Graph<T extends GraphNode> {
     /**
      * Returns the target node
      * @param id id of intended node
-     * @return the target node
+     * @return
      */
     public T getNode(String id) {
-        return nodes.stream()
-                .filter(node -> node.getId() == id)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No node found with ID"));
+        for (T node: this.nodes){
+            if(Objects.equals(node.getId(), id)){
+                return (T) node;
+            }
+        }
+        return null;
     }
 
     /**

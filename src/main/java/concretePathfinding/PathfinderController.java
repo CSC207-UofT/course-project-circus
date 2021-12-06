@@ -12,11 +12,11 @@ import java.util.List;
  * rather than other more basic classes.
  */
 public class PathfinderController {
-    private final Graph graph ;
     private final TileScorer nextNodeScorer;
     private final TileScorer targetNodeScorer;
-    private TileNode from;
-    private TileNode to;
+    private final Tile[][] map;
+    private final TileNode from;
+    private final TileNode to;
 
     /**
      * Constructs an instance of the PathfinderController.
@@ -24,15 +24,15 @@ public class PathfinderController {
      */
 
     public PathfinderController(Tile[][] map, Tile from, Tile to) throws TileOutOfBoundsException {
-        this.graph =  new GraphCreator(map).getGraph();
         this.nextNodeScorer = new TileScorer();
         this.targetNodeScorer = new TileScorer();
         this.from = new TileNode(from);
         this.to = new TileNode(to);
+        this.map = map;
     }
 
-    public ArrayList<Tile> getPath(){
-        Pathfinder pathfinder = new Pathfinder(this.graph, this.nextNodeScorer, this.targetNodeScorer);
+    public ArrayList<Tile> getPath() throws TileOutOfBoundsException {
+        Pathfinder pathfinder = new Pathfinder(new GraphCreator(this.map).getGraph(), this.nextNodeScorer, this.targetNodeScorer);
         ArrayList<TileNode> result = (ArrayList<TileNode>) pathfinder.findPath(this.from, this.to);
         ArrayList<Tile> path = new ArrayList<>();
         for (TileNode t: result){
