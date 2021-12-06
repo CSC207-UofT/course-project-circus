@@ -48,7 +48,6 @@ public class WarehouseInspectorPanel extends Panel {
     public WarehouseInspectorPanel(WarehouseEditor warehouseEditor) {
         super(PANEL_ID);
         setCloseable(false);
-        setMovable(false);
 
         this.warehouseEditor = warehouseEditor;
     }
