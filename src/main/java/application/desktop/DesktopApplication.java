@@ -177,13 +177,22 @@ public class DesktopApplication extends Application {
     }
 
     /**
-     * Create an empty WarehouseState with an empty PartCatalogue and empty 12x12 Warehouse
+     * Create an empty WarehouseState with an empty PartCatalogue and empty Warehouse with the given width and height.
+     * @param width The width of the empty Warehouse.
+     * @param height The height of the empty Warehouse.
      */
-    public static WarehouseState makeEmptyWarehouseState() {
+    public static WarehouseState makeEmptyWarehouseState(int width, int height) {
         return new WarehouseState(
-                new Warehouse(12, 12),
+                new Warehouse(width, height),
                 new PartCatalogue(),
                 new RobotMapper(),
                 new OrderQueue());
+    }
+
+    /**
+     * Create an empty WarehouseState with an empty PartCatalogue and empty 12x12 Warehouse
+     */
+    public static WarehouseState makeEmptyWarehouseState() {
+        return makeEmptyWarehouseState(12, 12);
     }
 }

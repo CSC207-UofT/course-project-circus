@@ -1,10 +1,16 @@
 package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
+import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.common.*;
+import imgui.ImGui;
 import imgui.extension.imguifiledialog.ImGuiFileDialog;
 import imgui.extension.imguifiledialog.flag.ImGuiFileDialogFlags;
+import imgui.flag.ImGuiButtonFlags;
+import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImInt;
+import imgui.type.ImString;
 import serialization.FileObjectLoader;
 import serialization.FileObjectSaver;
 import warehouse.WarehouseState;
@@ -15,15 +21,26 @@ import java.io.IOException;
  * Main toolbar component for the DesktopApplication.
  */
 public class AppToolbar extends MenuBar {
+    private static final String NEW_WAREHOUSE_POPUP_ID = "New Warehouse##new_warehouse_popup";
+
     private final DesktopApplication application;
 
     private String saveFilepath;
+
+    private boolean openNewPopup;
+    private final ImString newWarehouseName;
+    private final ImInt newWarehouseWidth;
+    private final ImInt newWarehouseHeight;
 
     /**
      * Construct a new AppToolbar.
      */
     public AppToolbar(DesktopApplication application) {
         this.application = application;
+
+        this.newWarehouseWidth = new ImInt(12);
+        this.newWarehouseHeight = new ImInt(12);
+        this.newWarehouseName = new ImString();
 
         // Create menu items
         MenuItem newMenuItem = new MenuItem("New");
@@ -44,18 +61,21 @@ public class AppToolbar extends MenuBar {
 
         // Register event listeners
         newMenuItem.getOnClickedEvent().addListener((data) -> {
-            application.setState(DesktopApplication.makeEmptyWarehouseState());
+            openNewPopup = true;
+            newWarehouseWidth.set(12);
+            newWarehouseHeight.set(12);
         });
         openMenuItem.getOnClickedEvent().addListener((data) -> {
             FileObjectLoader<WarehouseState> stateLoader = application.getWarehouseStateLoader();
-            ImGuiFileDialog.openModal("LoadDialog", "Open", stateLoader.getExtensionFilter(), ".", "",
+            ImGuiFileDialog.openModal("LoadDialog", String.format("%s  Open", FontAwesomeIcon.FileAlt.getIconCode()),
+                    stateLoader.getExtensionFilter(), ".", "",
                     1, 0, ImGuiFileDialogFlags.None);
         });
         saveMenuItem.getOnClickedEvent().addListener((data) -> {
             if (saveFilepath != null) {
                 saveState(saveFilepath);
             } else {
-                openSaveDialog("Save", false);
+                openSaveDialog(String.format("%s  Save", FontAwesomeIcon.Save.getIconCode()), false);
             }
         });
         saveAsMenuItem.getOnClickedEvent().addListener((data) -> {
@@ -97,6 +117,42 @@ public class AppToolbar extends MenuBar {
     protected void drawContent(DesktopApplication application) {
         super.drawContent(application);
         int dialogWindowFlags = ImGuiWindowFlags.NoCollapse;
+        drawNewWarehouseDialog(dialogWindowFlags);
+        drawSaveDialog(dialogWindowFlags);
+        drawLoadDialog( dialogWindowFlags);
+    }
+
+    private void drawNewWarehouseDialog(int dialogWindowFlags) {
+        if (openNewPopup) {
+            ImGui.openPopup(NEW_WAREHOUSE_POPUP_ID);
+            openNewPopup = false;
+        }
+
+        dialogWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
+        if (ImGui.beginPopupModal(NEW_WAREHOUSE_POPUP_ID, dialogWindowFlags)) {
+            ImGui.inputTextWithHint("Name", "Artem's Powerhouse of Production", newWarehouseName,
+                    ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.CallbackAlways);
+            ImGui.inputInt("Width", newWarehouseWidth);
+            ImGui.inputInt("Height", newWarehouseHeight);
+
+            ImGui.spacing();
+
+            if (ImGui.button("OK")) {
+                application.setState(DesktopApplication.makeEmptyWarehouseState(
+                        newWarehouseWidth.get(), newWarehouseHeight.get()));
+                ImGui.closeCurrentPopup();
+            }
+            ImGui.setItemDefaultFocus();
+            ImGui.sameLine();
+            if (ImGui.button("Cancel")) {
+                ImGui.closeCurrentPopup();
+            }
+
+            ImGui.endPopup();
+        }
+    }
+
+    private void drawSaveDialog(int dialogWindowFlags) {
         if (ImGuiFileDialog.display("SaveDialog", dialogWindowFlags, 0, 350, Float.MAX_VALUE, Float.MAX_VALUE)) {
             if (ImGuiFileDialog.isOk()) {
                 boolean isSaveAsDialog = ImGuiFileDialog.getUserDatas() == -1;
@@ -111,7 +167,9 @@ public class AppToolbar extends MenuBar {
 
             ImGuiFileDialog.close();
         }
+    }
 
+    private void drawLoadDialog(int dialogWindowFlags) {
         if (ImGuiFileDialog.display("LoadDialog", dialogWindowFlags, 0, 350, Float.MAX_VALUE, Float.MAX_VALUE)) {
             if (ImGuiFileDialog.isOk()) {
                 String filepath = ImGuiFileDialog.getCurrentPath() + "/" + ImGuiFileDialog.getCurrentFileName();
