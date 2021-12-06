@@ -1,21 +1,22 @@
 package warehouse.logistics.orders;
 
+import utils.RandomUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * The base Order class. Represents a command to do "work" in the Warehouse.
  */
 public abstract class Order {
-    private final UUID id;
+    private final String id;
     private final Date createdAt;
 
     /**
      * Construct an Order with a random UUID.
      */
     public Order() {
-        id = UUID.randomUUID();
+        id = RandomUtils.randomId();
         createdAt = new Date(System.currentTimeMillis());
     }
 
@@ -25,10 +26,16 @@ public abstract class Order {
      */
     public abstract boolean isReady();
 
-    public UUID getId() {
+    /**
+     * Retrieve the id of this order.
+     */
+    public String getId() {
         return id;
     }
 
+    /**
+     * Get the time this order was created at.
+     */
     public Date getCreatedAt() {
         return createdAt;
     }
