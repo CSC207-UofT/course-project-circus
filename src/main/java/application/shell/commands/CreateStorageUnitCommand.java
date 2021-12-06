@@ -50,7 +50,7 @@ public class CreateStorageUnitCommand extends ShellCommand {
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
         CreateStorageUnitArgContainer args = (CreateStorageUnitArgContainer) argContainer;
-        Warehouse warehouse = application.getWarehouseController().getWarehouse();
+        Warehouse warehouse = application.getWarehouseController().getState().getWarehouse();
         // Get tile
         Tile tile = warehouse.getTileAt(args.getX(), args.getY());
         if (tile != null) {

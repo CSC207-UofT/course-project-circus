@@ -37,7 +37,7 @@ public class ReceiveItemCommand extends ShellCommand {
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
         ReceiveItemCommandArgContainer args = (ReceiveItemCommandArgContainer) argContainer;
         WarehouseController warehouseController = application.getWarehouseController();
-        PartCatalogue partCatalogue = warehouseController.getPartCatalogue();
+        PartCatalogue partCatalogue = warehouseController.getState().getPartCatalogue();
         Part part = partCatalogue.getPartById(args.getPartId());
         if (part == null) {
             return String.format("Could not find part with id \"%s\" in the part catalogue!", args.getPartId());

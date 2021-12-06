@@ -3,6 +3,7 @@ package application.shell;
 import application.shell.commands.*;
 import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandExecutor;
+import warehouse.WarehouseState;
 import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 import serialization.FileObjectSaver;
@@ -33,10 +34,10 @@ public class ShellApplication {
         // TODO: Should the warehouse controller be made here?!
         // TODO: Replace empty warehouse with file loading or something
         // TODO: Don't hardcode warehouse dimensions
-        warehouseController = new WarehouseController(
+        warehouseController = new WarehouseController(new WarehouseState(
                 new Warehouse(10, 10),
                 new PartCatalogue()
-        );
+        ));
 
         isRunning = false;
         commandExecutor = new ShellCommandExecutor(this, new ShellCommand[]{

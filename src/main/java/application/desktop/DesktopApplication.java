@@ -17,6 +17,9 @@ import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
 import warehouse.Warehouse;
+import warehouse.WarehouseController;
+import warehouse.WarehouseState;
+import warehouse.inventory.PartCatalogue;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -40,7 +43,11 @@ public class DesktopApplication extends Application {
      */
     private final static float DEFAULT_FONT_SIZE = 16.0f;
 
-    private Warehouse warehouse;
+    /**
+     * Current warehouse state.
+     */
+    private WarehouseState state;
+    private WarehouseController warehouseController;
 
     private boolean hasInitialisedDockspaceLayout;
     private ApplicationToolbar toolbar;
@@ -51,15 +58,16 @@ public class DesktopApplication extends Application {
      * Construct a DesktopApplication.
      */
     public DesktopApplication() {
-        setWarehouse(new Warehouse(12, 12));
+        // Initialise default warehouse state.
+        setState(new WarehouseState(new Warehouse(12, 12), new PartCatalogue()));
     }
 
     /**
      * Initialise components for the given warehouse.
      */
-    private void initComponents(Warehouse warehouse) {
+    private void initComponents() {
         toolbar = new ApplicationToolbar();
-        warehouseEditor = new WarehouseEditor(warehouse);
+        warehouseEditor = new WarehouseEditor(state.getWarehouse());
         sidebar = new Panel("Sidebar##sidebar");
     }
 
@@ -175,19 +183,33 @@ public class DesktopApplication extends Application {
     }
 
     /**
-     * Get the currently loaded warehouse.
+     * Get the warehouse state.
      */
-    public Warehouse getWarehouse() {
-        return warehouse;
+    public WarehouseState getState() {
+        return state;
     }
 
     /**
-     * Set the currently loaded warehouse.
-     * @param warehouse The new warehouse.
+     * Set the warehouse state.
      */
-    public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
-        initComponents(warehouse);
+    public void setState(WarehouseState state) {
+        this.state = state;
+        warehouseController = new WarehouseController(state);
+        initComponents();
+    }
+
+    /**
+     * Get the WarehouseController.
+     */
+    public WarehouseController getWarehouseController() {
+        return warehouseController;
+    }
+
+    /**
+     * Set the WarehouseController.
+     */
+    public void setWarehouseController(WarehouseController warehouseController) {
+        this.warehouseController = warehouseController;
     }
 
     /**

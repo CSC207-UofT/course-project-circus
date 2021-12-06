@@ -36,7 +36,7 @@ public class DisplayStorageUnitInfoCommand extends ShellCommand {
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
         DisplayStorageUnitInfoCommandArgContainer args = (DisplayStorageUnitInfoCommandArgContainer) argContainer;
-        Warehouse warehouse = application.getWarehouseController().getWarehouse();
+        Warehouse warehouse = application.getWarehouseController().getState().getWarehouse();
         Tile tile = warehouse.getTileAt(args.getX(), args.getY());
         if (tile != null) {
             if (tile instanceof StorageTile) {
