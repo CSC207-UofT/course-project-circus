@@ -1,6 +1,7 @@
 package application.desktop.ui;
 
 import imgui.ImGui;
+import imgui.ImVec4;
 
 /**
  * An RGB colour with optional transparency.
@@ -77,6 +78,14 @@ public class Colour {
      */
     public Colour(Colour colour) {
         this(colour.getR(), colour.getG(), colour.getB(), colour.getA());
+    }
+
+    /**
+     * Construct a Colour given a float4 vector.
+     * @param colour The colour to copy.
+     */
+    public Colour(ImVec4 colour) {
+        this(colour.x, colour.y, colour.z, colour.w);
     }
 
     /**

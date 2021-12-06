@@ -1,8 +1,9 @@
 package application.desktop.ui.utils;
 
 import application.desktop.ui.Colour;
-import imgui.ImDrawList;
-import imgui.ImVec2;
+import imgui.*;
+import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiStyleVar;
 
 /**
  * Drawing utility functions.
@@ -126,5 +127,65 @@ public class DrawingUtils {
      */
     public static void drawRectFromCentre(ImDrawList drawList, ImVec2 centre, ImVec2 size, Colour fill) {
         drawRectFromCentre(drawList, centre, size, fill, null, 0, 0, RectBorderType.Inner);
+    }
+
+    /**
+     * Draws a hyperlink-styled label.
+     * @param label The label of the hyperlink.
+     * @param tooltip The tooltip to show when the label is hovered over.
+     * @param normalColour The normal colour of the label. If null, then the default normal colour from the current style is used.
+     * @param activeColour The active colour of the label, e.g. when it is clicked. If null, then the default active colour
+     *                     from the current style is used.
+     * @return True if the label was clicked, and False otherwise.
+     */
+    public static boolean hyperlinkLabel(String label, String tooltip, Colour normalColour, Colour activeColour)
+    {
+        ImGuiStyle style = ImGui.getStyle();
+        if (activeColour == null) {
+            activeColour = new Colour(style.getColor(ImGuiCol.ButtonHovered));
+        }
+
+        if (normalColour == null) {
+            normalColour = new Colour(style.getColor(ImGuiCol.Text));
+        }
+
+        ImVec2 cursorScreenPos = ImGui.getCursorScreenPos();
+        // Draw invisible text for interaction
+        ImGui.pushStyleVar(ImGuiStyleVar.Alpha, 0);
+        ImGui.text(label);
+        ImGui.popStyleVar();
+
+        boolean hovered = ImGui.isItemHovered();
+        boolean clicked = false;
+        Colour colour = normalColour;
+
+        if (hovered)
+        {
+            if( ImGui.isMouseClicked(0) )
+            {
+                clicked = true;
+            }
+
+            colour = activeColour;
+        }
+
+        ImGui.setCursorScreenPos(cursorScreenPos.x, cursorScreenPos.y);
+        ImGui.pushStyleColor(ImGuiCol.Text, colour.toU32Colour());
+        ImGui.text(label);
+        ImGui.popStyleColor();
+
+        if (hovered) {
+            addUnderline(colour);
+            ImGui.setTooltip(tooltip);
+        }
+
+        return clicked;
+    }
+
+    public static void addUnderline(Colour colour) {
+        ImVec2 min = ImGui.getItemRectMin();
+        ImVec2 max = ImGui.getItemRectMax();
+        min.y = max.y;
+        ImGui.getWindowDrawList().addLine(min.x, min.y, max.x, max.y, colour.toU32Colour());
     }
 }
