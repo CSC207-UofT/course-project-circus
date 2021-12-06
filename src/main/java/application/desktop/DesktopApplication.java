@@ -3,6 +3,7 @@ package application.desktop;
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.ApplicationToolbar;
 import application.desktop.ui.components.common.Panel;
+import application.desktop.ui.components.editor.inventory.InventoryEditor;
 import application.desktop.ui.components.editor.warehouse.WarehouseEditor;
 import imgui.ImFontConfig;
 import imgui.ImFontGlyphRangesBuilder;
@@ -50,7 +51,9 @@ public class DesktopApplication extends Application {
     private WarehouseController warehouseController;
 
     private boolean hasInitialisedDockspaceLayout;
+
     private ApplicationToolbar toolbar;
+    private InventoryEditor inventoryEditor;
     private WarehouseEditor warehouseEditor;
     private Panel sidebar;
 
@@ -67,6 +70,7 @@ public class DesktopApplication extends Application {
      */
     private void initComponents() {
         toolbar = new ApplicationToolbar();
+        inventoryEditor = new InventoryEditor(state.getPartCatalogue());
         warehouseEditor = new WarehouseEditor(state.getWarehouse());
         sidebar = new Panel("Sidebar##sidebar");
     }
@@ -149,6 +153,7 @@ public class DesktopApplication extends Application {
                     0.33f, null, dockMainId);
 
             imgui.internal.ImGui.dockBuilderDockWindow(sidebar.getTitle(), dockIdLeft);
+            imgui.internal.ImGui.dockBuilderDockWindow(inventoryEditor.getTitle(), dockMainId.get());
             imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditor.getTitle(), dockMainId.get());
 
             int dockIdLeftDown = imgui.internal.ImGui.dockBuilderSplitNode(dockIdLeft, ImGuiDir.Down,
@@ -167,6 +172,7 @@ public class DesktopApplication extends Application {
         initDockspace();
         // Render components
         toolbar.draw(this);
+        inventoryEditor.draw(this);
         warehouseEditor.draw(this);
         sidebar.draw(this);
         // End dockspace window

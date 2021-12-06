@@ -35,14 +35,23 @@ public class WarehouseEditor extends Panel {
 
     }
 
+    /**
+     * Get the Warehouse.
+     */
     public Warehouse getWarehouse() {
         return warehouse;
     }
 
+    /**
+     * Get the WarehouseCanvas component.
+     */
     public WarehouseCanvas getCanvas() {
         return canvas;
     }
 
+    /**
+     * Get the WarehouseInspectorPanel.
+     */
     public WarehouseInspectorPanel getInspector() {
         return inspector;
     }
