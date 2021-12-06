@@ -1,5 +1,5 @@
-package concretePathfinding;
-import complexPathfinder.*;
+package pathfinding.concretePathfinding;
+import pathfinding.complexPathfinder.*;
 import warehouse.tiles.Tile;
 
 public class TileNode implements GraphNode {

@@ -1,6 +1,6 @@
-package concretePathfinding;
+package pathfinding.concretePathfinding;
 
-import complexPathfinder.*;
+import pathfinding.complexPathfinder.*;
 import warehouse.tiles.Tile;
 
 import java.util.ArrayList;

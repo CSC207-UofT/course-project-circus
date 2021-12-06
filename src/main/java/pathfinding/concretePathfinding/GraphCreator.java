@@ -1,5 +1,5 @@
-package concretePathfinding;
-import complexPathfinder.Graph;
+package pathfinding.concretePathfinding;
+import pathfinding.complexPathfinder.Graph;
 import warehouse.tiles.EmptyTile;
 import warehouse.tiles.Tile;
 

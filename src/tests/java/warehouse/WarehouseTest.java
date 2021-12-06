@@ -1,3 +1,5 @@
+package warehouse;
+
 import org.junit.jupiter.api.Test;
 import warehouse.Warehouse;
 
