@@ -8,6 +8,8 @@ import application.desktop.ui.components.common.Separator;
 import application.desktop.ui.components.common.Text;
 import application.desktop.ui.components.common.Button;
 import application.desktop.ui.events.ComponentEventData;
+import warehouse.Warehouse;
+import warehouse.tiles.Tile;
 import warehouse.tiles.TileType;
 
 import java.util.HashMap;
@@ -123,6 +125,16 @@ public class WarehouseEditorToolbar extends MenuBar {
             button.setEnabled(insertTileToolButton.isToggled());
             tilePaletteLabel.setEnabled(insertTileToolButton.isToggled());
         }
+
+        // Disable the move tool if the selected tile is empty
+        Button moveTileToolButton = toolButtons.get(WarehouseCanvasInputMode.MOVE_TILE);
+        Tile selectedTile = warehouseEditor.getCanvas().getSelectedTile();
+        Warehouse warehouse = warehouseEditor.getWarehouseState().getWarehouse();
+        boolean isMoveToolEnabled = selectedTile != null && !warehouse.isEmpty(selectedTile);
+        if (!isMoveToolEnabled && moveTileToolButton.isToggled()) {
+            onSelectTileButtonClicked(null);
+        }
+        moveTileToolButton.setEnabled(isMoveToolEnabled);
     }
 
     /**
