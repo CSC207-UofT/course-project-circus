@@ -74,4 +74,12 @@ public class OrderQueue {
     public boolean isEmpty() {
         return orderQueue.isEmpty();
     }
+
+    public List<Order> peekOrders() {
+        ArrayList<Order> orders = new ArrayList<>();
+        for (Object obj : orderQueue.toArray()) {
+            orders.add((Order) obj);
+        }
+        return orders;
+    }
 }
