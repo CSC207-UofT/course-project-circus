@@ -80,12 +80,6 @@ public class WarehouseController {
     }
 
     /**
-     * Returns a set of available TileNodes for the pathfinder
-     * @return the TileNodes
-     */
-
-
-    /**
      * Getter Method for warehouse
      * @return warehouse
      */
