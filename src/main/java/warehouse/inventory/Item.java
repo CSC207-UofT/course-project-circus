@@ -1,6 +1,6 @@
 package warehouse.inventory;
 
-import java.util.UUID;
+import utils.RandomUtils;
 
 /**
  * A physical instance of a Part.
@@ -14,7 +14,7 @@ public class Item {
      * @param part The master abstract Part that this Item is an instance of.
      */
     public Item(Part part) {
-        this(UUID.randomUUID().toString(), part);
+        this(RandomUtils.randomId(), part);
     }
 
     /**

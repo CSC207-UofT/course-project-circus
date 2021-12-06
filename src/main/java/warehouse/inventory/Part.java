@@ -1,6 +1,6 @@
 package warehouse.inventory;
 
-import java.util.UUID;
+import utils.RandomUtils;
 
 /**
  * A representation of an abstract object, i.e. the 'concept' of an actual entity.
@@ -29,7 +29,7 @@ public class Part {
      * @param description The description of this Part.
      */
     public Part(String name, String description) {
-        this(UUID.randomUUID().toString(), name, description);
+        this(RandomUtils.randomId(), name, description);
     }
 
     /**
