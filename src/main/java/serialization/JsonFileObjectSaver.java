@@ -11,6 +11,11 @@ import java.io.Writer;
  * Saves an object to file in JSON format.
  */
 public class JsonFileObjectSaver<T> implements FileObjectSaver<T> {
+    /**
+     * Save the given data at the specified filepath.
+     * @param data The data to save.
+     * @param filepath The path to the serialized data file.
+     */
     @Override
     public void save(T data, String filepath) throws IOException {
         Writer writer = new FileWriter(filepath);
@@ -20,5 +25,13 @@ public class JsonFileObjectSaver<T> implements FileObjectSaver<T> {
         // Flush and close file
         writer.flush();
         writer.close();
+    }
+
+    /**
+     * Get a list of valid extensions accepted by this JsonFileObjectLoader.
+     */
+    @Override
+    public String getExtensionFilter() {
+        return ".json";
     }
 }
