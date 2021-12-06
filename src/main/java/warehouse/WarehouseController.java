@@ -12,6 +12,9 @@ import warehouse.tiles.Rack;
 import warehouse.tiles.ReceiveDepot;
 import warehouse.tiles.ShipDepot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Controls the Warehouse.
  */
@@ -22,6 +25,7 @@ public class WarehouseController {
     private final StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy;
 
     private final OrderQueue orderQueue;
+    private final List<Robot> robots;
 
     /**
      * Construct a WarehouseController.
@@ -40,8 +44,9 @@ public class WarehouseController {
         this.receiveDepotAssignmentPolicy = receiveDepotAssignmentPolicy;
         this.shipDepotAssignmentPolicy = shipDepotAssignmentPolicy;
         this.rackAssignmentPolicy = rackAssignmentPolicy;
-        // Initialise order queue
+        // TODO: Refactor into separate controller classes
         orderQueue = new OrderQueue();
+        robots = new ArrayList<>();
     }
 
     /**
@@ -75,9 +80,31 @@ public class WarehouseController {
     }
 
     /**
+     * Add a Robot to the Warehouse.
+     * @param robot The Robot to add.
+     */
+    public void addRobot(Robot robot) {
+        robots.add(robot);
+    }
+
+    /**
      * Get the warehouse state for this WarehouseController.
      */
     public WarehouseState getState() {
         return state;
+    }
+
+    /**
+     * Get the current order queue.
+     */
+    public OrderQueue getOrderQueue() {
+        return orderQueue;
+    }
+
+    /**
+     * Get the Robots in the Warehouse.
+     */
+    public List<Robot> getRobots() {
+        return robots;
     }
 }
