@@ -299,7 +299,6 @@ public class WarehouseCanvas extends Component {
         }
         // Update selected tile
         selectedTile = getTileFromScreenPoint(getRelativeMousePosition());
-
     }
 
     /**

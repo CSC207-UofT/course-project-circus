@@ -70,10 +70,10 @@ public class RobotMapper {
     /**
      * Get the Robots at the given Tile position.
      * @param tile The location of the Robot to retrieve.
-     * @return a list Robots at the given Tile, or null if no such Robot could be found.
+     * @return a list Robots at the given Tile.
      */
     public List<Robot> getRobotsAt(Tile tile) {
-        return new ArrayList<>(inverseRobotMap.getOrDefault(tile, null));
+        return new ArrayList<>(inverseRobotMap.getOrDefault(tile, new ArrayList<>()));
     }
 
     /**
