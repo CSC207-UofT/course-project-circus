@@ -24,7 +24,7 @@ public class PathfinderTest {
         map.getTileAt(0, 1).setStorageUnit(new Rack(5));
         map.getTileAt(1, 1).setStorageUnit(new Rack(5));
         map.getTileAt(2, 1).setStorageUnit(new Rack(5));
-        PathfinderController check = new PathfinderController(map.getTiles(), map.getTileAt(0, 0), map.getTileAt(0, 0));
+        PathfinderController check = new PathfinderController(map.getTiles(), map.getTileAt(0, 0), map.getTileAt(2, 2));
         GraphCreator graphCreator = new GraphCreator(map.getTiles());
         System.out.print(check.getPath());
 

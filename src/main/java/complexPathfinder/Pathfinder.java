@@ -57,7 +57,7 @@ public class Pathfinder<T extends GraphNode> {
 
         while (!openSet.isEmpty()) {
             RouteNode<T> next = openSet.poll();
-            if (next.getCurrent().equals(to)) {
+            if (next.getCurrent().getId().equals(to.getId())) {
                 List<T> route = new ArrayList<>();
                 RouteNode<T> current = next;
                 do {
