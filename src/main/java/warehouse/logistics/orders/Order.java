@@ -26,10 +26,16 @@ public abstract class Order {
      */
     public abstract boolean isReady();
 
+    /**
+     * Retrieve the id of this order.
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * Get the time this order was created at.
+     */
     public Date getCreatedAt() {
         return createdAt;
     }
