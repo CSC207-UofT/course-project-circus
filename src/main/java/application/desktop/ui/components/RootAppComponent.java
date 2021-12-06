@@ -1,7 +1,6 @@
-package application.desktop.ui;
+package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
-import application.desktop.ui.components.ApplicationToolbar;
 import application.desktop.ui.components.common.Component;
 import application.desktop.ui.components.common.Panel;
 import application.desktop.ui.components.editor.inventory.PartCatalogueEditor;
@@ -16,7 +15,6 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
-import warehouse.WarehouseState;
 
 import java.nio.IntBuffer;
 
@@ -32,15 +30,15 @@ public class RootAppComponent extends Component {
      */
     private boolean hasInitialisedDockspaceLayout;
 
-    private final ApplicationToolbar toolbar;
+    private final AppToolbar toolbar;
     private final PartCatalogueEditor partCatalogueEditor;
     private final WarehouseEditor warehouseEditor;
     private final Panel sidebar;
 
-    public RootAppComponent(WarehouseState state) {
-        toolbar = new ApplicationToolbar();
-        partCatalogueEditor = new PartCatalogueEditor(state.getPartCatalogue());
-        warehouseEditor = new WarehouseEditor(state.getWarehouse());
+    public RootAppComponent(DesktopApplication application) {
+        toolbar = new AppToolbar(application);
+        partCatalogueEditor = new PartCatalogueEditor(application.getState().getPartCatalogue());
+        warehouseEditor = new WarehouseEditor(application.getState().getWarehouse());
         sidebar = new Panel("Sidebar##sidebar");
     }
 

@@ -1,11 +1,7 @@
 package application.desktop;
 
 import application.desktop.ui.FontAwesomeIcon;
-import application.desktop.ui.RootAppComponent;
-import application.desktop.ui.components.ApplicationToolbar;
-import application.desktop.ui.components.common.Panel;
-import application.desktop.ui.components.editor.inventory.PartCatalogueEditor;
-import application.desktop.ui.components.editor.warehouse.WarehouseEditor;
+import application.desktop.ui.components.RootAppComponent;
 import imgui.ImFontConfig;
 import imgui.ImFontGlyphRangesBuilder;
 import imgui.ImGui;
@@ -13,26 +9,14 @@ import imgui.ImGuiIO;
 import imgui.app.Application;
 import imgui.app.Configuration;
 import imgui.flag.*;
-import imgui.internal.flag.ImGuiDockNodeFlags;
-import imgui.type.ImBoolean;
-import imgui.type.ImInt;
-import org.lwjgl.BufferUtils;
 import serialization.FileObjectLoader;
 import serialization.FileObjectSaver;
 import serialization.JsonFileObjectLoader;
 import serialization.JsonFileObjectSaver;
-import utils.Pair;
 import warehouse.Warehouse;
 import warehouse.WarehouseController;
 import warehouse.WarehouseState;
 import warehouse.inventory.PartCatalogue;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.IntBuffer;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Objects;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -150,7 +134,7 @@ public class DesktopApplication extends Application {
     public void setState(WarehouseState state) {
         this.state = state;
         warehouseController = new WarehouseController(state);
-        root = new RootAppComponent(state);
+        root = new RootAppComponent(this);
     }
 
     public FileObjectLoader<WarehouseState> getWarehouseStateLoader() {
