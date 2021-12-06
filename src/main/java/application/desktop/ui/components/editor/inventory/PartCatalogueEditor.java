@@ -3,10 +3,7 @@ package application.desktop.ui.components.editor.inventory;
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.*;
 import imgui.ImGui;
-import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiStyleVar;
-import imgui.flag.ImGuiTabBarFlags;
-import imgui.flag.ImGuiWindowFlags;
+import imgui.flag.*;
 import imgui.internal.flag.ImGuiItemFlags;
 import imgui.type.ImString;
 import warehouse.inventory.Part;
@@ -26,6 +23,7 @@ public class PartCatalogueEditor extends Panel {
     private final PartCatalogue partCatalogue;
     private String selectedPartId;
     private ImString selectedPartNameInputField;
+    private ImString selectedPartDescInputField;
 
     /**
      * Construct an PartCatalogueEditor given a PartCatalogue.
@@ -127,6 +125,7 @@ public class PartCatalogueEditor extends Panel {
         Part part = getSelectedPart();
         if (part != null) {
             selectedPartNameInputField = new ImString(part.getName());
+            selectedPartDescInputField = new ImString(part.getDescription());
         }
     }
 
@@ -145,15 +144,19 @@ public class PartCatalogueEditor extends Panel {
             if (ImGui.beginTabBar("##Tabs", ImGuiTabBarFlags.None)) {
                 if (ImGui.beginTabItem("Details")) {
                     ImGui.labelText("ID", selectedPart.getId());
-                    ImGui.inputText("Name", selectedPartNameInputField);
-                    ImGui.inputTextMultiline("Description", new ImString(selectedPart.getDescription()));
+
+                    int flags = ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.CallbackAlways;
+                    ImGui.inputText("Name", selectedPartNameInputField, flags);
+                    ImGui.inputTextMultiline("Description", selectedPartDescInputField, flags);
                     ImGui.endTabItem();
                 }
                 ImGui.endTabBar();
             }
             ImGui.endChild();
 
-            boolean isDisabled = selectedPartNameInputField.get().equals(selectedPart.getName());
+            // The buttons are disabled if and only if the name and description input fields have NOT changed.
+            boolean isDisabled = selectedPartNameInputField.get().equals(selectedPart.getName())
+                    && selectedPartDescInputField.get().equals(selectedPart.getDescription());
             if (isDisabled) {
                 imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
                 ImGui.pushStyleVar(ImGuiStyleVar.Alpha, ImGui.getStyle().getAlpha() * 0.5f);
@@ -161,12 +164,14 @@ public class PartCatalogueEditor extends Panel {
 
             if (ImGui.button("Revert")) {
                 selectedPartNameInputField.set(selectedPart.getName());
+                selectedPartDescInputField.set(selectedPart.getDescription());
             }
 
             ImGui.sameLine();
             if (ImGui.button("Save")) {
                 System.out.println("saving");
                 selectedPart.setName(selectedPartNameInputField.get());
+                selectedPart.setDescription(selectedPartDescInputField.get());
             }
 
             if (isDisabled) {

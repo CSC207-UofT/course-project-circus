@@ -52,15 +52,8 @@ public class PartCatalogue {
 
     /**
      * Remove the Part with the given id.
-     * @param id The id of the Part.
-     * @return True if the Part could be successfully removed, and False otherwise.
      */
-    public boolean removePartById(String id) {
-        if (parts.containsKey(id)) {
-            parts.remove(id);
-            return true;
-        } else {
-            return false;
-        }
+    public void removePartById(String id) {
+        parts.remove(id);
     }
 }
