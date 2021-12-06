@@ -55,6 +55,9 @@ public class PartCatalogueEditor extends Panel {
         List<Part> parts = partCatalogue.getParts();
 
         ImGui.text("Parts");
+        ImGui.sameLine();
+        ImGui.textDisabled(String.format("(%s)", parts.size()));
+
         float paneWidth = Math.max(ImGui.getContentRegionAvailX() * 0.25f, 150);
         ImGui.beginChild("left pane", paneWidth, 0, true, ImGuiWindowFlags.MenuBar);
 
