@@ -1,6 +1,7 @@
 package application.desktop;
 
 import application.desktop.ui.FontAwesomeIcon;
+import application.desktop.ui.RootAppComponent;
 import application.desktop.ui.components.ApplicationToolbar;
 import application.desktop.ui.components.common.Panel;
 import application.desktop.ui.components.editor.inventory.PartCatalogueEditor;
@@ -16,6 +17,10 @@ import imgui.internal.flag.ImGuiDockNodeFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
+import serialization.FileObjectLoader;
+import serialization.FileObjectSaver;
+import serialization.JsonFileObjectLoader;
+import serialization.JsonFileObjectSaver;
 import utils.Pair;
 import warehouse.Warehouse;
 import warehouse.WarehouseController;
@@ -50,34 +55,26 @@ public class DesktopApplication extends Application {
     private WarehouseState state;
     private WarehouseController warehouseController;
 
-    private boolean hasInitialisedDockspaceLayout;
+    private RootAppComponent root;
 
-    private ApplicationToolbar toolbar;
-    private PartCatalogueEditor partCatalogueEditor;
-    private WarehouseEditor warehouseEditor;
-    private Panel sidebar;
+    /**
+     * The loader for the WarehouseState.
+     */
+    private final FileObjectLoader<WarehouseState> warehouseStateLoader;
+    /**
+     * The saver for the WarehouseState.
+     */
+    private final FileObjectSaver<WarehouseState> warehouseStateSaver;
 
     /**
      * Construct a DesktopApplication.
      */
-    public DesktopApplication() {
-        // Initialise default warehouse state.
-        setState(new WarehouseState(new Warehouse(12, 12), new PartCatalogue()));
-    }
-
-    /**
-     * Initialise components for the given warehouse.
-     */
-    private void initComponents() {
-        toolbar = new ApplicationToolbar();
-        partCatalogueEditor = new PartCatalogueEditor(state.getPartCatalogue());
-        warehouseEditor = new WarehouseEditor(state.getWarehouse());
-        sidebar = new Panel("Sidebar##sidebar");
-    }
-
-    @Override
-    protected void configure(Configuration config) {
-        config.setTitle("Circus");
+    public DesktopApplication(WarehouseState state,
+                              FileObjectLoader<WarehouseState> warehouseStateLoader,
+                              FileObjectSaver<WarehouseState> warehouseStateSaver) {
+        setState(state);
+        this.warehouseStateLoader = warehouseStateLoader;
+        this.warehouseStateSaver = warehouseStateSaver;
     }
 
     @Override
@@ -105,78 +102,30 @@ public class DesktopApplication extends Application {
         // This is a natively allocated struct so don't forget to call destroy after atlas is built
         final ImFontConfig fontConfig = new ImFontConfig();
         final short[] glyphRanges = rangesBuilder.buildRanges();
-        io.getFonts().addFontFromMemoryTTF(loadFromResources(DEFAULT_FONT_NAME), DEFAULT_FONT_SIZE,
+        io.getFonts().addFontFromMemoryTTF(ResourcesUtils.loadFromResources(DEFAULT_FONT_NAME), DEFAULT_FONT_SIZE,
                 fontConfig, glyphRanges);
         // Merge icon glyphs
         fontConfig.setMergeMode(true);
         // Load FontAwesome glyphs
-        io.getFonts().addFontFromMemoryTTF(loadFromResources("/fa-regular-400.ttf"),
+        io.getFonts().addFontFromMemoryTTF(ResourcesUtils.loadFromResources("/fa-regular-400.ttf"),
                 14, fontConfig, glyphRanges);
-        io.getFonts().addFontFromMemoryTTF(loadFromResources("/fa-solid-900.ttf"),
+        io.getFonts().addFontFromMemoryTTF(ResourcesUtils.loadFromResources("/fa-solid-900.ttf"),
                 14, fontConfig, glyphRanges);
         io.getFonts().build();
         fontConfig.destroy();
     }
 
-    /**
-     * Setup the dock space for the application.
-     */
-    private void initDockspace() {
-        int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;
-        ImGui.setNextWindowPos(0, 0, ImGuiCond.Always);
-
-        Pair<Integer, Integer> appWindowSize = getAppWindowSize();
-        ImGui.setNextWindowSize(appWindowSize.getFirst(), appWindowSize.getSecond());
-
-        ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0.0f);
-        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0.0f);
-
-        // Setup dock space window so that it is behind every other window, and so that it doesn't
-        // react to interaction.
-        windowFlags |= ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse |
-                ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove |
-                ImGuiWindowFlags.NoBringToFrontOnFocus | ImGuiWindowFlags.NoNavFocus;
-        // Start window
-        ImGui.begin("Dockspace Content Root", new ImBoolean(true), windowFlags);
-        ImGui.popStyleVar(2);
-
-        // Create dock layout
-        final int dockspaceId = ImGui.getID("Dockspace");
-        if (!hasInitialisedDockspaceLayout) {
-            hasInitialisedDockspaceLayout = true;
-            imgui.internal.ImGui.dockBuilderRemoveNode(dockspaceId);
-            imgui.internal.ImGui.dockBuilderAddNode(dockspaceId, ImGuiDockNodeFlags.DockSpace);
-            imgui.internal.ImGui.dockBuilderSetNodeSize(dockspaceId, appWindowSize.getFirst(), appWindowSize.getSecond());
-
-            ImInt dockMainId = new ImInt(dockspaceId);
-            int dockIdLeft = imgui.internal.ImGui.dockBuilderSplitNode(dockMainId.get(), ImGuiDir.Left,
-                    0.33f, null, dockMainId);
-
-            imgui.internal.ImGui.dockBuilderDockWindow(sidebar.getTitle(), dockIdLeft);
-            imgui.internal.ImGui.dockBuilderDockWindow(partCatalogueEditor.getTitle(), dockMainId.get());
-            imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditor.getTitle(), dockMainId.get());
-
-            int dockIdLeftDown = imgui.internal.ImGui.dockBuilderSplitNode(dockIdLeft, ImGuiDir.Down,
-                    0.5f, null, dockMainId);
-            imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditor.getInspector().getTitle(), dockIdLeftDown);
-            imgui.internal.ImGui.dockBuilderFinish(dockspaceId);
-        }
-        ImGui.dockSpace(dockspaceId, 0.0f, 0.0f);
+    @Override
+    protected void configure(Configuration config) {
+        config.setTitle("Circus");
     }
 
     /**
-     * Draw the UI.
+     * Draw the DesktopApplication.
      */
     @Override
     public void process() {
-        initDockspace();
-        // Render components
-        toolbar.draw(this);
-        partCatalogueEditor.draw(this);
-        warehouseEditor.draw(this);
-        sidebar.draw(this);
-        // End dockspace window
-        ImGui.end();
+        root.draw(this);
     }
 
     /**
@@ -201,7 +150,15 @@ public class DesktopApplication extends Application {
     public void setState(WarehouseState state) {
         this.state = state;
         warehouseController = new WarehouseController(state);
-        initComponents();
+        root = new RootAppComponent(state);
+    }
+
+    public FileObjectLoader<WarehouseState> getWarehouseStateLoader() {
+        return warehouseStateLoader;
+    }
+
+    public FileObjectSaver<WarehouseState> getWarehouseStateSaver() {
+        return warehouseStateSaver;
     }
 
     /**
@@ -219,37 +176,18 @@ public class DesktopApplication extends Application {
     }
 
     /**
-     * Get the size of the application window size.
-     * @return A pair of integers representing the width and height respectively.
-     */
-    private static Pair<Integer, Integer> getAppWindowSize() {
-        long window = glfwGetCurrentContext();
-        IntBuffer width = BufferUtils.createIntBuffer(1);
-        IntBuffer height = BufferUtils.createIntBuffer(1);
-        glfwGetWindowSize(window, width, height);
-        return new Pair<>(width.get(0), height.get(0));
-    }
-
-    /**
-     * Load file from resources folder.
-     * @param name of the file.
-     * @return file data as a byte array.
-     */
-    private static byte[] loadFromResources(String name) {
-        try {
-            return Files.readAllBytes(Paths.get(Objects.requireNonNull(DesktopApplication.class.getResource(name)).toURI()));
-        } catch (URISyntaxException | IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
      * Entrypoint for the desktop application.
      *
      * @param args Command-line arguments passed to the application.
      */
     public static void main(String[] args) {
-        DesktopApplication application = new DesktopApplication();
+        // Initialise startng state
+        WarehouseState state = new WarehouseState(new Warehouse(12, 12), new PartCatalogue());
+        // Use JSON for file serialization
+        JsonFileObjectLoader<WarehouseState> stateLoader = new JsonFileObjectLoader<>(WarehouseState.class);
+        JsonFileObjectSaver<WarehouseState> stateSaver = new JsonFileObjectSaver<>();
+        // Create and launch DesktopApplication
+        DesktopApplication application = new DesktopApplication(state, stateLoader, stateSaver);
         launch(application);
         System.exit(0);
     }
