@@ -19,5 +19,9 @@ public enum WarehouseCanvasInputMode {
     /**
      * Erase a tile.
      */
-    ERASE_TILE
+    ERASE_TILE,
+    /**
+     * Places a robot
+     */
+    PLACE_ROBOT
 }

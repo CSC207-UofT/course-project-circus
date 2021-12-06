@@ -13,7 +13,7 @@ public class Robot {
     /**
      * Construct a Robot with the given id at the given coordinates.
      * @param id The id of the Robot.
-     * @param x The horizontal coordinate of the Robot in the warehouse.
+     * @param x The  of the Robot in the warehouse.
      * @param y The vertical coordinate of the Robot in the warehouse.
      */
     public Robot(String id, int x, int y) {

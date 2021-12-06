@@ -1,6 +1,7 @@
 package warehouse;
 
 import warehouse.tiles.EmptyTile;
+import warehouse.tiles.EmptyTileChecker;
 import warehouse.tiles.Tile;
 
 import java.util.ArrayList;
@@ -9,10 +10,12 @@ import java.util.List;
 /**
  * A 2D representation of a warehouse as a grid of Tiles.
  */
-public class Warehouse {
+public class Warehouse implements EmptyTileChecker {
     private final int width;
     private final int height;
+
     private final Tile[][] tiles;
+    private final List<Robot> robots;
 
     /**
      * Construct an empty layout with the given width and height.
@@ -29,6 +32,8 @@ public class Warehouse {
                 tiles[x][y] = new EmptyTile(x, y);
             }
         }
+        // Initialise robots
+        robots = new ArrayList<>();
     }
 
     /**
@@ -102,10 +107,36 @@ public class Warehouse {
     }
 
     /**
+     * Add a Robot to the Warehouse.
+     * @param robot The Robot to add.
+     */
+    public void addRobot(Robot robot) {
+        robots.add(robot);
+    }
+
+    /**
      * Getter method for tiles
      * @return tiles
      */
     public Tile[][] getTiles() {
         return tiles;
+    }
+
+
+    /**
+     * Get the Robots in the Warehouse.
+     */
+    public List<Robot> getRobots() {
+        return robots;
+    }
+
+    /**
+     * Return whether the given Tile is empty.
+     * @param tile The Tile to check.
+     * @return True if the given Tile is empty, and False otherwise.
+     */
+    @Override
+    public boolean isEmpty(Tile tile) {
+        return tile instanceof EmptyTile;
     }
 }

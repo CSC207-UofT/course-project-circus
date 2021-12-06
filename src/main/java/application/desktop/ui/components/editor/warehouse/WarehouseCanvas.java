@@ -274,24 +274,40 @@ public class WarehouseCanvas extends Component {
             insertTileAtMousePosition();
         } else if (inputMode == WarehouseCanvasInputMode.ERASE_TILE) {
             Tile tile = getTileFromScreenPoint(getRelativeMousePosition());
-            if (tile != null && !(tile instanceof EmptyTile)) {
+            if (tile != null && !warehouse.isEmpty(tile)) {
                 if (rememberEraseTilePopupChoice.get()) {
                     warehouse.setTile(new EmptyTile(tile.getX(), tile.getY()));
                 } else {
                     ImGui.openPopup(ERASE_TILE_POPUP_DIALOG_NAME);
                 }
             }
+        } else if (inputMode == WarehouseCanvasInputMode.PLACE_ROBOT) {
+            placeRobotAtMousePosition();
         }
         // Update selected tile
         selectedTile = getTileFromScreenPoint(getRelativeMousePosition());
 
     }
 
+    /**
+     * Inserts a tile at the current mouse position.
+     */
     private void insertTileAtMousePosition() {
         Pair<Integer, Integer> tileCoords = screenToWarehousePoint(getRelativeMousePosition());
         Tile tileToInsert = tileFactory.createTile(tileTypeToInsert, tileCoords.getFirst(), tileCoords.getSecond());
         if (tileToInsert != null) {
             warehouse.setTile(tileToInsert);
+        }
+    }
+
+    /**
+     * Places a Robot at the current mouse position.
+     * @remark This will only place a robot if and only the tile under the mouse is empty!
+     */
+    private void placeRobotAtMousePosition() {
+        Tile tile = getTileFromScreenPoint(getRelativeMousePosition());
+        if (tile != null && warehouse.isEmpty(tile)) {
+            warehouse.addRobot(new Robot(tile.getX(), tile.getY()));
         }
     }
 
@@ -330,7 +346,32 @@ public class WarehouseCanvas extends Component {
         }
 
         drawWarehouse(drawList);
+        drawRobots(drawList);
         drawList.popClipRect();
+    }
+
+    /**
+     * Draw the robots in the warehouse.
+     */
+    private void drawRobots(ImDrawList drawList) {
+        for (Robot robot : warehouse.getRobots()) {
+            ImVec2 topLeft = getTileTopLeft(robot.getX(), robot.getY());
+            ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
+            // TODO: Move styles to colour scheme
+            DrawingUtils.drawRect(drawList, topLeft, bottomRight,
+                    new Colour(64, 64, 64, 0.2f), new Colour(255, 162, 80, 1.0f),
+                    3.0f, 10.0f, RectBorderType.Inner);
+
+            FontAwesomeIcon icon = FontAwesomeIcon.Robot;
+            int iconColour = new Colour(223, 224, 223).toU32Colour();
+
+            ImVec2 textSize = new ImVec2();
+            ImGui.calcTextSize(textSize, icon.getIconCode());
+            drawList.addText(ImGui.getFont(), 14,
+                    (topLeft.x + bottomRight.x - textSize.x + 3) / 2,
+                    (topLeft.y + bottomRight.y - textSize.y) / 2,
+                    iconColour, icon.getIconCode());
+        }
     }
 
     /**

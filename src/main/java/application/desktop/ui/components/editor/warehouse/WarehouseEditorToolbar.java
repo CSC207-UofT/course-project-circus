@@ -54,10 +54,23 @@ public class WarehouseEditorToolbar extends MenuBar {
         eraseTileButton.setNormalColour(Colour.TRANSPARENT);
         eraseTileButton.getOnClickedEvent().addListener(this::onEraseTileButtonClicked);
 
+        Button placeRobotButton = new Button("", FontAwesomeIcon.Robot, "Place robot tool");
+        placeRobotButton.setToggleable(true);
+        placeRobotButton.setNormalColour(Colour.TRANSPARENT);
+        placeRobotButton.getOnClickedEvent().addListener(this::onPlaceRobotButtonClicked);
+
         toolButtons.put(WarehouseCanvasInputMode.SELECT_TILE, selectTileToolButton);
         toolButtons.put(WarehouseCanvasInputMode.MOVE_TILE, moveTileButton);
         toolButtons.put(WarehouseCanvasInputMode.INSERT_TILE, insertTileToolButton);
         toolButtons.put(WarehouseCanvasInputMode.ERASE_TILE, eraseTileButton);
+        toolButtons.put(WarehouseCanvasInputMode.PLACE_ROBOT, placeRobotButton);
+        addChildren(
+                selectTileToolButton,
+                moveTileButton,
+                insertTileToolButton,
+                eraseTileButton,
+                placeRobotButton
+        );
 
         // Create tile input buttons
         Button inputRackButton = new Button("Rack", FontAwesomeIcon.Table, "Rack");
@@ -87,10 +100,6 @@ public class WarehouseEditorToolbar extends MenuBar {
         // add items to menu bar
         tilePaletteLabel = new Text(String.format("  %s\tTile Palette\t", FontAwesomeIcon.Palette.getIconCode()), null, false);
         addChildren(
-                selectTileToolButton,
-                moveTileButton,
-                insertTileToolButton,
-                eraseTileButton,
                 new Separator(),
                 tilePaletteLabel,
                 inputRackButton,
@@ -147,6 +156,14 @@ public class WarehouseEditorToolbar extends MenuBar {
     private void onEraseTileButtonClicked(ComponentEventData data) {
         WarehouseCanvas canvas = warehouseEditor.getCanvas();
         canvas.setInputMode(WarehouseCanvasInputMode.ERASE_TILE);
+    }
+
+    /**
+     * Called when the "place robot" button is clicked.
+     */
+    private void onPlaceRobotButtonClicked(ComponentEventData data) {
+        WarehouseCanvas canvas = warehouseEditor.getCanvas();
+        canvas.setInputMode(WarehouseCanvasInputMode.PLACE_ROBOT);
     }
 
     /**
