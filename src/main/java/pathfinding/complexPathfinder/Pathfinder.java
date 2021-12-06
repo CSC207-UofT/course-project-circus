@@ -1,4 +1,4 @@
-package complexPathfinder;
+package pathfinding.complexPathfinder;
 
 import java.util.*;
 
@@ -7,7 +7,7 @@ import java.util.*;
  * <p>
  * Classes that extend this one will have to implement the methods we choose here.
  */
-public abstract class Pathfinder<T extends GraphNode> {
+public class Pathfinder<T extends GraphNode> {
 
     private final Graph<T> graph;
     private final Scorer<T> nextNodeScorer;
@@ -57,7 +57,7 @@ public abstract class Pathfinder<T extends GraphNode> {
 
         while (!openSet.isEmpty()) {
             RouteNode<T> next = openSet.poll();
-            if (next.getCurrent().equals(to)) {
+            if (next.getCurrent().getId().equals(to.getId())) {
                 List<T> route = new ArrayList<>();
                 RouteNode<T> current = next;
                 do {

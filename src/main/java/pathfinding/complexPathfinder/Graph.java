@@ -1,6 +1,7 @@
-package complexPathfinder;
+package pathfinding.complexPathfinder;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,17 +20,28 @@ public class Graph<T extends GraphNode> {
         this.connections = connections;
     }
 
-    public T getNode(int id) {
-        return nodes.stream()
-                .filter(node -> node.hashCode() == id)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No node found with ID"));
+    /**
+     * Returns the target node
+     * @param id id of intended node
+     * @return
+     */
+    public T getNode(String id) {
+        for (T node: this.nodes){
+            if(Objects.equals(node.getId(), id)){
+                return (T) node;
+            }
+        }
+        return null;
     }
 
+    /**
+     * Returns the connections that are associated with a specific node
+     * @param node the intended node's connections
+     * @return the connections
+     */
     public Set<T> getConnections(T node) {
         return connections.get(node.getId()).stream()
-                // TODO: Stop using ids, and integrate nodes with Java hashing.
-                .map((String x)-> getNode(Integer.parseInt(x)))
+                .map(this::getNode)
                 .collect(Collectors.toSet());
     }
 }

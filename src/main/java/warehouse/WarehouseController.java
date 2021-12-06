@@ -1,8 +1,7 @@
 package warehouse;
 
-
-import warehouse.inventory.Item;
 import warehouse.inventory.PartCatalogue;
+import warehouse.inventory.Item;
 import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
 import warehouse.logistics.assignment.BasicReceiveDepotAssignmentPolicy;
 import warehouse.logistics.assignment.BasicShipDepotAssignmentPolicy;
@@ -80,10 +79,24 @@ public class WarehouseController {
         }
     }
 
+    /**
+     * Returns a set of available TileNodes for the pathfinder
+     * @return the TileNodes
+     */
+
+
+    /**
+     * Getter Method for warehouse
+     * @return warehouse
+     */
     public Warehouse getWarehouse() {
         return warehouse;
     }
 
+    /**
+     * Getter method for Part Catalogue
+     * @return partCatalogue
+     */
     public PartCatalogue getPartCatalogue() {
         return partCatalogue;
     }

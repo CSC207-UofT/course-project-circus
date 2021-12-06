@@ -100,4 +100,12 @@ public class Warehouse {
         }
         return tiles;
     }
+
+    /**
+     * Getter method for tiles
+     * @return tiles
+     */
+    public Tile[][] getTiles() {
+        return tiles;
+    }
 }

@@ -1,4 +1,4 @@
-package complexPathfinder;
+package pathfinding.complexPathfinder;
 
 public class RouteNode <T extends GraphNode> implements Comparable<RouteNode<T>> {
     private final T current;
