@@ -1,6 +1,5 @@
 package warehouse;
 
-import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
 import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
 import warehouse.logistics.assignment.BasicReceiveDepotAssignmentPolicy;
@@ -12,9 +11,6 @@ import warehouse.tiles.Rack;
 import warehouse.tiles.ReceiveDepot;
 import warehouse.tiles.ShipDepot;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Controls the Warehouse.
  */
@@ -23,8 +19,6 @@ public class WarehouseController {
     private final StorageTileAssignmentPolicy<ReceiveDepot> receiveDepotAssignmentPolicy;
     private final StorageTileAssignmentPolicy<ShipDepot> shipDepotAssignmentPolicy;
     private final StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy;
-
-    private final OrderQueue orderQueue;
 
     /**
      * Construct a WarehouseController.
@@ -43,8 +37,6 @@ public class WarehouseController {
         this.receiveDepotAssignmentPolicy = receiveDepotAssignmentPolicy;
         this.shipDepotAssignmentPolicy = shipDepotAssignmentPolicy;
         this.rackAssignmentPolicy = rackAssignmentPolicy;
-        // TODO: Refactor into separate controller classes
-        orderQueue = new OrderQueue();
     }
 
     /**
@@ -72,7 +64,7 @@ public class WarehouseController {
             return null;
         } else {
             PlaceOrder order = new PlaceOrder(receiveDepot, item, rackAssignmentPolicy);
-            orderQueue.add(order);
+            state.getOrderQueue().add(order);
             return order;
         }
     }
@@ -82,12 +74,5 @@ public class WarehouseController {
      */
     public WarehouseState getState() {
         return state;
-    }
-
-    /**
-     * Get the current order queue.
-     */
-    public OrderQueue getOrderQueue() {
-        return orderQueue;
     }
 }
