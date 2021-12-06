@@ -11,6 +11,7 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTableColumnFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.internal.flag.ImGuiItemFlags;
+import warehouse.Warehouse;
 import warehouse.inventory.Item;
 import warehouse.storage.StorageUnit;
 import warehouse.tiles.StorageTile;
@@ -52,32 +53,62 @@ public class WarehouseInspectorPanel extends Panel {
     protected void drawContent(DesktopApplication application) {
         Tile selectedTile = warehouseEditor.getCanvas().getSelectedTile();
         if (selectedTile == null) {
-            // no selection, so draw the world properties
-
+            drawWarehouseInspector();
         } else {
-            int[] tilePosition = {selectedTile.getX(), selectedTile.getY()};
-            imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
-            ImGui.pushStyleVar(ImGuiStyleVar.Alpha, ImGui.getStyle().getAlpha() * 0.5f);
+            drawTileInspector(selectedTile);
+        }
+    }
 
-            ImGui.inputInt2("Position", tilePosition);
+    /**
+     * Draw inspector for the warehouse.
+     */
+    private void drawWarehouseInspector() {
+        Warehouse warehouse = warehouseEditor.getWarehouse();
+        int[] warehouseSize = {warehouse.getWidth(), warehouse.getHeight()};
 
-            imgui.internal.ImGui.popItemFlag();
-            ImGui.popStyleVar();
+        imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
+        // Draw the warehouse size input
+        // NOTE: Modifying the warehouse size after instantiation is not currently supported! So, this is readonly.
+        ImGui.inputInt2("Size", warehouseSize);
+        imgui.internal.ImGui.popItemFlag();
+        ImGui.sameLine();
+        // Draw help marker
+        ImGui.textDisabled("(?)");
+        if (ImGui.isItemHovered()) {
+            ImGui.beginTooltip();
+            ImGui.pushTextWrapPos(ImGui.getFontSize() * 17.5f);
+            ImGui.textUnformatted("Modifying the warehouse size after instantiation is not currently supported!");
+            ImGui.popTextWrapPos();
+            ImGui.endTooltip();
+        }
+    }
 
-            ImGui.labelText("Type", selectedTile.getClass().getSimpleName());
+    /**
+     * Draws the inspector for the given Tile.
+     */
+    private void drawTileInspector(Tile tile) {
+        int[] tilePosition = {tile.getX(), tile.getY()};
+        imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
+        ImGui.pushStyleVar(ImGuiStyleVar.Alpha, ImGui.getStyle().getAlpha() * 0.5f);
 
-            if (selectedTile instanceof StorageTile) {
-                // Draw heading
-                ImGui.spacing();
-                ImGui.separator();
-                ImGui.spacing();
-                ImGui.text("Storage");
+        ImGui.inputInt2("Position", tilePosition);
 
-                StorageUnit storageUnit = ((StorageTile) selectedTile).getStorageUnit();
-                ImGui.textDisabled(String.format("%d items...", storageUnit.getContainer().getSize()));
-                // Draw table
-                drawStorageTileTable((StorageTile) selectedTile);
-            }
+        imgui.internal.ImGui.popItemFlag();
+        ImGui.popStyleVar();
+
+        ImGui.labelText("Type", tile.getClass().getSimpleName());
+
+        if (tile instanceof StorageTile) {
+            // Draw heading
+            ImGui.spacing();
+            ImGui.separator();
+            ImGui.spacing();
+            ImGui.text("Storage");
+
+            StorageUnit storageUnit = ((StorageTile) tile).getStorageUnit();
+            ImGui.textDisabled(String.format("%d items...", storageUnit.getContainer().getSize()));
+            // Draw table
+            drawStorageTileTable((StorageTile) tile);
         }
     }
 
