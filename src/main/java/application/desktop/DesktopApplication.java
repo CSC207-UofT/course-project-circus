@@ -17,6 +17,7 @@ import warehouse.Warehouse;
 import warehouse.WarehouseController;
 import warehouse.WarehouseState;
 import warehouse.inventory.PartCatalogue;
+import warehouse.robots.RobotMapper;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -178,6 +179,8 @@ public class DesktopApplication extends Application {
      * Create an empty WarehouseState with an empty PartCatalogue and empty 12x12 Warehouse
      */
     public static WarehouseState makeEmptyWarehouseState() {
-        return new WarehouseState(new Warehouse(12, 12), new PartCatalogue());
+        return new WarehouseState(new Warehouse(12, 12),
+                new PartCatalogue(),
+                new RobotMapper());
     }
 }

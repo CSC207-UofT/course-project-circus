@@ -25,7 +25,6 @@ public class WarehouseController {
     private final StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy;
 
     private final OrderQueue orderQueue;
-    private final List<Robot> robots;
 
     /**
      * Construct a WarehouseController.
@@ -46,7 +45,6 @@ public class WarehouseController {
         this.rackAssignmentPolicy = rackAssignmentPolicy;
         // TODO: Refactor into separate controller classes
         orderQueue = new OrderQueue();
-        robots = new ArrayList<>();
     }
 
     /**
@@ -80,14 +78,6 @@ public class WarehouseController {
     }
 
     /**
-     * Add a Robot to the Warehouse.
-     * @param robot The Robot to add.
-     */
-    public void addRobot(Robot robot) {
-        robots.add(robot);
-    }
-
-    /**
      * Get the warehouse state for this WarehouseController.
      */
     public WarehouseState getState() {
@@ -99,12 +89,5 @@ public class WarehouseController {
      */
     public OrderQueue getOrderQueue() {
         return orderQueue;
-    }
-
-    /**
-     * Get the Robots in the Warehouse.
-     */
-    public List<Robot> getRobots() {
-        return robots;
     }
 }

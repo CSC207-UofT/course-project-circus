@@ -1,4 +1,4 @@
-package application.desktop.ui.components.editor.inventory;
+package application.desktop.ui.components.editor;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.*;
@@ -32,7 +32,6 @@ public class PartCatalogueEditor extends Panel {
     public PartCatalogueEditor(PartCatalogue partCatalogue) {
         super(PANEL_ID);
         setCloseable(false);
-        setMovable(false);
 
         this.partCatalogue = partCatalogue;
         selectedPartId = null;
@@ -56,7 +55,11 @@ public class PartCatalogueEditor extends Panel {
         List<Part> parts = partCatalogue.getParts();
 
         ImGui.text("Parts");
-        ImGui.beginChild("left pane", ImGui.getContentRegionAvailX() * 0.25f, 0, true, ImGuiWindowFlags.MenuBar);
+        ImGui.sameLine();
+        ImGui.textDisabled(String.format("(%s)", parts.size()));
+
+        float paneWidth = Math.max(ImGui.getContentRegionAvailX() * 0.25f, 150);
+        ImGui.beginChild("left pane", paneWidth, 0, true, ImGuiWindowFlags.MenuBar);
 
         if (ImGui.beginMenuBar()) {
             ImGui.pushStyleColor(ImGuiCol.Button, ImGui.colorConvertFloat4ToU32(0, 0, 0, 0));

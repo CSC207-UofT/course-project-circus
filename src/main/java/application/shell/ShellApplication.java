@@ -10,6 +10,7 @@ import serialization.FileObjectSaver;
 import serialization.JsonFileObjectSaver;
 import warehouse.Warehouse;
 import warehouse.WarehouseController;
+import warehouse.robots.RobotMapper;
 
 import java.util.Scanner;
 
@@ -36,7 +37,8 @@ public class ShellApplication {
         // TODO: Don't hardcode warehouse dimensions
         warehouseController = new WarehouseController(new WarehouseState(
                 new Warehouse(10, 10),
-                new PartCatalogue()
+                new PartCatalogue(),
+                new RobotMapper()
         ));
 
         isRunning = false;

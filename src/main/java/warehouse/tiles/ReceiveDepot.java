@@ -80,4 +80,12 @@ public class ReceiveDepot extends StorageTile implements Distributable {
     public Message<ItemDistributedMessageData> getOnItemDistributedMessage() {
         return onItemDistributedMessage;
     }
+
+    @Override
+    public String toString() {
+        return "ReceiveDepot{" +
+                "x=" + getX() +
+                ", y=" + getY() +
+                '}';
+    }
 }

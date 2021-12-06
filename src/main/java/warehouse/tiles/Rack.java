@@ -93,4 +93,12 @@ public class Rack extends StorageTile implements Receivable, Distributable {
     public Message<ItemReceivedMessageData> getOnItemReceivedMessage() {
         return onItemReceivedMessage;
     }
+
+    @Override
+    public String toString() {
+        return "Rack{" +
+                "x=" + getX() +
+                ", y=" + getY() +
+                '}';
+    }
 }

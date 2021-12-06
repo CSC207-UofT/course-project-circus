@@ -61,4 +61,12 @@ public class ShipDepot extends StorageTile implements Receivable {
     public Message<ItemReceivedMessageData> getOnItemReceivedMessage() {
         return onItemReceivedMessage;
     }
+
+    @Override
+    public String toString() {
+        return "ShipDepot{" +
+                "x=" + getX() +
+                ", y=" + getY() +
+                '}';
+    }
 }
