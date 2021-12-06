@@ -165,14 +165,19 @@ public class DesktopApplication extends Application {
      * @param args Command-line arguments passed to the application.
      */
     public static void main(String[] args) {
-        // Initialise startng state
-        WarehouseState state = new WarehouseState(new Warehouse(12, 12), new PartCatalogue());
         // Use JSON for file serialization
         JsonFileObjectLoader<WarehouseState> stateLoader = new JsonFileObjectLoader<>(WarehouseState.class);
         JsonFileObjectSaver<WarehouseState> stateSaver = new JsonFileObjectSaver<>();
         // Create and launch DesktopApplication
-        DesktopApplication application = new DesktopApplication(state, stateLoader, stateSaver);
+        DesktopApplication application = new DesktopApplication(makeEmptyWarehouseState(), stateLoader, stateSaver);
         launch(application);
         System.exit(0);
+    }
+
+    /**
+     * Create an empty WarehouseState with an empty PartCatalogue and empty 12x12 Warehouse
+     */
+    public static WarehouseState makeEmptyWarehouseState() {
+        return new WarehouseState(new Warehouse(12, 12), new PartCatalogue());
     }
 }

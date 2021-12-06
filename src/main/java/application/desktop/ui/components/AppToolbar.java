@@ -43,10 +43,9 @@ public class AppToolbar extends MenuBar {
         ));
 
         // Register event listeners
-        // TODO: Implement New File callback
         newMenuItem.getOnClickedEvent().addListener((data) -> {
+            application.setState(DesktopApplication.makeEmptyWarehouseState());
         });
-        // TODO: Implement Open File callback
         openMenuItem.getOnClickedEvent().addListener((data) -> {
             FileObjectLoader<WarehouseState> stateLoader = application.getWarehouseStateLoader();
             ImGuiFileDialog.openModal("LoadDialog", "Open", stateLoader.getExtensionFilter(), ".", "",

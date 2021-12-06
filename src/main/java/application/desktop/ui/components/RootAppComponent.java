@@ -97,8 +97,8 @@ public class RootAppComponent extends Component {
         initDockspace();
         // Render components
         toolbar.draw(application);
-        partCatalogueEditor.draw(application);
         warehouseEditor.draw(application);
+        partCatalogueEditor.draw(application);
         sidebar.draw(application);
         // End dockspace window
         ImGui.end();
