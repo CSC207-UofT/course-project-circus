@@ -1,5 +1,6 @@
 package warehouse;
 
+import warehouse.robots.Robot;
 import warehouse.tiles.EmptyTile;
 import warehouse.tiles.EmptyTileChecker;
 import warehouse.tiles.Tile;
@@ -13,9 +14,7 @@ import java.util.List;
 public class Warehouse implements EmptyTileChecker {
     private final int width;
     private final int height;
-
     private final Tile[][] tiles;
-    private final List<Robot> robots;
 
     /**
      * Construct an empty layout with the given width and height.
@@ -32,8 +31,6 @@ public class Warehouse implements EmptyTileChecker {
                 tiles[x][y] = new EmptyTile(x, y);
             }
         }
-        // Initialise robots
-        robots = new ArrayList<>();
     }
 
     /**
@@ -107,27 +104,11 @@ public class Warehouse implements EmptyTileChecker {
     }
 
     /**
-     * Add a Robot to the Warehouse.
-     * @param robot The Robot to add.
-     */
-    public void addRobot(Robot robot) {
-        robots.add(robot);
-    }
-
-    /**
      * Getter method for tiles
      * @return tiles
      */
     public Tile[][] getTiles() {
         return tiles;
-    }
-
-
-    /**
-     * Get the Robots in the Warehouse.
-     */
-    public List<Robot> getRobots() {
-        return robots;
     }
 
     /**

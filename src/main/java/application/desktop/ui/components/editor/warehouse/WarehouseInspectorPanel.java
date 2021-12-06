@@ -63,7 +63,7 @@ public class WarehouseInspectorPanel extends Panel {
      * Draw inspector for the warehouse.
      */
     private void drawWarehouseInspector() {
-        Warehouse warehouse = warehouseEditor.getWarehouse();
+        Warehouse warehouse = warehouseEditor.getWarehouseState().getWarehouse();
         int[] warehouseSize = {warehouse.getWidth(), warehouse.getHeight()};
 
         imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);

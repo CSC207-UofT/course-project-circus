@@ -14,8 +14,11 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import utils.Pair;
 import warehouse.*;
+import warehouse.robots.Robot;
+import warehouse.robots.RobotController;
 import warehouse.tiles.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,7 +30,7 @@ public class WarehouseCanvas extends Component {
      */
     private static final String ERASE_TILE_POPUP_DIALOG_NAME = "Delete?##erase_tile_dialog_popup";
 
-    private Warehouse warehouse;
+    private WarehouseState warehouseState;
     private WarehouseCanvasColourScheme colourScheme;
 
     private final float gridStep;
@@ -56,15 +59,15 @@ public class WarehouseCanvas extends Component {
      */
     private Tile selectedTile;
 
-    private ImBoolean rememberEraseTilePopupChoice;
+    private final ImBoolean rememberEraseTilePopupChoice;
 
     /**
      * Construct a new WarehouseCanvas with a default colour scheme.
      *
-     * @param warehouse The Warehouse to visualise.
+     * @param warehouseState The Warehouse to visualise.
      */
-    public WarehouseCanvas(Warehouse warehouse) {
-        this(warehouse, WarehouseCanvasColourScheme.DEFAULT,
+    public WarehouseCanvas(WarehouseState warehouseState) {
+        this(warehouseState, WarehouseCanvasColourScheme.DEFAULT,
                 32.0f,
                 100.0f, 100.0f,
                 true);
@@ -73,19 +76,19 @@ public class WarehouseCanvas extends Component {
     /**
      * Construct a new WarehouseCanvas with a custom colour scheme.
      *
-     * @param warehouse    The Warehouse to visualise.
+     * @param warehouseState    The WarehouseState to visualise.
      * @param colourScheme The colour scheme of this WarehouseCanvas.
      * @param gridStep     The size of a grid cell in screen coordinates.
      * @param minSizeX     The minimum horizontal size of the canvas, in pixels.
      * @param minSizeY     The minimum vertical size of the canvas, in pixels.
      * @param showGrid     Whether to show the grid.
      */
-    public WarehouseCanvas(Warehouse warehouse,
+    public WarehouseCanvas(WarehouseState warehouseState,
                            WarehouseCanvasColourScheme colourScheme,
                            float gridStep,
                            float minSizeX, float minSizeY,
                            boolean showGrid) {
-        this.warehouse = warehouse;
+        this.warehouseState = warehouseState;
         this.colourScheme = colourScheme;
         this.gridStep = gridStep;
         this.minSizeX = minSizeX;
@@ -140,7 +143,7 @@ public class WarehouseCanvas extends Component {
         ImGui.popStyleVar();
 
         if (ImGui.button("OK", 120 ,0)) {
-            warehouse.setTile(new EmptyTile(selectedTile.getX(), selectedTile.getY()));
+            warehouseState.getWarehouse().setTile(new EmptyTile(selectedTile.getX(), selectedTile.getY()));
             selectedTile = null;
             ImGui.closeCurrentPopup();
         }
@@ -189,13 +192,14 @@ public class WarehouseCanvas extends Component {
      */
     private Tile getTileFromScreenPoint(ImVec2 p) {
         Pair<Integer, Integer> tileCoords = screenToWarehousePoint(p);
-        return warehouse.getTileAt(tileCoords.getFirst(), tileCoords.getSecond());
+        return warehouseState.getWarehouse().getTileAt(tileCoords.getFirst(), tileCoords.getSecond());
     }
 
     /**
      * Update the panOffset so that the contents are centered in the canvas. Mutates panOffset.
      */
     private void panToCentre() {
+        Warehouse warehouse = warehouseState.getWarehouse();
         panOffset.x = gridStep * (float) Math.floor(warehouse.getWidth() / 2.0f)
                 + size.x / 2.0f - gridStep * warehouse.getWidth();
         panOffset.y = gridStep * (float) Math.floor(warehouse.getHeight() / 2.0f)
@@ -247,6 +251,7 @@ public class WarehouseCanvas extends Component {
             moveTileDragDelta = null;
 
             Pair<Integer, Integer> newTileCoords = screenToWarehousePoint(getRelativeMousePosition());
+            Warehouse warehouse = warehouseState.getWarehouse();
             if (warehouse.isTileCoordinateInRange(newTileCoords.getFirst(), newTileCoords.getSecond())) {
                 int oldX = selectedTile.getX();
                 int oldY = selectedTile.getY();
@@ -274,6 +279,7 @@ public class WarehouseCanvas extends Component {
             insertTileAtMousePosition();
         } else if (inputMode == WarehouseCanvasInputMode.ERASE_TILE) {
             Tile tile = getTileFromScreenPoint(getRelativeMousePosition());
+            Warehouse warehouse = warehouseState.getWarehouse();
             if (tile != null && !warehouse.isEmpty(tile)) {
                 if (rememberEraseTilePopupChoice.get()) {
                     warehouse.setTile(new EmptyTile(tile.getX(), tile.getY()));
@@ -296,7 +302,7 @@ public class WarehouseCanvas extends Component {
         Pair<Integer, Integer> tileCoords = screenToWarehousePoint(getRelativeMousePosition());
         Tile tileToInsert = tileFactory.createTile(tileTypeToInsert, tileCoords.getFirst(), tileCoords.getSecond());
         if (tileToInsert != null) {
-            warehouse.setTile(tileToInsert);
+            warehouseState.getWarehouse().setTile(tileToInsert);
         }
     }
 
@@ -306,8 +312,8 @@ public class WarehouseCanvas extends Component {
      */
     private void placeRobotAtMousePosition() {
         Tile tile = getTileFromScreenPoint(getRelativeMousePosition());
-        if (tile != null && warehouse.isEmpty(tile)) {
-            warehouse.addRobot(new Robot(tile.getX(), tile.getY()));
+        if (tile != null && warehouseState.getWarehouse().isEmpty(tile)) {
+            warehouseState.getRobotController().addRobotAt(new Robot(), tile);
         }
     }
 
@@ -354,8 +360,11 @@ public class WarehouseCanvas extends Component {
      * Draw the robots in the warehouse.
      */
     private void drawRobots(ImDrawList drawList) {
-        for (Robot robot : warehouse.getRobots()) {
-            ImVec2 topLeft = getTileTopLeft(robot.getX(), robot.getY());
+        RobotController robotController = warehouseState.getRobotController();
+        List<Robot> robots = robotController.getRobots();
+        for (Robot robot : robots) {
+            Tile robotTile = robotController.getRobotPosition(robot);
+            ImVec2 topLeft = getTileTopLeft(robotTile.getX(), robotTile.getY());
             ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
             // TODO: Move styles to colour scheme
             DrawingUtils.drawRect(drawList, topLeft, bottomRight,
@@ -379,6 +388,7 @@ public class WarehouseCanvas extends Component {
      */
     private void drawWarehouse(ImDrawList drawList) {
         ImVec2 origin = getOrigin();
+        Warehouse warehouse = warehouseState.getWarehouse();
 
         // Draw border
         float worldBorderThickness = 2.0f;
@@ -531,17 +541,17 @@ public class WarehouseCanvas extends Component {
     }
 
     /**
-     * Get the warehouse drawn by this canvas.
+     * Get the WarehouseState.
      */
-    public Warehouse getWarehouse() {
-        return warehouse;
+    public WarehouseState getWarehouseState() {
+        return warehouseState;
     }
 
     /**
-     * Sets the warehouse that is drawn and edited by this canvas.
+     * Set the WarehouseState to a new value.
      */
-    public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
+    public void setWarehouseState(WarehouseState warehouseState) {
+        this.warehouseState = warehouseState;
     }
 
     /**

@@ -38,7 +38,7 @@ public class RootAppComponent extends Component {
     public RootAppComponent(DesktopApplication application) {
         toolbar = new AppToolbar(application);
         partCatalogueEditor = new PartCatalogueEditor(application.getState().getPartCatalogue());
-        warehouseEditor = new WarehouseEditor(application.getState().getWarehouse());
+        warehouseEditor = new WarehouseEditor(application.getState());
         sidebar = new Panel("Sidebar##sidebar");
     }
 
