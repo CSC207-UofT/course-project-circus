@@ -15,7 +15,7 @@ import imgui.type.ImBoolean;
 import utils.Pair;
 import warehouse.*;
 import warehouse.robots.Robot;
-import warehouse.robots.RobotController;
+import warehouse.robots.RobotMapper;
 import warehouse.tiles.*;
 
 import java.util.List;
@@ -360,7 +360,7 @@ public class WarehouseCanvas extends Component {
      * Draw the robots in the warehouse.
      */
     private void drawRobots(ImDrawList drawList) {
-        RobotController robotController = warehouseState.getRobotController();
+        RobotMapper robotController = warehouseState.getRobotController();
         List<Robot> robots = robotController.getRobots();
         for (Robot robot : robots) {
             Tile robotTile = robotController.getRobotPosition(robot);

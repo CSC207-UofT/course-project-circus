@@ -1,7 +1,7 @@
 package warehouse;
 
 import warehouse.inventory.PartCatalogue;
-import warehouse.robots.RobotController;
+import warehouse.robots.RobotMapper;
 
 /**
  * Base state for all applications.
@@ -9,14 +9,14 @@ import warehouse.robots.RobotController;
 public class WarehouseState {
     private final Warehouse warehouse;
     private final PartCatalogue partCatalogue;
-    private final RobotController robotController;
+    private final RobotMapper robotController;
 
     /**
      * Construct a WarehouseState.
      * @param warehouse The warehouse.
      * @param partCatalogue The part catalogue.
      */
-    public WarehouseState(Warehouse warehouse, PartCatalogue partCatalogue, RobotController robotController) {
+    public WarehouseState(Warehouse warehouse, PartCatalogue partCatalogue, RobotMapper robotController) {
         this.warehouse = warehouse;
         this.partCatalogue = partCatalogue;
         this.robotController = robotController;
@@ -30,7 +30,7 @@ public class WarehouseState {
         return partCatalogue;
     }
 
-    public RobotController getRobotController() {
+    public RobotMapper getRobotController() {
         return robotController;
     }
 }

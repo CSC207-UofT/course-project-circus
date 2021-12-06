@@ -10,13 +10,13 @@ import java.util.Map;
 /**
  * Controls all the Robots in the warehouse and manages their positions.
  */
-public class RobotController {
+public class RobotMapper {
     private final Map<Robot, Tile> robotPositions;
 
     /**
-     * Construct a RobotController.
+     * Construct a RobotMapper.
      */
-    public RobotController() {
+    public RobotMapper() {
         robotPositions = new HashMap<>();
     }
 
@@ -39,7 +39,7 @@ public class RobotController {
     /**
      * Get the position of a Robot.
      * @param robot The robot whose position to retrieve.
-     * @return The Tile the robot is on, or null if the robot is not in this RobotController.
+     * @return The Tile the robot is on, or null if the robot is not in this RobotMapper.
      */
     public Tile getRobotPosition(Robot robot) {
         return robotPositions.getOrDefault(robot, null);
