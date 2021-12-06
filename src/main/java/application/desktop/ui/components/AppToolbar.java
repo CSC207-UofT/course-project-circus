@@ -1,6 +1,7 @@
 package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
+import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.common.*;
 import imgui.ImGui;
 import imgui.extension.imguifiledialog.ImGuiFileDialog;
@@ -20,6 +21,8 @@ import java.io.IOException;
  * Main toolbar component for the DesktopApplication.
  */
 public class AppToolbar extends MenuBar {
+    private static final String NEW_WAREHOUSE_POPUP_ID = "New Warehouse##new_warehouse_popup";
+
     private final DesktopApplication application;
 
     private String saveFilepath;
@@ -64,14 +67,15 @@ public class AppToolbar extends MenuBar {
         });
         openMenuItem.getOnClickedEvent().addListener((data) -> {
             FileObjectLoader<WarehouseState> stateLoader = application.getWarehouseStateLoader();
-            ImGuiFileDialog.openModal("LoadDialog", "Open", stateLoader.getExtensionFilter(), ".", "",
+            ImGuiFileDialog.openModal("LoadDialog", String.format("%s  Open", FontAwesomeIcon.FileAlt.getIconCode()),
+                    stateLoader.getExtensionFilter(), ".", "",
                     1, 0, ImGuiFileDialogFlags.None);
         });
         saveMenuItem.getOnClickedEvent().addListener((data) -> {
             if (saveFilepath != null) {
                 saveState(saveFilepath);
             } else {
-                openSaveDialog("Save", false);
+                openSaveDialog(String.format("%s  Save", FontAwesomeIcon.Save.getIconCode()), false);
             }
         });
         saveAsMenuItem.getOnClickedEvent().addListener((data) -> {
@@ -120,12 +124,12 @@ public class AppToolbar extends MenuBar {
 
     private void drawNewWarehouseDialog(int dialogWindowFlags) {
         if (openNewPopup) {
-            ImGui.openPopup("New Warehouse##new_warehouse_popup");
+            ImGui.openPopup(NEW_WAREHOUSE_POPUP_ID);
             openNewPopup = false;
         }
 
         dialogWindowFlags |= ImGuiWindowFlags.AlwaysAutoResize;
-        if (ImGui.beginPopupModal("New Warehouse##new_warehouse_popup", dialogWindowFlags)) {
+        if (ImGui.beginPopupModal(NEW_WAREHOUSE_POPUP_ID, dialogWindowFlags)) {
             ImGui.inputTextWithHint("Name", "Artem's Powerhouse of Production", newWarehouseName,
                     ImGuiInputTextFlags.CallbackResize | ImGuiInputTextFlags.CallbackAlways);
             ImGui.inputInt("Width", newWarehouseWidth);
