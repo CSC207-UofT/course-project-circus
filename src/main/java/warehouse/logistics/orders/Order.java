@@ -1,6 +1,7 @@
 package warehouse.logistics.orders;
 
 import utils.RandomUtils;
+import warehouse.transactions.Distributable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,6 +26,12 @@ public abstract class Order {
      * @return True if the Order is ready, and False otherwise.
      */
     public abstract boolean isReady();
+
+    /**
+     * Return the source of this Order.
+     * @return Where the order is originating from (Distributable).
+     */
+    public abstract Distributable getSource();
 
     /**
      * Retrieve the id of this order.

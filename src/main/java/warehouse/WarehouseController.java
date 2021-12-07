@@ -7,6 +7,7 @@ import warehouse.logistics.assignment.BasicShipDepotAssignmentPolicy;
 import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
 import warehouse.logistics.orders.OrderQueue;
 import warehouse.logistics.orders.PlaceOrder;
+import warehouse.robots.Robot;
 import warehouse.tiles.Rack;
 import warehouse.tiles.ReceiveDepot;
 import warehouse.tiles.ShipDepot;
@@ -66,6 +67,16 @@ public class WarehouseController {
             PlaceOrder order = new PlaceOrder(receiveDepot, item, rackAssignmentPolicy);
             state.getOrderQueue().add(order);
             return order;
+        }
+    }
+
+    /**
+     * Assign all available Robots to Orders in the OrderQueue.
+     */
+    public void processOrders() {
+        while (state.getOrderQueue().getNextOrder() != null || state.getRobotMapper().robotsAvailable()) {
+            Robot robot = state.getRobotMapper().findAvailableRobots().get(0);
+            robot.setOrder(state.getOrderQueue().getNextOrder());
         }
     }
 

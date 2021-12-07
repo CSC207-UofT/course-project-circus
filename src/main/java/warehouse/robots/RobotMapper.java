@@ -92,4 +92,31 @@ public class RobotMapper {
     public TilePosition getRobotPosition(Robot robot) {
         return robotPositions.getOrDefault(robot, null);
     }
+
+    /**
+     * Find any Robots in the warehouse that are not currently processing an order.
+     * @return List of available robots in the warehouse.
+     */
+    public ArrayList<Robot> findAvailableRobots() {
+        ArrayList<Robot> robots = new ArrayList<>();
+        for (Robot robot : this.getRobots()) {
+            if (!robot.getIsBusy()) {
+                robots.add(robot);
+            }
+        }
+        return robots;
+    }
+
+    /**
+     * Return whether there are any available robots.
+     * @return True if there are available robots, false if there are not.
+     */
+    public Boolean robotsAvailable() {
+        for (Robot robot: this.getRobots()) {
+            if (!robot.getIsBusy()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
