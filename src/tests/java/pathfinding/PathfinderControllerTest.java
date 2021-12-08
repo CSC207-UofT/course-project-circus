@@ -1,6 +1,5 @@
 package pathfinding;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pathfinding.concretePathfinding.*;
 import warehouse.Warehouse;
@@ -58,11 +57,13 @@ public class PathfinderControllerTest {
         int i = 0;
         ArrayList<Tile> path = pathfinder.getPath();
         // Make sure each tile in the path matches.
+
         for(Tile p : path)
         {
             assertEquals(expected[i][0], p.getX());
             assertEquals(expected[i][1], p.getY());
             i++;
+            System.out.println(p);
         }
     }
 
