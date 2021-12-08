@@ -1,5 +1,6 @@
 package pathfinding;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import pathfinding.concretePathfinding.*;
 import warehouse.Warehouse;
@@ -63,5 +64,26 @@ public class PathfinderControllerTest {
             assertEquals(expected[i][1], p.getY());
             i++;
         }
+    }
+
+
+    /**
+     * Method to test a pathfinder getting blocked in by racks.
+     *
+     * This should result in an exception being thrown
+     */
+    @Test
+    public void testNoPaths()
+    {
+        Warehouse warehouse = new Warehouse(10, 10);
+        warehouse.setTile(new Rack(0, 1, 5));
+        warehouse.setTile(new Rack(1, 0, 5));
+        // Build the pathfinder that will not reach its route
+        PathfinderController pathfinder = new PathfinderController(
+                warehouse.getTiles(), warehouse.getTileAt(0, 0),
+                warehouse.getTileAt(6, 7));
+
+        Throwable exception = assertThrows(IllegalStateException.class, () -> pathfinder.getPath());
+        assertEquals("No route found", exception.getMessage());
     }
 }
