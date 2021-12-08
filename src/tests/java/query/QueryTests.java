@@ -1,8 +1,10 @@
 package query;
 
 import org.junit.jupiter.api.Test;
+import org.lwjgl.system.CallbackI;
 import query.AndQuery;
 import query.Query;
+import utils.Pair;
 import warehouse.tiles.Tile;
 import warehouse.Warehouse;
 import warehouse.WarehouseController;
@@ -66,5 +68,13 @@ public class QueryTests {
         ArrayList<Integer> l = new ArrayList<>();
         ArrayList<Integer> lst = (ArrayList<Integer>) qy.query(q);
         assertEquals(l, lst);
+    }
+
+    @Test
+    public void testPair()
+    {
+        Pair<Integer, String> p = new Pair<>(1, "hello");
+        assertEquals(1, p.getFirst());
+        assertEquals("hello", p.getSecond());
     }
 }
