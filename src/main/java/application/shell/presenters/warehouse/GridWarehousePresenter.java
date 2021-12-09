@@ -6,8 +6,7 @@ import warehouse.geometry.grid.GridWarehouseCoordinateSystem;
 import warehouse.geometry.grid.Point;
 import warehouse.tiles.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Presents a Warehouse with a GridWarehouseCoordinateSystem.
@@ -39,7 +38,11 @@ public class GridWarehousePresenter implements
 
         // Create legend
         stringBuilder.append(legendBar);
-        for (Class<? extends Tile> clazz : TILE_SYMBOLS.keySet()) {
+        List<Class<? extends Tile>> symbols = new ArrayList<>(TILE_SYMBOLS.keySet());
+        // Sort by simple name
+        symbols.sort(Comparator.comparing(Class::getSimpleName));
+
+        for (Class<? extends Tile> clazz : symbols) {
             String clazzName = clazz.getSimpleName();
             String space = " ".repeat(legendWidth - clazzName.length() - 5);
             char symbol = TILE_SYMBOLS.get(clazz);

@@ -2,6 +2,8 @@ package warehouse.inventory;
 
 import utils.RandomUtils;
 
+import java.util.Objects;
+
 /**
  * A representation of an abstract object, i.e. the 'concept' of an actual entity.
  * An actual instance of a Part is an Item, which is a separate entity.
@@ -56,6 +58,19 @@ public class Part {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Part part = (Part) o;
+        return Objects.equals(id, part.id) && Objects.equals(name, part.name) && Objects.equals(description, part.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description);
     }
 
     @Override

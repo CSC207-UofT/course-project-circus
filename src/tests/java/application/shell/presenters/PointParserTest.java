@@ -7,7 +7,7 @@ import warehouse.geometry.grid.Point;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class TestPointParser {
+public class PointParserTest {
     @Test
     public void testParse() {
         PointParser parser = new PointParser();

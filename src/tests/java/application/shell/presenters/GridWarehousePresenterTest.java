@@ -2,7 +2,6 @@ package application.shell.presenters;
 
 import application.shell.presenters.warehouse.GridWarehousePresenter;
 import org.junit.jupiter.api.Test;
-import warehouse.Warehouse;
 import warehouse.WarehouseLayout;
 import warehouse.WarehouseState;
 import warehouse.geometry.grid.GridWarehouseCoordinateSystem;
@@ -15,7 +14,7 @@ import warehouse.tiles.ReceiveDepot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestGridWarehousePresenter {
+public class GridWarehousePresenterTest {
     @Test
     public void testConvert() {
         // Create an empty 10x10 warehouse
@@ -39,9 +38,9 @@ public class TestGridWarehousePresenter {
         String expected = """
                 ======================
                 EmptyTile        .
+                Rack             X
                 ReceiveDepot     R
                 ShipDepot        S
-                Rack             X
                 ======================
                    0 1 2 3 4 5 6 7 8 9
                  0 X . . . . X . . . .
@@ -53,8 +52,7 @@ public class TestGridWarehousePresenter {
                  6 . . . . . . . . . .
                  7 . . . . . . . . . .
                  8 . . . . . . . . . .
-                 9 . . . . . . . . . .
-                 """;
-        assertEquals(expected, presenter.convert(state));
+                 9 . . . . . . . . . .""";
+        assertEquals(expected.strip(), presenter.convert(state).strip());
     }
 }
