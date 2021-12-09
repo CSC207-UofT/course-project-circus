@@ -11,7 +11,7 @@ public class Separator extends Component {
      * Draw the separator line.
      */
     @Override
-    protected void drawContent(DesktopApplication application) {
+    protected void drawContent() {
         ImGui.separator();
     }
 }

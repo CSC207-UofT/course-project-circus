@@ -128,46 +128,46 @@ public class Component {
     /**
      * Draw this component.
      */
-    public void draw(DesktopApplication application) {
+    public void draw() {
         if (!isVisible()) return;
-        if (preDraw(application)) {
-            drawContent(application);
-            conditionalPostDraw(application);
+        if (preDraw()) {
+            drawContent();
+            conditionalPostDraw();
         }
-        postDraw(application);
-        handleEvents(application);
+        postDraw();
+        handleEvents();
     }
 
     /**
      * Called before drawContent.
      * @return A boolean indicating whether to continue drawing.
      */
-    protected boolean preDraw(DesktopApplication application) { return true; }
+    protected boolean preDraw() { return true; }
 
     /**
      * Called after drawContent if and only if preDraw returns True.
      */
-    protected void conditionalPostDraw(DesktopApplication application) { }
+    protected void conditionalPostDraw() { }
 
     /**
      * Called after drawContent regardless of what preDraw returns.
      */
-    protected void postDraw(DesktopApplication application) { }
+    protected void postDraw() { }
 
     /**
      * Internal lifecycle method for drawing the component.
      * By default, draws the children of this component.
      */
-    protected void drawContent(DesktopApplication application) {
-        drawChildren(application);
+    protected void drawContent() {
+        drawChildren();
     }
 
     /**
      * Draw child Components.
      */
-    protected void drawChildren(DesktopApplication application) {
+    protected void drawChildren() {
         for (Component child : children) {
-            child.draw(application);
+            child.draw();
         }
     }
 
@@ -190,19 +190,19 @@ public class Component {
     /**
      * Process and handle application.desktop.ui.events.
      */
-    protected void handleEvents(DesktopApplication application) {
+    protected void handleEvents() {
         ComponentState previousState = state;
         updateState();
         if (previousState != state) {
             // Our state has changed.
             if (state == ComponentState.MOUSE_HOVERING) {
-                onStartMouseHoverEvent.execute(this, application);
+                onStartMouseHoverEvent.execute(this);
             } else {
-                onStopMouseHoverEvent.execute(this, application);
+                onStopMouseHoverEvent.execute(this);
             }
         }
         if (state == ComponentState.MOUSE_HOVERING) {
-            whileMouseHoverEvent.execute(this, application);
+            whileMouseHoverEvent.execute(this);
         }
     }
 

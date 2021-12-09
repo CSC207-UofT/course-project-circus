@@ -1,11 +1,13 @@
 package application.shell.commands.framework;
 
 import application.shell.ShellApplication;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 
 /**
  * A shell command.
  */
-public abstract class ShellCommand {
+public abstract class ShellCommand<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> {
     /**
      * Create the arg container for this command.
      * @return a ShellCommandArgContainer instance.
@@ -20,7 +22,7 @@ public abstract class ShellCommand {
      * @param args the arguments to this ShellCommand.
      * @return the output of the command. This can be null.
      */
-    public abstract String execute(ShellApplication application, ShellCommandArgContainer args);
+    public abstract String execute(ShellApplication<T, U> application, ShellCommandArgContainer args);
 
     /**
      * Check whether this ShellCommand has a ShellCommandSpec.

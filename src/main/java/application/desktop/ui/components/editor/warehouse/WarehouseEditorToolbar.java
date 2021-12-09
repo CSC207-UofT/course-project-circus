@@ -8,9 +8,11 @@ import application.desktop.ui.components.common.Separator;
 import application.desktop.ui.components.common.Text;
 import application.desktop.ui.components.common.Button;
 import application.desktop.ui.events.ComponentEventData;
-import warehouse.Warehouse;
+import warehouse.WarehouseLayout;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.tiles.Tile;
-import warehouse.tiles.TileType;
+import warehouse.tiles.factory.TileType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +20,9 @@ import java.util.Map;
 /**
  * Toolbar for the WarehouseEditor.
  */
-public class WarehouseEditorToolbar extends MenuBar {
-    private final WarehouseEditor warehouseEditor;
+public class WarehouseEditorToolbar<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate>
+        extends MenuBar {
+    private final WarehouseEditor<T, U> warehouseEditor;
 
     private final Map<WarehouseCanvasInputMode, Button> toolButtons;
     private final Map<TileType, Button> insertTileTypeButtons;
@@ -29,7 +32,7 @@ public class WarehouseEditorToolbar extends MenuBar {
      * Construct a WarehouseEditorToolbar.
      * @param warehouseEditor The root WarehouseEditor panel.
      */
-    public WarehouseEditorToolbar(WarehouseEditor warehouseEditor) {
+    public WarehouseEditorToolbar(WarehouseEditor<T, U> warehouseEditor) {
         this.warehouseEditor = warehouseEditor;
         toolButtons = new HashMap<>();
         insertTileTypeButtons = new HashMap<>();
@@ -111,8 +114,8 @@ public class WarehouseEditorToolbar extends MenuBar {
     }
 
     @Override
-    protected void handleEvents(DesktopApplication application) {
-        super.handleEvents(application);
+    protected void handleEvents() {
+        super.handleEvents();
         for (WarehouseCanvasInputMode inputMode : toolButtons.keySet()) {
             Button button = toolButtons.get(inputMode);
             button.setToggled(inputMode.equals(warehouseEditor.getCanvas().getInputMode()));
@@ -129,8 +132,8 @@ public class WarehouseEditorToolbar extends MenuBar {
         // Disable the move tool if the selected tile is empty
         Button moveTileToolButton = toolButtons.get(WarehouseCanvasInputMode.MOVE_TILE);
         Tile selectedTile = warehouseEditor.getCanvas().getSelectedTile();
-        Warehouse warehouse = warehouseEditor.getWarehouseState().getWarehouse();
-        boolean isMoveToolEnabled = selectedTile != null && !warehouse.isEmpty(selectedTile);
+        WarehouseLayout<U> warehouseLayout = warehouseEditor.getWarehouseState().getLayout();
+        boolean isMoveToolEnabled = selectedTile != null && !warehouseLayout.isEmpty(selectedTile);
         if (!isMoveToolEnabled && moveTileToolButton.isToggled()) {
             onSelectTileButtonClicked(null);
         }
@@ -155,7 +158,7 @@ public class WarehouseEditorToolbar extends MenuBar {
      * Called when the "insert tile" button is clicked.
      */
     private void onInsertTileButtonClicked(ComponentEventData data) {
-        WarehouseCanvas canvas = warehouseEditor.getCanvas();
+        WarehouseCanvas<T, U> canvas = warehouseEditor.getCanvas();
         canvas.setInputMode(WarehouseCanvasInputMode.INSERT_TILE);
         if (!insertTileTypeButtons.containsKey(canvas.getTileTypeToInsert())) {
             canvas.setTileTypeToInsert(TileType.RACK);
@@ -166,7 +169,7 @@ public class WarehouseEditorToolbar extends MenuBar {
      * Called when the "erase tile" button is clicked.
      */
     private void onEraseTileButtonClicked(ComponentEventData data) {
-        WarehouseCanvas canvas = warehouseEditor.getCanvas();
+        WarehouseCanvas<T, U> canvas = warehouseEditor.getCanvas();
         canvas.setInputMode(WarehouseCanvasInputMode.ERASE_OBJECT);
     }
 
@@ -174,7 +177,7 @@ public class WarehouseEditorToolbar extends MenuBar {
      * Called when the "place robot" button is clicked.
      */
     private void onPlaceRobotButtonClicked(ComponentEventData data) {
-        WarehouseCanvas canvas = warehouseEditor.getCanvas();
+        WarehouseCanvas<T, U> canvas = warehouseEditor.getCanvas();
         canvas.setInputMode(WarehouseCanvasInputMode.PLACE_ROBOT);
     }
 

@@ -25,12 +25,12 @@ public class Menu extends Component {
     }
 
     @Override
-    protected boolean preDraw(DesktopApplication application) {
+    protected boolean preDraw() {
         return ImGui.beginMenu(label, isEnabled());
     }
 
     @Override
-    protected void conditionalPostDraw(DesktopApplication application) {
+    protected void conditionalPostDraw() {
         ImGui.endMenu();
     }
 

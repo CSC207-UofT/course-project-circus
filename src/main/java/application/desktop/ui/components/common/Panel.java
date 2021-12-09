@@ -62,7 +62,7 @@ public class Panel extends Component {
     }
 
     @Override
-    protected boolean preDraw(DesktopApplication application) {
+    protected boolean preDraw() {
         if (!isOpen.get()) return false;
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, paddingX, paddingY);
 
@@ -79,7 +79,7 @@ public class Panel extends Component {
     }
 
     @Override
-    protected void postDraw(DesktopApplication application) {
+    protected void postDraw() {
         ImGui.end();
     }
 
@@ -120,14 +120,14 @@ public class Panel extends Component {
      * @param application The application instance.
      */
     @Override
-    protected void handleEvents(DesktopApplication application) {
-        super.handleEvents(application);
+    protected void handleEvents() {
+        super.handleEvents();
         if (!isFirstUpdate && previousIsOpen != isOpen()) {
             // The opened state has changed
             if (isOpen()) {
-                onOpenedEvent.execute(this, application);
+                onOpenedEvent.execute(this);
             } else {
-                onClosedEvent.execute(this, application);
+                onClosedEvent.execute(this);
             }
         }
         previousIsOpen = isOpen.get();

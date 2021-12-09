@@ -15,35 +15,39 @@ public class ShipDepot extends StorageTile implements Receivable {
     private final Message<ItemReceivedMessageData> onItemReceivedMessage;
 
     /**
-     * Construct a ShipDepot at the specified position with an infinite capacity multi-type in-memory StorageUnit.
-     *
-     * @param x The horizontal coordinate of this ShipDepot.
-     * @param y The vertical coordinate of this ShipDepot.
-     */
-    public ShipDepot(int x, int y) {
-        this(x, y, -1);
+     * Construct an unassociated ShipDepot, e.g. with index -1, with an infinite capacity multi-type in-memory StorageUnit.
+     * */
+    public ShipDepot() {
+        this(-1, -1);
     }
 
     /**
-     * Construct a ShipDepot at the specified position with a multi-type in-memory StorageUnit with the given capacity.
+     * Construct a ShipDepot at the specified index with an infinite capacity multi-type in-memory StorageUnit.
      *
-     * @param x The horizontal coordinate of this ShipDepot.
-     * @param y The vertical coordinate of this ShipDepot.
+     * @param index The index of this ShipDepot.
+     */
+    public ShipDepot(int index) {
+        this(index, -1);
+    }
+
+    /**
+     * Construct a ShipDepot at the specified index with a multi-type in-memory StorageUnit with the given capacity.
+     *
+     * @param index The index of this ShipDepot. If negative, then this ShipDepot is unassociated.
      * @param capacity Maximum number of Items this ShipDepot can store.
      */
-    public ShipDepot(int x, int y, int capacity) {
-        this(x, y, new StorageUnit(capacity, new MultiTypeStorageUnitStrategy(), new InMemoryStorageUnitContainer()));
+    public ShipDepot(int index, int capacity) {
+        this(index, new StorageUnit(capacity, new MultiTypeStorageUnitStrategy(), new InMemoryStorageUnitContainer()));
     }
 
     /**
-     * Construct a ShipDepot at the specified position with the given StorageUnit.
+     * Construct a ShipDepot at the specified index with the given StorageUnit.
      *
-     * @param x The horizontal coordinate of this ShipDepot.
-     * @param y The vertical coordinate of this ShipDepot.
+     * @param index The index of this ShipDepot. If negative, then this ShipDepot is unassociated.
      * @param storageUnit The StorageUnit attached to this ShipDepot.
      */
-    public ShipDepot(int x, int y, StorageUnit storageUnit) {
-        super(x, y, storageUnit);
+    public ShipDepot(int index, StorageUnit storageUnit) {
+        super(index, storageUnit);
         onItemReceivedMessage = new Message<>();
     }
 
@@ -65,8 +69,8 @@ public class ShipDepot extends StorageTile implements Receivable {
     @Override
     public String toString() {
         return "ShipDepot{" +
-                "x=" + getX() +
-                ", y=" + getY() +
+                "storageUnit=" + storageUnit +
+                ", index=" + index +
                 '}';
     }
 }

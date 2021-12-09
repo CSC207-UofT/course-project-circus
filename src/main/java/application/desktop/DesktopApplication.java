@@ -2,6 +2,8 @@ package application.desktop;
 
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.RootAppComponent;
+import application.desktop.ui.components.editor.warehouse.renderers.GridWarehouseCanvasRenderer;
+import application.desktop.ui.components.editor.warehouse.renderers.WarehouseCanvasRenderer;
 import imgui.ImFontConfig;
 import imgui.ImFontGlyphRangesBuilder;
 import imgui.ImGui;
@@ -11,21 +13,29 @@ import imgui.app.Configuration;
 import imgui.flag.*;
 import serialization.FileObjectLoader;
 import serialization.FileObjectSaver;
-import serialization.JsonFileObjectLoader;
-import serialization.JsonFileObjectSaver;
+import warehouse.WarehouseLayout;
 import warehouse.Warehouse;
-import warehouse.WarehouseController;
 import warehouse.WarehouseState;
+import warehouse.geometry.WarehouseCoordinateSystem;
+import warehouse.geometry.grid.GridWarehouseCoordinateSystem;
+import warehouse.geometry.grid.Point;
+import warehouse.inventory.Item;
+import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 import warehouse.logistics.orders.OrderQueue;
+import warehouse.robots.Robot;
 import warehouse.robots.RobotMapper;
+import warehouse.tiles.Rack;
+import warehouse.tiles.ReceiveDepot;
+import warehouse.tiles.ShipDepot;
+import warehouse.geometry.WarehouseCoordinate;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 /**
  * Driver class for the desktop application.
  */
-public class DesktopApplication extends Application {
+public class DesktopApplication<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> extends Application {
     /**
      * The filename of the default font relative to the resources root.
      */
@@ -35,32 +45,30 @@ public class DesktopApplication extends Application {
      */
     private final static float DEFAULT_FONT_SIZE = 16.0f;
 
-    /**
-     * Current warehouse state.
-     */
-    private WarehouseState state;
-    private WarehouseController warehouseController;
-
-    private RootAppComponent root;
+    private Warehouse<T, U> warehouse;
+    private WarehouseCanvasRenderer<T, U> warehouseCanvasRenderer;
+    private RootAppComponent<T, U> root;
 
     /**
      * The loader for the WarehouseState.
      */
-    private final FileObjectLoader<WarehouseState> warehouseStateLoader;
+    private final FileObjectLoader<WarehouseState<T, U>> warehouseStateLoader;
     /**
      * The saver for the WarehouseState.
      */
-    private final FileObjectSaver<WarehouseState> warehouseStateSaver;
+    private final FileObjectSaver<WarehouseState<T, U>> warehouseStateSaver;
 
     /**
      * Construct a DesktopApplication.
      */
-    public DesktopApplication(WarehouseState state,
-                              FileObjectLoader<WarehouseState> warehouseStateLoader,
-                              FileObjectSaver<WarehouseState> warehouseStateSaver) {
-        setState(state);
+    public DesktopApplication(Warehouse<T, U> warehouse,
+                              FileObjectLoader<WarehouseState<T, U>> warehouseStateLoader,
+                              FileObjectSaver<WarehouseState<T, U>> warehouseStateSaver,
+                              WarehouseCanvasRenderer<T, U> warehouseCanvasRenderer) {
         this.warehouseStateLoader = warehouseStateLoader;
         this.warehouseStateSaver = warehouseStateSaver;
+        this.warehouseCanvasRenderer = warehouseCanvasRenderer;
+        setWarehouse(warehouse);
     }
 
     @Override
@@ -111,7 +119,7 @@ public class DesktopApplication extends Application {
      */
     @Override
     public void process() {
-        root.draw(this);
+        root.draw();
     }
 
     /**
@@ -124,41 +132,30 @@ public class DesktopApplication extends Application {
     }
 
     /**
-     * Get the warehouse state.
+     * Get the warehouse.
      */
-    public WarehouseState getState() {
-        return state;
+    public Warehouse<T, U> getWarehouse() {
+        return warehouse;
     }
 
     /**
-     * Set the warehouse state.
+     * Set the warehouse.
      */
-    public void setState(WarehouseState state) {
-        this.state = state;
-        warehouseController = new WarehouseController(state);
-        root = new RootAppComponent(this);
+    public void setWarehouse(Warehouse<T, U> warehouse) {
+        this.warehouse = warehouse;
+        root = new RootAppComponent<>(this);
     }
 
-    public FileObjectLoader<WarehouseState> getWarehouseStateLoader() {
+    public WarehouseCanvasRenderer<T, U> getWarehouseCanvasRenderer() {
+        return warehouseCanvasRenderer;
+    }
+
+    public FileObjectLoader<WarehouseState<T, U>> getWarehouseStateLoader() {
         return warehouseStateLoader;
     }
 
-    public FileObjectSaver<WarehouseState> getWarehouseStateSaver() {
+    public FileObjectSaver<WarehouseState<T, U>> getWarehouseStateSaver() {
         return warehouseStateSaver;
-    }
-
-    /**
-     * Get the WarehouseController.
-     */
-    public WarehouseController getWarehouseController() {
-        return warehouseController;
-    }
-
-    /**
-     * Set the WarehouseController.
-     */
-    public void setWarehouseController(WarehouseController warehouseController) {
-        this.warehouseController = warehouseController;
     }
 
     /**
@@ -168,31 +165,57 @@ public class DesktopApplication extends Application {
      */
     public static void main(String[] args) {
         // Use JSON for file serialization
-        JsonFileObjectLoader<WarehouseState> stateLoader = new JsonFileObjectLoader<>(WarehouseState.class);
-        JsonFileObjectSaver<WarehouseState> stateSaver = new JsonFileObjectSaver<>();
+        //JsonFileObjectLoader<WarehouseState<?, ?>> stateLoader = new JsonFileObjectLoader<WarehouseState<?, ?>>(WarehouseState.class);
+        //JsonFileObjectSaver<WarehouseState<T, U>> stateSaver = new JsonFileObjectSaver<>();
+
+        // Use an example state for TESTING
+        Warehouse<GridWarehouseCoordinateSystem, Point> exampleWarehouse = makeEmptyGridWarehouse();
+        WarehouseState<GridWarehouseCoordinateSystem, Point> exampleState = exampleWarehouse.getState();
+        exampleState.getLayout().setTileAt(new Point(0, 1), new Rack());
+        exampleState.getLayout().setTileAt(new Point(1, 1), new Rack());
+        exampleState.getLayout().setTileAt(new Point(2, 1), new Rack());
+        exampleState.getLayout().setTileAt(new Point(0, 9), new ReceiveDepot());
+        exampleState.getLayout().setTileAt(new Point(11, 9), new ShipDepot());
+        // Add robots
+        exampleState.getRobotMapper().addRobotAt(new Robot(), new Point(5, 5));
+        exampleState.getRobotMapper().addRobotAt(new Robot(), new Point(7, 3));
+
+        Part mangoPart = new Part("Mango", "A mango.");
+        exampleState.getPartCatalogue().addPart(mangoPart);
+
         // Create and launch DesktopApplication
-        DesktopApplication application = new DesktopApplication(makeEmptyWarehouseState(), stateLoader, stateSaver);
+        // TODO: Fix serialization
+        DesktopApplication<GridWarehouseCoordinateSystem, Point> application = new DesktopApplication<>(
+                exampleWarehouse, null, null,
+                new GridWarehouseCanvasRenderer());
+        application.getWarehouse().receiveItem(new Item(mangoPart));
+
         launch(application);
         System.exit(0);
     }
 
     /**
-     * Create an empty WarehouseState with an empty PartCatalogue and empty Warehouse with the given width and height.
-     * @param width The width of the empty Warehouse.
-     * @param height The height of the empty Warehouse.
+     * Create an empty Warehouse with a GridWarehouseCoordinateSystem, an empty PartCatalogue,
+     * and empty WarehouseLayout with the given width and height.
+     * @param width The width of the empty WarehouseLayout.
+     * @param height The height of the empty WarehouseLayout.
      */
-    public static WarehouseState makeEmptyWarehouseState(int width, int height) {
-        return new WarehouseState(
-                new Warehouse(width, height),
+    public static Warehouse<GridWarehouseCoordinateSystem, Point> makeEmptyGridWarehouse(int width, int height) {
+        GridWarehouseCoordinateSystem coordinateSystem = new GridWarehouseCoordinateSystem(width, height);
+        return new Warehouse<>(new WarehouseState<>(
                 new PartCatalogue(),
-                new RobotMapper(),
-                new OrderQueue());
+                coordinateSystem,
+                new WarehouseLayout<>(coordinateSystem),
+                new RobotMapper<>(coordinateSystem),
+                new OrderQueue()
+        ));
     }
 
     /**
-     * Create an empty WarehouseState with an empty PartCatalogue and empty 12x12 Warehouse
+     * Create an empty Warehouse with a GridWarehouseCoordinateSystem, an empty PartCatalogue,
+     * and an empty 12x12 layout.
      */
-    public static WarehouseState makeEmptyWarehouseState() {
-        return makeEmptyWarehouseState(12, 12);
+    public static Warehouse<GridWarehouseCoordinateSystem, Point> makeEmptyGridWarehouse() {
+        return makeEmptyGridWarehouse(12, 12);
     }
 }

@@ -1,27 +1,30 @@
 package application.desktop.ui.components.editor.warehouse;
 
 import application.desktop.ui.components.common.Panel;
-import warehouse.Warehouse;
+import application.desktop.ui.components.editor.warehouse.renderers.WarehouseCanvasRenderer;
 import warehouse.WarehouseState;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 
 /**
- * Editor window for the Warehouse.
+ * Editor window for the WarehouseLayout.
  */
-public class WarehouseEditor extends Panel {
+public class WarehouseEditor<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> extends Panel {
     /**
      * The id of the panel.
      */
-    private static final String PANEL_ID = "Warehouse###warehouse_editor_panel";
+    private static final String PANEL_ID = "WarehouseLayout###warehouse_editor_panel";
 
-    private final WarehouseState warehouseState;
-    private final WarehouseCanvas canvas;
-    private final WarehouseInspectorPanel inspector;
+    private final WarehouseState<T, U> warehouseState;
+    private final WarehouseCanvas<T, U> canvas;
+    private final WarehouseInspectorPanel<T, U> inspector;
 
     /**
      * Construct a new WarehouseEditor given a WarehouseState.
      * @param warehouseState The WarehouseState to edit.
      */
-    public WarehouseEditor(WarehouseState warehouseState) {
+    public WarehouseEditor(WarehouseState<T, U> warehouseState,
+                           WarehouseCanvasRenderer<T, U> canvasRenderer) {
         super(PANEL_ID);
         setShowMenuBar(true);
         setCloseable(false);
@@ -29,9 +32,9 @@ public class WarehouseEditor extends Panel {
 
         this.warehouseState = warehouseState;
 
-        canvas = new WarehouseCanvas(warehouseState);
-        inspector = new WarehouseInspectorPanel(this);
-        WarehouseEditorToolbar toolbar = new WarehouseEditorToolbar(this);
+        canvas = new WarehouseCanvas<>(warehouseState, canvasRenderer);
+        inspector = new WarehouseInspectorPanel<>(this);
+        WarehouseEditorToolbar<T, U> toolbar = new WarehouseEditorToolbar<>(this);
         addChildren(toolbar, canvas, inspector);
 
     }
@@ -39,21 +42,21 @@ public class WarehouseEditor extends Panel {
     /**
      * Get the WarehouseState.
      */
-    public WarehouseState getWarehouseState() {
+    public WarehouseState<T, U> getWarehouseState() {
         return warehouseState;
     }
 
     /**
      * Get the WarehouseCanvas component.
      */
-    public WarehouseCanvas getCanvas() {
+    public WarehouseCanvas<T, U> getCanvas() {
         return canvas;
     }
 
     /**
      * Get the WarehouseInspectorPanel.
      */
-    public WarehouseInspectorPanel getInspector() {
+    public WarehouseInspectorPanel<T, U> getInspector() {
         return inspector;
     }
 }

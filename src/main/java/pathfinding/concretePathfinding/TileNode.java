@@ -21,7 +21,9 @@ public class TileNode implements GraphNode {
      */
     @Override
     public String getId() {
-        return tile.getX() + "," + tile.getY();
+        //TODO:
+        //return tile.getX() + "," + tile.getY();
+        return null;
     }
 
     /**

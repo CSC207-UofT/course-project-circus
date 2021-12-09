@@ -1,7 +1,7 @@
-package warehouse.tiles;
+package warehouse.tiles.factory;
 
 /**
- * The type of Warehouse tile.
+ * The type of WarehouseLayout tile.
  */
 public enum TileType {
     /**

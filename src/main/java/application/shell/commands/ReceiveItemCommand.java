@@ -5,13 +5,14 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 import warehouse.inventory.Item;
-import warehouse.WarehouseController;
+import warehouse.Warehouse;
 import warehouse.logistics.orders.PlaceOrder;
 import warehouse.tiles.Tile;
-import warehouse.logistics.orders.Order;
 
 /**
  * Argument container for ReceiveItemCommand.
@@ -31,22 +32,26 @@ class ReceiveItemCommandArgContainer extends ShellCommandArgContainer {
 @ShellCommandSpec(name = "receive-item",
         description = "Receive an Item from the outside world. This will place the Item into an available ReceiveDepot," +
                 "and then issue an Order for the Item to be moved from that ReceiveDepot to an available StorageUnit in " +
-                "the Warehouse.")
+                "the WarehouseLayout.")
 public class ReceiveItemCommand extends ShellCommand {
     @Override
     public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
         ReceiveItemCommandArgContainer args = (ReceiveItemCommandArgContainer) argContainer;
-        WarehouseController warehouseController = application.getWarehouseController();
-        PartCatalogue partCatalogue = warehouseController.getState().getPartCatalogue();
+
+        Warehouse<?, ?> warehouse = application.getWarehouse();
+        WarehouseCoordinateSystem<?> coordinateSystem = warehouse.getState().getCoordinateSystem();
+        PartCatalogue partCatalogue = warehouse.getState().getPartCatalogue();
+
         Part part = partCatalogue.getPartById(args.getPartId());
         if (part == null) {
             return String.format("Could not find part with id \"%s\" in the part catalogue!", args.getPartId());
         } else {
             Item item = new Item(part);
-            PlaceOrder order = warehouseController.receiveItem(item);
+            PlaceOrder order = warehouse.receiveItem(item);
             Tile tile = order.getSource().getTile();
-            return String.format("Placed item into %s at (%d, %d)\nOrder id: %s", tile.getClass().getSimpleName(),
-                    tile.getX(), tile.getY(), order.getId());
+            WarehouseCoordinate position = coordinateSystem.projectIndexToCoordinate(tile.getIndex());
+            return String.format("Placed item into %s at %s\nOrder id: %s", tile.getClass().getSimpleName(),
+                    position.toString(), order.getId());
         }
     }
     @Override

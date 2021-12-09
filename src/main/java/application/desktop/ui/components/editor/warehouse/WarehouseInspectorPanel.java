@@ -11,7 +11,9 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTableColumnFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.internal.flag.ImGuiItemFlags;
-import warehouse.Warehouse;
+import warehouse.WarehouseLayout;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.inventory.Item;
 import warehouse.robots.Robot;
 import warehouse.robots.RobotMapper;
@@ -21,7 +23,7 @@ import warehouse.tiles.Tile;
 
 import java.util.List;
 
-public class WarehouseInspectorPanel extends Panel {
+public class WarehouseInspectorPanel<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> extends Panel {
     /**
      * The id of this panel.
      */
@@ -40,12 +42,12 @@ public class WarehouseInspectorPanel extends Panel {
     private static final String PART_LINK_TOOLTIP = String.format("%s  Open in part catalogue",
             FontAwesomeIcon.ExternalLinkAlt.getIconCode());
 
-    private final WarehouseEditor warehouseEditor;
+    private final WarehouseEditor<T, U> warehouseEditor;
 
     /**
      * Construct an WarehouseInspectorPanel.
      */
-    public WarehouseInspectorPanel(WarehouseEditor warehouseEditor) {
+    public WarehouseInspectorPanel(WarehouseEditor<T, U> warehouseEditor) {
         super(PANEL_ID);
         setCloseable(false);
 
@@ -53,36 +55,10 @@ public class WarehouseInspectorPanel extends Panel {
     }
 
     @Override
-    protected void drawContent(DesktopApplication application) {
+    protected void drawContent() {
         Tile selectedTile = warehouseEditor.getCanvas().getSelectedTile();
-        if (selectedTile == null) {
-            drawWarehouseInspector();
-        } else {
+        if (selectedTile != null) {
             drawTileInspector(selectedTile);
-        }
-    }
-
-    /**
-     * Draw inspector for the warehouse.
-     */
-    private void drawWarehouseInspector() {
-        Warehouse warehouse = warehouseEditor.getWarehouseState().getWarehouse();
-        int[] warehouseSize = {warehouse.getWidth(), warehouse.getHeight()};
-
-        imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
-        // Draw the warehouse size input
-        // NOTE: Modifying the warehouse size after instantiation is not currently supported! So, this is readonly.
-        ImGui.inputInt2("Size", warehouseSize);
-        imgui.internal.ImGui.popItemFlag();
-        ImGui.sameLine();
-        // Draw help marker
-        ImGui.textDisabled("(?)");
-        if (ImGui.isItemHovered()) {
-            ImGui.beginTooltip();
-            ImGui.pushTextWrapPos(ImGui.getFontSize() * 17.5f);
-            ImGui.textUnformatted("Modifying the warehouse size after instantiation is not currently supported!");
-            ImGui.popTextWrapPos();
-            ImGui.endTooltip();
         }
     }
 
@@ -90,15 +66,9 @@ public class WarehouseInspectorPanel extends Panel {
      * Draws the inspector for the given Tile.
      */
     private void drawTileInspector(Tile tile) {
-        int[] tilePosition = {tile.getX(), tile.getY()};
-        imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
-        ImGui.pushStyleVar(ImGuiStyleVar.Alpha, ImGui.getStyle().getAlpha() * 0.5f);
-
-        ImGui.inputInt2("Position", tilePosition);
-
-        imgui.internal.ImGui.popItemFlag();
-        ImGui.popStyleVar();
-
+        WarehouseCoordinateSystem<U> coordinateSystem = warehouseEditor.getWarehouseState().getCoordinateSystem();
+        U tilePosition = coordinateSystem.projectIndexToCoordinate(tile.getIndex());
+        ImGui.labelText("Position", tilePosition.toString());
         ImGui.labelText("Type", tile.getClass().getSimpleName());
 
         ImGui.separator();
@@ -133,7 +103,7 @@ public class WarehouseInspectorPanel extends Panel {
                 ImGuiTableFlags.NoBordersInBody | ImGuiTableFlags.ScrollY;
         // Make the table 25 rows tall...
         float tableHeight = ImGui.getTextLineHeightWithSpacing() * 25.0f;
-        String tableId = String.format("tile(%s,%s)_storage_table", storageTile.getX(), storageTile.getY());
+        String tableId = String.format("tile%s_storage_table", storageTile.getIndex());
         if (ImGui.beginTable(tableId, 3, tableFlags, 0, tableHeight, 0)) {
             // Declare columns
             ImGui.tableSetupColumn("ID", ImGuiTableColumnFlags.WidthFixed, 0);
@@ -193,14 +163,14 @@ public class WarehouseInspectorPanel extends Panel {
      * Draws a table of Robots on the given Tile.
      */
     private void drawRobotsTable(Tile tile) {
-        RobotMapper robotMapper = warehouseEditor.getWarehouseState().getRobotMapper();
+        RobotMapper<U> robotMapper = warehouseEditor.getWarehouseState().getRobotMapper();
         // Initialise some flags for the table
         int tableFlags = ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable |
                 ImGuiTableFlags.RowBg | ImGuiTableFlags.BordersOuter | ImGuiTableFlags.BordersV |
                 ImGuiTableFlags.NoBordersInBody | ImGuiTableFlags.ScrollY;
         // Make the table 25 rows tall...
         float tableHeight = ImGui.getTextLineHeightWithSpacing() * 15.0f;
-        String tableId = String.format("tile(%s,%s)_robot_table", tile.getX(), tile.getY());
+        String tableId = String.format("tile%d_robot_table", tile.getIndex());
         if (ImGui.beginTable(tableId, 3, tableFlags, 0, tableHeight, 0)) {
             // Declare columns
             ImGui.tableSetupColumn("ID", ImGuiTableColumnFlags.WidthStretch, 0);
@@ -209,7 +179,7 @@ public class WarehouseInspectorPanel extends Panel {
             ImGui.tableSetupScrollFreeze(0, 1); // Make row always visible
             ImGui.tableHeadersRow();
 
-            List<Robot> robots = robotMapper.getRobotsAt(tile.getPosition());
+            List<Robot> robots = robotMapper.getRobotsAt(tile.getIndex());
             for (int i = 0; i < robots.size(); i++) {
                 ImGui.pushID(i);
                 ImGui.tableNextRow();

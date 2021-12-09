@@ -9,13 +9,21 @@ public abstract class StorageTile extends Tile {
     protected StorageUnit storageUnit;
 
     /**
-     * Construct a StorageTile at the specified position with the given StorageUnit.
-     * @param x The horizontal coordinate of this StorageTile.
-     * @param y The vertical coordinate of this StorageTile.
+     * Construct a StorageTile at the specified index with the given StorageUnit.
+     * @param index The index of the tile.
      * @param storageUnit The StorageUnit attached to this StorageTile. This cannot be null.
      */
-    public StorageTile(int x, int y, StorageUnit storageUnit) {
-        super(x, y);
+    public StorageTile(int index, StorageUnit storageUnit) {
+        super(index);
+        setStorageUnit(storageUnit);
+    }
+
+    /**
+     * Construct an unassociated StorageTile, e.g. with index -1, with the given StorageUnit.
+     * @param storageUnit The StorageUnit attached to this StorageTile. This cannot be null.
+     */
+    public StorageTile(StorageUnit storageUnit) {
+        super(-1);
         setStorageUnit(storageUnit);
     }
 

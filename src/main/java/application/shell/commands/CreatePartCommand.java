@@ -5,6 +5,8 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.inventory.Part;
 
 /**
@@ -35,13 +37,15 @@ class CreatePartCommandArgContainer extends ShellCommandArgContainer {
  * A command to create a Part and add it to the PartCatalogue.
  */
 @ShellCommandSpec(name = "create-part", description = "Create a part and add it to the part catalogue.")
-public class CreatePartCommand extends ShellCommand {
+public class CreatePartCommand<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate>
+        extends ShellCommand<T, U> {
+
     @Override
-    public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
+    public String execute(ShellApplication<T, U> application, ShellCommandArgContainer argContainer) {
         CreatePartCommandArgContainer args = (CreatePartCommandArgContainer) argContainer;
         Part part = new Part(args.getId(), args.getName(), args.getDescription());
         // Add it to the catalogue.
-        boolean result = application.getWarehouseController().getState().getPartCatalogue().addPart(part);
+        boolean result = application.getWarehouse().getState().getPartCatalogue().addPart(part);
         if (result) {
             return String.format("Created %s and added it to the part catalogue.", part);
         } else {

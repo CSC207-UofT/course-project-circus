@@ -6,6 +6,7 @@ import application.desktop.ui.components.common.Panel;
 import application.desktop.ui.components.editor.OrderEditor;
 import application.desktop.ui.components.editor.PartCatalogueEditor;
 import application.desktop.ui.components.editor.warehouse.WarehouseEditor;
+import application.desktop.ui.components.editor.warehouse.renderers.WarehouseCanvasRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiDir;
@@ -16,6 +17,8 @@ import imgui.type.ImBoolean;
 import imgui.type.ImInt;
 import org.lwjgl.BufferUtils;
 import utils.Pair;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 
 import java.nio.IntBuffer;
 
@@ -25,22 +28,25 @@ import static org.lwjgl.glfw.GLFW.glfwGetWindowSize;
 /**
  * The root component for the DesktopApplication.
  */
-public class RootAppComponent extends Component {
+public class RootAppComponent<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> extends Component {
     /**
      * Whether the dockspace has been initialised yet.
      */
     private boolean hasInitialisedDockspaceLayout;
 
-    private final AppToolbar toolbar;
+    private final AppToolbar<T, U> toolbar;
     private final PartCatalogueEditor partCatalogueEditor;
-    private final WarehouseEditor warehouseEditor;
+    private final WarehouseEditor<T, U> warehouseEditor;
     private final OrderEditor orderEditor;
 
-    public RootAppComponent(DesktopApplication application) {
-        toolbar = new AppToolbar(application);
-        partCatalogueEditor = new PartCatalogueEditor(application.getState().getPartCatalogue());
-        warehouseEditor = new WarehouseEditor(application.getState());
-        orderEditor = new OrderEditor(application.getState().getOrderQueue());
+    public RootAppComponent(DesktopApplication<T, U> application) {
+        toolbar = new AppToolbar<>(application);
+        partCatalogueEditor = new PartCatalogueEditor(application.getWarehouse().getState().getPartCatalogue());
+        warehouseEditor = new WarehouseEditor<>(
+                application.getWarehouse().getState(),
+                application.getWarehouseCanvasRenderer()
+        );
+        orderEditor = new OrderEditor(application.getWarehouse().getState().getOrderQueue());
     }
 
     /**
@@ -91,16 +97,15 @@ public class RootAppComponent extends Component {
 
     /**
      * Draw this RootAppComponent.
-     * @param application The application instance.
      */
     @Override
-    protected void drawContent(DesktopApplication application) {
+    protected void drawContent() {
         initDockspace();
         // Render components
-        toolbar.draw(application);
-        warehouseEditor.draw(application);
-        partCatalogueEditor.draw(application);
-        orderEditor.draw(application);
+        toolbar.draw();
+        warehouseEditor.draw();
+        partCatalogueEditor.draw();
+        orderEditor.draw();
         // End dockspace window
         ImGui.end();
     }

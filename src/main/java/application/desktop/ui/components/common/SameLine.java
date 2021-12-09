@@ -17,10 +17,10 @@ public class SameLine extends Component {
     }
 
     @Override
-    protected void drawChildren(DesktopApplication application) {
+    protected void drawChildren() {
         List<Component> children = getChildren();
         for (int i = 0; i < children.size(); ++i) {
-           children.get(i).draw(application);
+           children.get(i).draw();
            if (i != children.size() - 1) {
                ImGui.sameLine();
            }

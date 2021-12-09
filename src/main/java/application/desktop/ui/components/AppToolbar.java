@@ -6,24 +6,26 @@ import application.desktop.ui.components.common.*;
 import imgui.ImGui;
 import imgui.extension.imguifiledialog.ImGuiFileDialog;
 import imgui.extension.imguifiledialog.flag.ImGuiFileDialogFlags;
-import imgui.flag.ImGuiButtonFlags;
 import imgui.flag.ImGuiInputTextFlags;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImInt;
 import imgui.type.ImString;
 import serialization.FileObjectLoader;
 import serialization.FileObjectSaver;
+import warehouse.Warehouse;
 import warehouse.WarehouseState;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 
 import java.io.IOException;
 
 /**
  * Main toolbar component for the DesktopApplication.
  */
-public class AppToolbar extends MenuBar {
-    private static final String NEW_WAREHOUSE_POPUP_ID = "New Warehouse##new_warehouse_popup";
+public class AppToolbar<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> extends MenuBar {
+    private static final String NEW_WAREHOUSE_POPUP_ID = "New WarehouseLayout##new_warehouse_popup";
 
-    private final DesktopApplication application;
+    private final DesktopApplication<T, U> application;
 
     private String saveFilepath;
 
@@ -35,7 +37,7 @@ public class AppToolbar extends MenuBar {
     /**
      * Construct a new AppToolbar.
      */
-    public AppToolbar(DesktopApplication application) {
+    public AppToolbar(DesktopApplication<T, U> application) {
         this.application = application;
 
         this.newWarehouseWidth = new ImInt(12);
@@ -66,7 +68,7 @@ public class AppToolbar extends MenuBar {
             newWarehouseHeight.set(12);
         });
         openMenuItem.getOnClickedEvent().addListener((data) -> {
-            FileObjectLoader<WarehouseState> stateLoader = application.getWarehouseStateLoader();
+            FileObjectLoader<WarehouseState<T, U>> stateLoader = application.getWarehouseStateLoader();
             ImGuiFileDialog.openModal("LoadDialog", String.format("%s  Open", FontAwesomeIcon.FileAlt.getIconCode()),
                     stateLoader.getExtensionFilter(), ".", "",
                     1, 0, ImGuiFileDialogFlags.None);
@@ -83,7 +85,7 @@ public class AppToolbar extends MenuBar {
         });
 
         exitMenuItem.getOnClickedEvent().addListener((data) -> {
-            data.getApplication().exit();
+            application.exit();
         });
     }
 
@@ -91,10 +93,10 @@ public class AppToolbar extends MenuBar {
      * Save the state at the given filepath.
      */
     private void saveState(String filepath) {
-        FileObjectSaver<WarehouseState> stateSaver = application.getWarehouseStateSaver();
+        FileObjectSaver<WarehouseState<T, U>> stateSaver = application.getWarehouseStateSaver();
         System.out.println(filepath);
         try {
-            stateSaver.save(application.getState(), filepath);
+            stateSaver.save(application.getWarehouse().getState(), filepath);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -104,18 +106,17 @@ public class AppToolbar extends MenuBar {
      * Open the save dialog.
      */
     private void openSaveDialog(String title, boolean isSaveAsDialog) {
-        FileObjectSaver<WarehouseState> stateSaver = application.getWarehouseStateSaver();
+        FileObjectSaver<WarehouseState<T, U>> stateSaver = application.getWarehouseStateSaver();
         ImGuiFileDialog.openModal("SaveDialog", title, stateSaver.getExtensionFilter(), ".", "Untitled",
                 1, isSaveAsDialog ? -1 : 0, ImGuiFileDialogFlags.ConfirmOverwrite);
     }
 
     /**
      * Draw the toolbar and dialog windows.
-     * @param application The application instance.
      */
     @Override
-    protected void drawContent(DesktopApplication application) {
-        super.drawContent(application);
+    protected void drawContent() {
+        super.drawContent();
         int dialogWindowFlags = ImGuiWindowFlags.NoCollapse;
         drawNewWarehouseDialog(dialogWindowFlags);
         drawSaveDialog(dialogWindowFlags);
@@ -138,8 +139,9 @@ public class AppToolbar extends MenuBar {
             ImGui.spacing();
 
             if (ImGui.button("OK")) {
-                application.setState(DesktopApplication.makeEmptyWarehouseState(
-                        newWarehouseWidth.get(), newWarehouseHeight.get()));
+                // TODO: Implement warehouse factor for creating new empty warehouses
+//                application.setWarehouse(DesktopApplication.makeEmptyGridWarehouse(
+//                        newWarehouseWidth.get(), newWarehouseHeight.get()));
                 ImGui.closeCurrentPopup();
             }
             ImGui.setItemDefaultFocus();
@@ -173,10 +175,11 @@ public class AppToolbar extends MenuBar {
         if (ImGuiFileDialog.display("LoadDialog", dialogWindowFlags, 0, 350, Float.MAX_VALUE, Float.MAX_VALUE)) {
             if (ImGuiFileDialog.isOk()) {
                 String filepath = ImGuiFileDialog.getCurrentPath() + "/" + ImGuiFileDialog.getCurrentFileName();
-                FileObjectLoader<WarehouseState> stateLoader = application.getWarehouseStateLoader();
+                FileObjectLoader<WarehouseState<T, U>> stateLoader = application.getWarehouseStateLoader();
                 try {
-                    WarehouseState state = stateLoader.load(filepath);
-                    application.setState(state);
+                    WarehouseState<T, U> state = stateLoader.load(filepath);
+                    // TODO: Use factory here too!
+                    application.setWarehouse(new Warehouse<>(state));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

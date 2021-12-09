@@ -1,7 +1,7 @@
 package warehouse.robots;
 
-import warehouse.tiles.Tile;
-import warehouse.tiles.TilePosition;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,29 +11,39 @@ import java.util.Map;
 /**
  * Controls all the Robots in the warehouse and manages their positions.
  */
-public class RobotMapper {
-    private final Map<Robot, TilePosition> robotPositions;
-    private final Map<TilePosition, List<Robot>> inverseRobotMap;
+public class RobotMapper<T extends WarehouseCoordinate> {
+    private final WarehouseCoordinateSystem<T> coordinateSystem;
+    private final Map<Robot, Integer> robotMap;
+    private final Map<Integer, List<Robot>> inverseRobotMap;
 
     /**
      * Construct a RobotMapper.
      */
-    public RobotMapper() {
-        robotPositions = new HashMap<>();
+    public RobotMapper(WarehouseCoordinateSystem<T> coordinateSystem) {
+        this.coordinateSystem = coordinateSystem;
+        robotMap = new HashMap<>();
         inverseRobotMap = new HashMap<>();
     }
 
     /**
-     * Add a Robot to the Warehouse at the given TilePosition.
-     * @remark If the given Robot is already in the controller, then this will overwrite that entry!
+     * Add a Robot at the given index.
      * @param robot The Robot to add.
      */
-    public void addRobotAt(Robot robot, TilePosition position) {
-        robotPositions.put(robot, position);
-        if (!inverseRobotMap.containsKey(position)) {
-            inverseRobotMap.put(position, new ArrayList<>());
+    public void addRobotAt(Robot robot, int index) {
+        robotMap.put(robot, index);
+        if (!inverseRobotMap.containsKey(index)) {
+            inverseRobotMap.put(index, new ArrayList<>());
         }
-        inverseRobotMap.get(position).add(robot);
+        inverseRobotMap.get(index).add(robot);
+    }
+
+    /**
+     * Add a Robot at the given coordinate
+     * @param robot The Robot to add.
+     */
+    public void addRobotAt(Robot robot, T position) {
+        int index = coordinateSystem.projectCoordinateToIndex(position);
+        addRobotAt(robot, index);
     }
 
     /**
@@ -41,55 +51,100 @@ public class RobotMapper {
      * @param robot the Robot to remove.
      */
     public void removeRobot(Robot robot) {
-        if (!robotPositions.containsKey(robot)) return;
+        if (!robotMap.containsKey(robot)) return;
 
-        TilePosition position = robotPositions.get(robot);
-        robotPositions.remove(robot);
-        inverseRobotMap.get(position).remove(robot);
+        int index = robotMap.get(robot);
+        robotMap.remove(robot);
+        inverseRobotMap.get(index).remove(robot);
     }
 
     /**
-     * Remove all the Robots at the given TilePosition.
-     * @param position The location of the Robots to remove.
+     * Remove all the Robots at the given coordinate.
+     * @param index the tile index of Robots to remove.
      */
-    public void removeRobotsAt(TilePosition position) {
-        List<Robot> robots = getRobotsAt(position);
+    public void removeRobotsAt(int index) {
+        List<Robot> robots = getRobotsAt(index);
         for (Robot robot : robots) {
             removeRobot(robot);
         }
     }
 
     /**
-     * Check whether the given Tile contains a Robot.
-     * @param position The TilePosition to check.
-     * @return True if there exists a Robot at the given Tile, and False otherwise.
+     * Remove all the Robots at the given coordinate.
+     * @param position The location of the Robots to remove.
      */
-    public boolean isRobotAt(TilePosition position) {
-        return inverseRobotMap.containsKey(position) && inverseRobotMap.get(position).size() > 0;
+    public void removeRobotsAt(T position) {
+        int index = coordinateSystem.projectCoordinateToIndex(position);
+        removeRobotsAt(index);
     }
 
     /**
-     * Get the Robots at the given Tile position.
-     * @param position The location of the Robot to retrieve.
-     * @return a list Robots at the given Tile.
+     * Check whether the given tile index contains a Robot.
+     * @param index The tile index to check
+     * @return True if there exists a Robot at the given tile index, and False otherwise.
      */
-    public List<Robot> getRobotsAt(TilePosition position) {
-        return new ArrayList<>(inverseRobotMap.getOrDefault(position, new ArrayList<>()));
+    public boolean isRobotAt(int index) {
+        return inverseRobotMap.containsKey(index) && inverseRobotMap.get(index).size() > 0;
     }
 
     /**
-     * Get the Robots in the Warehouse.
+     * Check whether the given coordinate contains a Robot.
+     * @param position The coordinate to check
+     * @return True if there exists a Robot at the given position, and False otherwise.
+     */
+    public boolean isRobotAt(T position) {
+        int index = coordinateSystem.projectCoordinateToIndex(position);
+        return isRobotAt(index);
+    }
+
+    /**
+     * Get the Robots at the given tile index.
+     * @param index The tile index of the Robots to retrieve.
+     * @return a list Robots at the given tile index.
+     */
+    public List<Robot> getRobotsAt(int index) {
+        return new ArrayList<>(inverseRobotMap.getOrDefault(index, new ArrayList<>()));
+    }
+
+    /**
+     * Get the Robots at the given coordinate.
+     * @param position The location of the Robots to retrieve.
+     * @return a list Robots at the given position.
+     */
+    public List<Robot> getRobotsAt(T position) {
+        int index = coordinateSystem.projectCoordinateToIndex(position);
+        return getRobotsAt(index);
+    }
+
+    /**
+     * Return a list of Robots stored in this RobotMapper.
      */
     public List<Robot> getRobots() {
-        return new ArrayList<>(robotPositions.keySet());
+        return new ArrayList<>(robotMap.keySet());
+    }
+
+    /**
+     * Get the tile index of a Robot.
+     * @param robot The robot whose tile index to retrieve.
+     * @return The tile index of the robot, or -1 if the robot is not in this RobotMapper.
+     */
+    public int getRobotTileIndex(Robot robot) {
+        return robotMap.getOrDefault(robot, -1);
     }
 
     /**
      * Get the position of a Robot.
      * @param robot The robot whose position to retrieve.
-     * @return The TilePosition of the robot, or null if the robot is not in this RobotMapper.
+     * @return The position of the robot, or null if the robot is not in this RobotMapper.
      */
-    public TilePosition getRobotPosition(Robot robot) {
-        return robotPositions.getOrDefault(robot, null);
+    public T getRobotPosition(Robot robot) {
+        return coordinateSystem.projectIndexToCoordinate(getRobotTileIndex(robot));
+    }
+
+    /**
+     * Get the coordinate system.
+     */
+    public WarehouseCoordinateSystem<T> getCoordinateSystem() {
+        return coordinateSystem;
     }
 }

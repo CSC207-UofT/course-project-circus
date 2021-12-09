@@ -6,7 +6,7 @@ import warehouse.tiles.Tile;
 import java.util.ArrayList;
 
 /**
- * This class will be in charge of the Pathfinder as a whole and will be the class that the Warehouse interacts with
+ * This class will be in charge of the Pathfinder as a whole and will be the class that the WarehouseLayout interacts with
  * rather than other more basic classes.
  */
 public class PathfinderController {

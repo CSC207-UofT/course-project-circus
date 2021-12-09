@@ -21,35 +21,40 @@ public class Rack extends StorageTile implements Receivable, Distributable {
     private final Message<ItemDistributedMessageData> onItemDistributedMessage;
 
     /**
-     * Construct a Rack at the specified position with an infinite capacity single-type in-memory StorageUnit.
-     *
-     * @param x The horizontal coordinate of this Rack.
-     * @param y The vertical coordinate of this Rack.
+     * Construct an unassociated Rack, e.g. with index 1, at the specified index with an infinite capacity single-type
+     * in-memory StorageUnit.
      */
-    public Rack(int x, int y) {
-        this(x, y, -1);
+    public Rack() {
+        this(-1, -1);
     }
 
     /**
-     * Construct a Rack at the specified position with a single-type in-memory StorageUnit with the given capacity.
+     * Construct a Rack at the specified index with an infinite capacity single-type in-memory StorageUnit.
      *
-     * @param x The horizontal coordinate of this Rack.
-     * @param y The vertical coordinate of this Rack.
+     * @param index The index of this Rack.
+     */
+    public Rack(int index) {
+        this(index, -1);
+    }
+
+    /**
+     * Construct a Rack at the specified index with a single-type in-memory StorageUnit with the given capacity.
+     *
+     * @param index The index of this Rack.
      * @param capacity Maximum number of Items this Rack can store.
      */
-    public Rack(int x, int y, int capacity) {
-        this(x, y, new StorageUnit(capacity, new SingleTypeStorageStrategy(), new InMemoryStorageUnitContainer()));
+    public Rack(int index, int capacity) {
+        this(index, new StorageUnit(capacity, new SingleTypeStorageStrategy(), new InMemoryStorageUnitContainer()));
     }
 
     /**
-     * Construct a Rack at the specified position with the given StorageUnit.
+     * Construct a Rack at the specified index with the given StorageUnit.
      *
-     * @param x The horizontal coordinate of this Rack.
-     * @param y The vertical coordinate of this Rack.
+     * @param index The index of this Rack.
      * @param storageUnit The StorageUnit attached to this Rack.
      */
-    public Rack(int x, int y, StorageUnit storageUnit) {
-        super(x, y, storageUnit);
+    public Rack(int index, StorageUnit storageUnit) {
+        super(index, storageUnit);
         onItemReceivedMessage = new Message<>();
         onItemDistributedMessage = new Message<>();
     }
@@ -97,8 +102,8 @@ public class Rack extends StorageTile implements Receivable, Distributable {
     @Override
     public String toString() {
         return "Rack{" +
-                "x=" + getX() +
-                ", y=" + getY() +
+                "storageUnit=" + storageUnit +
+                ", index=" + index +
                 '}';
     }
 }

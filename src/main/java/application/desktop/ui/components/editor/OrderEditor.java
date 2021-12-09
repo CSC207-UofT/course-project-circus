@@ -33,7 +33,7 @@ public class OrderEditor extends Panel {
     }
 
     @Override
-    public void drawContent(DesktopApplication application) {
+    public void drawContent() {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 
         // Initialise some flags for the table
@@ -76,7 +76,6 @@ public class OrderEditor extends Panel {
                 } else {
                     ImGui.text(String.format("Robot %s", order.getHandler().getId()));
                 }
-                ImGui.popStyleColor();
                 ImGui.popID();
             }
             ImGui.endTable();

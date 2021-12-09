@@ -39,10 +39,9 @@ public class PartCatalogueEditor extends Panel {
 
     /**
      * Draws the PartCatalogueEditor
-     * @param application The application instance.
      */
     @Override
-    protected void drawContent(DesktopApplication application) {
+    protected void drawContent() {
         drawPartsSelectionPane();
         ImGui.sameLine();
         drawPartsEditPane();

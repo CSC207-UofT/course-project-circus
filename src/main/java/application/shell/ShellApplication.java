@@ -3,13 +3,20 @@ package application.shell;
 import application.shell.commands.*;
 import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandExecutor;
-import warehouse.WarehouseState;
-import warehouse.inventory.Part;
-import warehouse.inventory.PartCatalogue;
+import application.shell.presenters.coordinateparsers.CoordinateParser;
+import application.shell.presenters.coordinateparsers.PointParser;
+import application.shell.presenters.warehouse.GridWarehousePresenter;
+import application.shell.presenters.warehouse.WarehousePresenter;
 import serialization.FileObjectSaver;
 import serialization.JsonFileObjectSaver;
 import warehouse.Warehouse;
-import warehouse.WarehouseController;
+import warehouse.WarehouseLayout;
+import warehouse.WarehouseState;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
+import warehouse.geometry.grid.GridWarehouseCoordinateSystem;
+import warehouse.geometry.grid.Point;
+import warehouse.inventory.PartCatalogue;
 import warehouse.logistics.orders.OrderQueue;
 import warehouse.robots.RobotMapper;
 
@@ -17,11 +24,18 @@ import java.util.Scanner;
 
 /**
  * Driver class for the shell application.
+ *
+ * @remark NOTE: The implementation of this shell application is unfinished, and is not intended to be used in
+ * "production". Instead, it serves to demonstrate the versatility of our design. Due to the design of the business logic
+ * packages, we are able to insert any sort of frontend on top of the backend layer (e.g. a shell application as shown here,
+ * or a user interface as in the application.desktop package).
  */
-public class ShellApplication {
-    private final FileObjectSaver<Part> partFileSaver;
+public class ShellApplication<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> {
+    private final Warehouse<T, U> warehouse;
+    private final WarehousePresenter<T, U> warehousePresenter;
+    private final CoordinateParser<U> coordinateParser;
+
     private final FileObjectSaver<PartCatalogue> partCatalogueFileSaver;
-    private final WarehouseController warehouseController;
 
     private boolean isRunning;
     private final ShellCommandExecutor commandExecutor;
@@ -29,28 +43,22 @@ public class ShellApplication {
     /**
      * Construct a ShellApplication.
      */
-    public ShellApplication() {
-        // Serialization adapters
-        partFileSaver = new JsonFileObjectSaver<>();
-        partCatalogueFileSaver = new JsonFileObjectSaver<>();
-        // TODO: Should the warehouse controller be made here?!
-        // TODO: Replace empty warehouse with file loading or something
-        // TODO: Don't hardcode warehouse dimensions
-        warehouseController = new WarehouseController(new WarehouseState(
-                new Warehouse(10, 10),
-                new PartCatalogue(),
-                new RobotMapper(),
-                new OrderQueue()
-        ));
+    public  ShellApplication(Warehouse<T, U> warehouse, WarehousePresenter<T, U> warehousePresenter,
+                             CoordinateParser<U> coordinateParser,
+                             FileObjectSaver<PartCatalogue> partCatalogueFileSaver) {
+        this.warehouse = warehouse;
+        this.warehousePresenter = warehousePresenter;
+        this.coordinateParser = coordinateParser;
+        this.partCatalogueFileSaver = partCatalogueFileSaver;
 
         isRunning = false;
         commandExecutor = new ShellCommandExecutor(this, new ShellCommand[]{
-                new CreatePartCommand(),
-                new CreateStorageUnitCommand(),
+                new CreatePartCommand<T, U>(),
+                new CreateStorageUnitCommand<T, U>(),
                 new ReceiveItemCommand(),
-                new DisplayWarehouseCommand(),
-                new DisplayStorageUnitInfoCommand(),
-                new DisplayPartCatalogue(),
+                new DisplayWarehouseCommand<T, U>(),
+                new DisplayStorageUnitInfoCommand<T, U>(),
+                new DisplayPartCatalogue<T, U>(),
                 new SavePartCommand(),
                 new HelpCommand(),
                 new ExitCommand(),
@@ -85,15 +93,25 @@ public class ShellApplication {
     }
 
     /**
-     * Get the WarehouseController for this application.
-     * @return the WarehouseController instance.
+     * Get the Warehouse for this application.
+     * @return the Warehouse instance.
      */
-    public WarehouseController getWarehouseController() {
-        return warehouseController;
+    public Warehouse<T, U> getWarehouse() {
+        return warehouse;
     }
 
-    public FileObjectSaver<Part> getPartFileSaver() {
-        return partFileSaver;
+    /**
+     * Get the warehouse presenter.
+     */
+    public WarehousePresenter<T, U> getWarehousePresenter() {
+        return warehousePresenter;
+    }
+
+    /**
+     * Get the coordinate parser for this application.
+     */
+    public CoordinateParser<U> getCoordinateParser() {
+        return coordinateParser;
     }
 
     public FileObjectSaver<PartCatalogue> getPartCatalogueFileSaver() {
@@ -113,7 +131,17 @@ public class ShellApplication {
      * @param args Command-line arguments passed to the application.
      */
     public static void main(String[] args) {
-        ShellApplication application = new ShellApplication();
+        GridWarehouseCoordinateSystem coordinateSystem = new GridWarehouseCoordinateSystem(10, 10);
+        Warehouse<GridWarehouseCoordinateSystem, Point> warehouse = new Warehouse<>(new WarehouseState<>(
+                new PartCatalogue(),
+                coordinateSystem,
+                new WarehouseLayout<>(coordinateSystem),
+                new RobotMapper<>(coordinateSystem),
+                new OrderQueue()
+        ));
+
+        var application = new ShellApplication<>(warehouse,new GridWarehousePresenter(),
+                new PointParser(), new JsonFileObjectSaver<>());
         application.run();
     }
 }

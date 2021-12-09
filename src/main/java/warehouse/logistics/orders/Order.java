@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * The base Order class. Represents a command to do "work" in the Warehouse.
+ * The base Order class. Represents a command to do "work" in the WarehouseLayout.
  */
 public abstract class Order {
     private final String id;

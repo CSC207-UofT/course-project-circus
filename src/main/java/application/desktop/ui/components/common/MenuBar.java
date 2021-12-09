@@ -19,12 +19,12 @@ public class MenuBar extends Component {
     }
 
     @Override
-    protected boolean preDraw(DesktopApplication application) {
+    protected boolean preDraw() {
         return ImGui.beginMenuBar();
     }
 
     @Override
-    protected void conditionalPostDraw(DesktopApplication application) {
+    protected void conditionalPostDraw() {
         ImGui.endMenuBar();
     }
 }

@@ -1,20 +1,22 @@
-package warehouse.tiles;
+package warehouse.geometry.grid;
+
+import warehouse.geometry.WarehouseCoordinate;
 
 import java.util.Objects;
 
 /**
- * The position of a Tile.
+ * A 2-dimensional vector in N^2.
  */
-public class TilePosition {
+public class Point implements WarehouseCoordinate {
     private final int x;
     private final int y;
 
     /**
-     * Construct a TilePosition at the given position.
+     * Construct a Point at the given position.
      * @param x The horizontal position of the tile.
      * @param y The vertical position of the tile.
      */
-    public TilePosition(int x, int y) {
+    public Point(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -31,7 +33,7 @@ public class TilePosition {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TilePosition that = (TilePosition) o;
+        Point that = (Point) o;
         return x == that.x && y == that.y;
     }
 
@@ -42,9 +44,6 @@ public class TilePosition {
 
     @Override
     public String toString() {
-        return "TilePosition{" +
-                "x=" + x +
-                ", y=" + y +
-                '}';
+        return String.format("(%s, %s)", getX(), getY());
     }
 }
