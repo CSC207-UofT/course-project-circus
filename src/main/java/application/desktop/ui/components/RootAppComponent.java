@@ -2,11 +2,9 @@ package application.desktop.ui.components;
 
 import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Component;
-import application.desktop.ui.components.common.Panel;
 import application.desktop.ui.components.editor.OrderEditor;
 import application.desktop.ui.components.editor.PartCatalogueEditor;
 import application.desktop.ui.components.editor.warehouse.WarehouseEditor;
-import application.desktop.ui.components.editor.warehouse.renderers.WarehouseCanvasRenderer;
 import imgui.ImGui;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiDir;
@@ -50,7 +48,7 @@ public class RootAppComponent<T extends WarehouseCoordinateSystem<U>, U extends 
     }
 
     /**
-     * Setup the dock space for the application.
+     * Initialise the dock space for the application.
      */
     private void initDockspace() {
         int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;

@@ -1,6 +1,5 @@
 package application.desktop.ui.components.common;
 
-import application.desktop.DesktopApplication;
 import application.desktop.ui.events.ComponentEvent;
 import imgui.ImGui;
 import imgui.flag.ImGuiStyleVar;
@@ -117,7 +116,6 @@ public class Panel extends Component {
 
     /**
      * Handle open and close application.desktop.ui.events.
-     * @param application The application instance.
      */
     @Override
     protected void handleEvents() {

@@ -1,6 +1,5 @@
 package application.desktop.ui.components.common;
 
-import application.desktop.DesktopApplication;
 import application.desktop.ui.events.ComponentEvent;
 import imgui.ImGui;
 import imgui.type.ImBoolean;

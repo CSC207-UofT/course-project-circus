@@ -19,7 +19,7 @@ public class ItemTest {
     }
 
     /**
-     * Testing getId with randomized Id
+     * Testing getId with a random id.
      */
     @Test
     void getIdRandomized(){

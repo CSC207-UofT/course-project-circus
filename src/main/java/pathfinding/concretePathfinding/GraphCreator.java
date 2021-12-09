@@ -40,7 +40,7 @@ public class GraphCreator {
 
     /**
      * @param node TileNode in the warehouse layout.
-     * @return Set of Id's of all connected nodes.
+     * @return A set containing the ids of all the connected nodes
      */
     public Set<String> getConnections(TileNode node) {
         //TODO:

@@ -23,7 +23,7 @@ public class Graph<T extends GraphNode> {
     /**
      * Returns the target node
      * @param id id of intended node
-     * @return
+     * @return The node with the given id.
      */
     public T getNode(String id) {
         for (T node: this.nodes){

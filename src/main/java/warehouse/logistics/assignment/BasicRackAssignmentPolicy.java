@@ -2,7 +2,6 @@ package warehouse.logistics.assignment;
 
 import warehouse.WarehouseLayout;
 import warehouse.inventory.Item;
-import warehouse.geometry.WarehouseCoordinate;
 import warehouse.tiles.Rack;
 
 /**

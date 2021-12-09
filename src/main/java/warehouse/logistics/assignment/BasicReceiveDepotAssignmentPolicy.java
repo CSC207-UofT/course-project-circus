@@ -3,7 +3,6 @@ package warehouse.logistics.assignment;
 import warehouse.WarehouseLayout;
 import warehouse.inventory.Item;
 import warehouse.tiles.ReceiveDepot;
-import warehouse.geometry.WarehouseCoordinate;
 
 /**
  * A basic assignment policy that finds the first ReceiveDepot that can store the given item.

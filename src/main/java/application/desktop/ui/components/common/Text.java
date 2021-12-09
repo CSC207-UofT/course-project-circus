@@ -1,6 +1,5 @@
 package application.desktop.ui.components.common;
 
-import application.desktop.DesktopApplication;
 import application.desktop.ui.Colour;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
@@ -10,7 +9,7 @@ import imgui.flag.ImGuiCol;
  */
 public class Text extends Component {
     private String label;
-    private Colour colour;
+    private final Colour colour;
 
     /**
      * Construct an enabled Text component given a label.

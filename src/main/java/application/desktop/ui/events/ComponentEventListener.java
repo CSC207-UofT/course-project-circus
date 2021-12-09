@@ -1,6 +1,5 @@
 package application.desktop.ui.events;
 
-import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Component;
 import messaging.MessageListener;
 

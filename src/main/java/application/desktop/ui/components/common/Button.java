@@ -1,6 +1,5 @@
 package application.desktop.ui.components.common;
 
-import application.desktop.DesktopApplication;
 import application.desktop.ui.Colour;
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.events.ComponentEvent;

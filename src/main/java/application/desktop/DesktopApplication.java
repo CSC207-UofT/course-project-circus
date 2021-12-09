@@ -46,7 +46,7 @@ public class DesktopApplication<T extends WarehouseCoordinateSystem<U>, U extend
     private final static float DEFAULT_FONT_SIZE = 16.0f;
 
     private Warehouse<T, U> warehouse;
-    private WarehouseCanvasRenderer<T, U> warehouseCanvasRenderer;
+    private final WarehouseCanvasRenderer<T, U> warehouseCanvasRenderer;
     private RootAppComponent<T, U> root;
 
     /**

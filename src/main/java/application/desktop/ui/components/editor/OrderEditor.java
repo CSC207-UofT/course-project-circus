@@ -1,6 +1,5 @@
 package application.desktop.ui.components.editor;
 
-import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Panel;
 import imgui.ImGui;
 import imgui.flag.ImGuiTableColumnFlags;

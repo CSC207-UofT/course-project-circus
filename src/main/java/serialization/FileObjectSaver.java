@@ -1,11 +1,11 @@
 package serialization;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Saves an object to file.
  */
+@SuppressWarnings("SameReturnValue")
 public interface FileObjectSaver<T> {
     /**
      * Save the given data at the specified filepath.

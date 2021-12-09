@@ -1,7 +1,6 @@
 package warehouse.logistics.assignment;
 
 import warehouse.WarehouseLayout;
-import warehouse.geometry.WarehouseCoordinate;
 import warehouse.inventory.Item;
 import warehouse.tiles.StorageTile;
 

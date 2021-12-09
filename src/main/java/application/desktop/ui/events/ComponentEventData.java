@@ -6,7 +6,7 @@ public class ComponentEventData {
     private final Component source;
 
     /**
-     * Construct a ComponentEventData given a source Component and DesktopApplication instance..
+     * Construct a ComponentEventData given a source Component and DesktopApplication instance.
      *
      * @param source      The Component that triggered the event.
      */

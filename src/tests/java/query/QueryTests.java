@@ -1,7 +1,6 @@
 package query;
 
 import org.junit.jupiter.api.Test;
-import utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;

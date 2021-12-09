@@ -1,7 +1,6 @@
 package serialization;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * Load an object from file.
@@ -17,5 +16,6 @@ public interface FileObjectLoader<T> {
     /**
      * Return a filter of valid file extensions for this FileObjectSaver.
      */
+    @SuppressWarnings("SameReturnValue")
     String getExtensionFilter();
 }

@@ -4,6 +4,7 @@ package query;
  * An interface representing a query for a Queryable.
  * @param <T> The type to query.
  */
+@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 public interface Query<T> {
     /**
      * Check if the given value satisfies this Query.

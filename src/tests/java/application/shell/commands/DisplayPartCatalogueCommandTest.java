@@ -14,9 +14,6 @@ import warehouse.inventory.PartCatalogue;
 import warehouse.logistics.orders.OrderQueue;
 import warehouse.robots.RobotMapper;
 
-import java.util.Comparator;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DisplayPartCatalogueCommandTest {

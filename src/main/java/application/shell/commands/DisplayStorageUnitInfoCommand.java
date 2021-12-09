@@ -8,7 +8,6 @@ import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
 import warehouse.geometry.WarehouseCoordinate;
 import warehouse.geometry.WarehouseCoordinateSystem;
-import warehouse.geometry.grid.GridWarehouseCoordinateSystem;
 import warehouse.tiles.StorageTile;
 import warehouse.tiles.Tile;
 import warehouse.WarehouseLayout;

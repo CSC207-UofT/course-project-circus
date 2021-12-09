@@ -10,7 +10,6 @@ import warehouse.WarehouseLayout;
 import warehouse.WarehouseState;
 import warehouse.geometry.grid.GridWarehouseCoordinateSystem;
 import warehouse.geometry.grid.Point;
-import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 import warehouse.logistics.orders.OrderQueue;
 import warehouse.robots.RobotMapper;

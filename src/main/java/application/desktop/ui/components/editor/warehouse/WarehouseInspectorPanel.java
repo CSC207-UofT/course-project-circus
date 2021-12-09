@@ -1,17 +1,13 @@
 package application.desktop.ui.components.editor.warehouse;
 
-import application.desktop.DesktopApplication;
 import application.desktop.ui.Colour;
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.common.Panel;
 import application.desktop.ui.utils.DrawingUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
-import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTableColumnFlags;
 import imgui.flag.ImGuiTableFlags;
-import imgui.internal.flag.ImGuiItemFlags;
-import warehouse.WarehouseLayout;
 import warehouse.geometry.WarehouseCoordinate;
 import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.inventory.Item;

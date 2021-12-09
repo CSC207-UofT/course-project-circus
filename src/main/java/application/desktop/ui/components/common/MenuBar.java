@@ -1,8 +1,6 @@
 package application.desktop.ui.components.common;
 
-import application.desktop.DesktopApplication;
 import imgui.ImGui;
-import imgui.flag.ImGuiStyleVar;
 
 /**
  * A menu bar component.

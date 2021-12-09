@@ -258,6 +258,7 @@ public class WarehouseCanvas<T extends WarehouseCoordinateSystem<U>, U extends W
         if (isMovingTile && ImGui.isMouseReleased(ImGuiMouseButton.Left)) {
             isMovingTile = false;
             moveTileDragDelta = null;
+            // TODO:
 //            Pair<Integer, Integer> newTileCoords = screenToWarehousePoint(getRelativeMousePosition());
 //            WarehouseLayout warehouseLayout = warehouseState.getLayout();
 //            if (warehouseLayout.isTileCoordinateInRange(newTileCoords.getFirst(), newTileCoords.getSecond())) {

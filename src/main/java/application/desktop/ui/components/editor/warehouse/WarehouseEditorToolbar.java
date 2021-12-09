@@ -1,6 +1,5 @@
 package application.desktop.ui.components.editor.warehouse;
 
-import application.desktop.DesktopApplication;
 import application.desktop.ui.Colour;
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.common.MenuBar;
