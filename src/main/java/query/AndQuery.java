@@ -1,17 +1,19 @@
 package query;
 
+import java.util.List;
+
 /**
  * A query chaining multiple other queries together with an AND operation.
  * @param <T> The type to query.
  */
 public class AndQuery<T> implements Query<T> {
-    private final Query<T>[] queries;
+    private final List<Query<T>> queries;
 
     /**
      * Construct an AndQuery with an array of queries.
      * @param queries The queries to chain.
      */
-    public AndQuery(Query<T>[] queries) {
+    public AndQuery(List<Query<T>> queries) {
         this.queries = queries;
     }
 

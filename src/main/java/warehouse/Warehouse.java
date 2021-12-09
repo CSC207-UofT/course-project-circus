@@ -64,6 +64,7 @@ public class Warehouse<T extends WarehouseCoordinateSystem<U>, U extends Warehou
             // Item could not be assigned to a ReceiveDepot (source)!
             return null;
         } else {
+            receiveDepot.getStorageUnit().addItem(item);
             PlaceOrder order = new PlaceOrder(receiveDepot, item, state.getLayout(), rackAssignmentPolicy);
             state.getOrderQueue().add(order);
             return order;
