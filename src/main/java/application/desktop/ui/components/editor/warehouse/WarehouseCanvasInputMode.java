@@ -5,19 +5,23 @@ package application.desktop.ui.components.editor.warehouse;
  */
 public enum WarehouseCanvasInputMode {
     /**
-     * No input.
+     * Select a tile at the mouse position
      */
     SELECT_TILE,
     /**
-     * Move a tile
+     * Move a tile at the mouse position
      */
     MOVE_TILE,
     /**
-     * Insert a tile.
+     * Insert a tile at the mouse position
      */
     INSERT_TILE,
     /**
-     * Erase a tile.
+     * Erase the object at the mouse position
      */
-    ERASE_TILE
+    ERASE_OBJECT,
+    /**
+     * Places a robot at the mouse position
+     */
+    PLACE_ROBOT
 }

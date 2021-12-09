@@ -10,8 +10,8 @@ import messaging.MessageListener;
 public interface ComponentEventListener extends MessageListener<ComponentEventData> {
     @Override
     default void handle(ComponentEventData data) {
-        handle(data.getSource(), data.getApplication());
+        handle(data.getSource());
     }
 
-    void handle (Component source, DesktopApplication application);
+    void handle (Component source);
 }

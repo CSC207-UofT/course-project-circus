@@ -4,24 +4,36 @@ package warehouse.tiles;
  * A tile in the warehouse.
  */
 public abstract class Tile {
-    private final int x;
-    private final int y;
+    protected int index;
 
     /**
-     * Construct a Tile at the given position.
-     * @param x The horizontal position of the tile.
-     * @param y The vertical position of the tile.
+     * Construct a Tile with the given index.
+     * @param index The index of the Tile.
      */
-    public Tile(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Tile(int index) {
+        this.index = index;
     }
 
-    public int getX() {
-        return x;
+    /**
+     * Construct an unassociated Tile, e.g. with index -1. See WarehouseCoordinateSystem javadocs for more details
+     * about Tile association.
+     */
+    public Tile() {
+        this(-1);
+    }
+    /**
+     * Get the index of this Tile.
+     * @return an integer.
+     */
+    public int getIndex() {
+        return index;
     }
 
-    public int getY() {
-        return y;
+    /**
+     * Set the index of this Tile.
+     * @param index The new index of this Tile.
+     */
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

@@ -1,16 +1,29 @@
 package warehouse.tiles;
 
 /**
- * An empty Tile in the Warehouse.
+ * An empty Tile in the WarehouseLayout.
  */
 public class EmptyTile extends Tile {
     /**
-     * Construct an EmptyTile at the given position.
+     * Construct an EmptyTile at the given index.
      *
-     * @param x The horizontal position of the tile.
-     * @param y The vertical position of the tile.
+     * @param index The index of the Tile.
      */
-    public EmptyTile(int x, int y) {
-        super(x, y);
+    public EmptyTile(int index) {
+        super(index);
+    }
+
+    /**
+     * Construct an unassociated EmptyTile, e.g. with an index of -1.
+     */
+    public EmptyTile() {
+        super(-1);
+    }
+
+    @Override
+    public String toString() {
+        return "EmptyTile{" +
+                "index=" + index +
+                '}';
     }
 }

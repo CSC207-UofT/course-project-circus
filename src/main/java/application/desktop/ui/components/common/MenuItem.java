@@ -48,20 +48,20 @@ public class MenuItem extends Component {
      * Render this MenuItem.
      */
     @Override
-    protected void drawContent(DesktopApplication application) {
+    protected void drawContent() {
         boolean previousSelected = selected.get();
         if(ImGui.menuItem(label, shortcut, selected, isEnabled())) {
             if (!toggle) {
                 selected.set(false);
             }
-            onClickedEvent.execute(this, application);
+            onClickedEvent.execute(this);
         }
 
         if (previousSelected != selected.get()) {
-            onSelectedToggleEvent.execute(this, application);
+            onSelectedToggleEvent.execute(this);
         }
 
-        super.drawContent(application);
+        super.drawContent();
     }
 
     public String getLabel() {

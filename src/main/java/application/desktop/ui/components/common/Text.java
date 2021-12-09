@@ -36,7 +36,7 @@ public class Text extends Component {
      * Render this Text component.
      */
     @Override
-    protected void drawContent(DesktopApplication application) {
+    protected void drawContent() {
         if (isEnabled()) {
             if (colour != null) {
                 ImGui.pushStyleColor(ImGuiCol.Text, colour.toU32Colour());
@@ -50,7 +50,7 @@ public class Text extends Component {
         } else {
             ImGui.textDisabled(label);
         }
-        super.drawContent(application);
+        super.drawContent();
     }
 
     public String getLabel() {

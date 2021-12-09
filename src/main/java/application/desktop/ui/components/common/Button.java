@@ -96,7 +96,7 @@ public class Button extends Component {
      * Render this Button.
      */
     @Override
-    protected void drawContent(DesktopApplication application) {
+    protected void drawContent() {
         boolean disabled = !isEnabled();
         if (disabled) {
             imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
@@ -137,7 +137,7 @@ public class Button extends Component {
         String iconCode = icon != null ? icon.getIconCode() : "";
         String iconSuffix = (icon != null && !label.isEmpty() ? iconSeparator : "");
         if (ImGui.button(iconCode + iconSuffix + label)) {
-            onClickedEvent.execute(this, application);
+            onClickedEvent.execute(this);
 
             if (isToggleable) {
                 isToggled = !isToggled;
@@ -146,9 +146,9 @@ public class Button extends Component {
 
         if (isToggleable && previousToggleState != isToggled) {
             if (isToggled) {
-                onToggledOnEvent.execute(this, application);
+                onToggledOnEvent.execute(this);
             } else {
-                onToggledOffEvent.execute(this, application);
+                onToggledOffEvent.execute(this);
             }
         }
 
@@ -175,7 +175,7 @@ public class Button extends Component {
             ImGui.popStyleVar(); // Alpha variable
         }
 
-        super.drawContent(application);
+        super.drawContent();
     }
 
     public String getLabel() {

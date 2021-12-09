@@ -4,7 +4,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import warehouse.Warehouse;
+import warehouse.WarehouseLayout;
+import warehouse.geometry.grid.GridWarehouseCoordinateSystem;
+import warehouse.geometry.grid.Point;
 import warehouse.inventory.Item;
 import warehouse.inventory.Part;
 import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
@@ -54,8 +56,10 @@ public class OrderQueueTest {
                 }
             };
             Thread.sleep(1);
-            order2 = new PlaceOrder(null, new Item(part),
-                    new BasicRackAssignmentPolicy(new Warehouse(1, 1)));
+
+            WarehouseLayout<Point> warehouseLayout = new WarehouseLayout<>(new GridWarehouseCoordinateSystem(1, 1));
+            order2 = new PlaceOrder(null, new Item(part), warehouseLayout, new BasicRackAssignmentPolicy());
+
             Thread.sleep(1);
             order3 = new CustomOrder();
             Thread.sleep(1);

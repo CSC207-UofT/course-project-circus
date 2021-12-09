@@ -43,28 +43,30 @@ public class GraphCreator {
      * @return Set of Id's of all connected nodes.
      */
     public Set<String> getConnections(TileNode node) {
-        Set<String> connections = new HashSet<>();
-        if(node.getTile().getY() < map[0].length-1) {
-            if (isEmpty(this.map[node.getTile().getX()][node.getTile().getY() + 1])) {
-                connections.add((new TileNode(this.map[node.getTile().getX()][node.getTile().getY() + 1])).getId());
-            }
-        }
-        if(node.getTile().getY() - 1 >= 0) {
-            if(isEmpty(this.map[node.getTile().getX()][node.getTile().getY()-1])) {
-                connections.add((new TileNode(this.map[node.getTile().getX()][node.getTile().getY()-1])).getId());
-            }
-        }
-        if(node.getTile().getX()< map.length-1) {
-            if (isEmpty(this.map[node.getTile().getX() + 1][node.getTile().getY()])) {
-                connections.add((new TileNode(this.map[node.getTile().getX() + 1][node.getTile().getY()])).getId());
-            }
-        }
-        if(node.getTile().getX()-1 >=0) {
-            if  (isEmpty(this.map[node.getTile().getX() - 1][node.getTile().getY()])) {
-                connections.add((new TileNode(this.map[node.getTile().getX() - 1][node.getTile().getY()]).getId()));
-            }
-        }
-        return connections;
+        //TODO:
+//        Set<String> connections = new HashSet<>();
+//        if(node.getTile().getY() < map[0].length-1) {
+//            if (isEmpty(this.map[node.getTile().getX()][node.getTile().getY() + 1])) {
+//                connections.add((new TileNode(this.map[node.getTile().getX()][node.getTile().getY() + 1])).getId());
+//            }
+//        }
+//        if(node.getTile().getY() - 1 >= 0) {
+//            if(isEmpty(this.map[node.getTile().getX()][node.getTile().getY()-1])) {
+//                connections.add((new TileNode(this.map[node.getTile().getX()][node.getTile().getY()-1])).getId());
+//            }
+//        }
+//        if(node.getTile().getX()< map.length-1) {
+//            if (isEmpty(this.map[node.getTile().getX() + 1][node.getTile().getY()])) {
+//                connections.add((new TileNode(this.map[node.getTile().getX() + 1][node.getTile().getY()])).getId());
+//            }
+//        }
+//        if(node.getTile().getX()-1 >=0) {
+//            if  (isEmpty(this.map[node.getTile().getX() - 1][node.getTile().getY()])) {
+//                connections.add((new TileNode(this.map[node.getTile().getX() - 1][node.getTile().getY()]).getId()));
+//            }
+//        }
+//        return connections;
+        return null;
     }
 
     /**

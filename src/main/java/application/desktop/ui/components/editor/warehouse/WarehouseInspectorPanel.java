@@ -11,13 +11,19 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiTableColumnFlags;
 import imgui.flag.ImGuiTableFlags;
 import imgui.internal.flag.ImGuiItemFlags;
-import warehouse.Warehouse;
+import warehouse.WarehouseLayout;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.inventory.Item;
+import warehouse.robots.Robot;
+import warehouse.robots.RobotMapper;
 import warehouse.storage.StorageUnit;
 import warehouse.tiles.StorageTile;
 import warehouse.tiles.Tile;
 
-public class WarehouseInspectorPanel extends Panel {
+import java.util.List;
+
+public class WarehouseInspectorPanel<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> extends Panel {
     /**
      * The id of this panel.
      */
@@ -36,50 +42,23 @@ public class WarehouseInspectorPanel extends Panel {
     private static final String PART_LINK_TOOLTIP = String.format("%s  Open in part catalogue",
             FontAwesomeIcon.ExternalLinkAlt.getIconCode());
 
-    private final WarehouseEditor warehouseEditor;
+    private final WarehouseEditor<T, U> warehouseEditor;
 
     /**
      * Construct an WarehouseInspectorPanel.
      */
-    public WarehouseInspectorPanel(WarehouseEditor warehouseEditor) {
+    public WarehouseInspectorPanel(WarehouseEditor<T, U> warehouseEditor) {
         super(PANEL_ID);
         setCloseable(false);
-        setMovable(false);
 
         this.warehouseEditor = warehouseEditor;
     }
 
     @Override
-    protected void drawContent(DesktopApplication application) {
+    protected void drawContent() {
         Tile selectedTile = warehouseEditor.getCanvas().getSelectedTile();
-        if (selectedTile == null) {
-            drawWarehouseInspector();
-        } else {
+        if (selectedTile != null) {
             drawTileInspector(selectedTile);
-        }
-    }
-
-    /**
-     * Draw inspector for the warehouse.
-     */
-    private void drawWarehouseInspector() {
-        Warehouse warehouse = warehouseEditor.getWarehouse();
-        int[] warehouseSize = {warehouse.getWidth(), warehouse.getHeight()};
-
-        imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
-        // Draw the warehouse size input
-        // NOTE: Modifying the warehouse size after instantiation is not currently supported! So, this is readonly.
-        ImGui.inputInt2("Size", warehouseSize);
-        imgui.internal.ImGui.popItemFlag();
-        ImGui.sameLine();
-        // Draw help marker
-        ImGui.textDisabled("(?)");
-        if (ImGui.isItemHovered()) {
-            ImGui.beginTooltip();
-            ImGui.pushTextWrapPos(ImGui.getFontSize() * 17.5f);
-            ImGui.textUnformatted("Modifying the warehouse size after instantiation is not currently supported!");
-            ImGui.popTextWrapPos();
-            ImGui.endTooltip();
         }
     }
 
@@ -87,28 +66,30 @@ public class WarehouseInspectorPanel extends Panel {
      * Draws the inspector for the given Tile.
      */
     private void drawTileInspector(Tile tile) {
-        int[] tilePosition = {tile.getX(), tile.getY()};
-        imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
-        ImGui.pushStyleVar(ImGuiStyleVar.Alpha, ImGui.getStyle().getAlpha() * 0.5f);
-
-        ImGui.inputInt2("Position", tilePosition);
-
-        imgui.internal.ImGui.popItemFlag();
-        ImGui.popStyleVar();
-
+        WarehouseCoordinateSystem<U> coordinateSystem = warehouseEditor.getWarehouseState().getCoordinateSystem();
+        U tilePosition = coordinateSystem.projectIndexToCoordinate(tile.getIndex());
+        ImGui.labelText("Position", tilePosition.toString());
         ImGui.labelText("Type", tile.getClass().getSimpleName());
 
-        if (tile instanceof StorageTile) {
-            // Draw heading
-            ImGui.spacing();
-            ImGui.separator();
-            ImGui.spacing();
-            ImGui.text("Storage");
+        ImGui.separator();
+        ImGui.spacing();
 
-            StorageUnit storageUnit = ((StorageTile) tile).getStorageUnit();
-            ImGui.textDisabled(String.format("%d items...", storageUnit.getContainer().getSize()));
-            // Draw table
-            drawStorageTileTable((StorageTile) tile);
+        if (tile instanceof StorageTile) {
+            if (ImGui.treeNode("Storage")) {
+                StorageUnit storageUnit = ((StorageTile) tile).getStorageUnit();
+                ImGui.textDisabled(String.format("%d items...", storageUnit.getContainer().getSize()));
+                // Draw table
+                drawStorageTileTable((StorageTile) tile);
+                ImGui.treePop();
+            }
+        } else {
+            if (ImGui.treeNode("Robots")) {
+                ImGui.textDisabled("View all robots on this tile...");
+
+                drawRobotsTable(tile);
+
+                ImGui.treePop();
+            }
         }
     }
 
@@ -122,7 +103,7 @@ public class WarehouseInspectorPanel extends Panel {
                 ImGuiTableFlags.NoBordersInBody | ImGuiTableFlags.ScrollY;
         // Make the table 25 rows tall...
         float tableHeight = ImGui.getTextLineHeightWithSpacing() * 25.0f;
-        String tableId = String.format("tile(%s,%s)_storage_table", storageTile.getX(), storageTile.getY());
+        String tableId = String.format("tile%s_storage_table", storageTile.getIndex());
         if (ImGui.beginTable(tableId, 3, tableFlags, 0, tableHeight, 0)) {
             // Declare columns
             ImGui.tableSetupColumn("ID", ImGuiTableColumnFlags.WidthFixed, 0);
@@ -172,6 +153,71 @@ public class WarehouseInspectorPanel extends Panel {
                 }
                 ImGui.popStyleColor();
 
+                ImGui.popID();
+            }
+            ImGui.endTable();
+        }
+    }
+
+    /**
+     * Draws a table of Robots on the given Tile.
+     */
+    private void drawRobotsTable(Tile tile) {
+        RobotMapper<U> robotMapper = warehouseEditor.getWarehouseState().getRobotMapper();
+        // Initialise some flags for the table
+        int tableFlags = ImGuiTableFlags.Resizable | ImGuiTableFlags.Reorderable | ImGuiTableFlags.Hideable |
+                ImGuiTableFlags.RowBg | ImGuiTableFlags.BordersOuter | ImGuiTableFlags.BordersV |
+                ImGuiTableFlags.NoBordersInBody | ImGuiTableFlags.ScrollY;
+        // Make the table 25 rows tall...
+        float tableHeight = ImGui.getTextLineHeightWithSpacing() * 15.0f;
+        String tableId = String.format("tile%d_robot_table", tile.getIndex());
+        if (ImGui.beginTable(tableId, 3, tableFlags, 0, tableHeight, 0)) {
+            // Declare columns
+            ImGui.tableSetupColumn("ID", ImGuiTableColumnFlags.WidthStretch, 0);
+            ImGui.tableSetupColumn("Action", ImGuiTableColumnFlags.NoSort |
+                    ImGuiTableColumnFlags.WidthFixed, 0);
+            ImGui.tableSetupScrollFreeze(0, 1); // Make row always visible
+            ImGui.tableHeadersRow();
+
+            List<Robot> robots = robotMapper.getRobotsAt(tile.getIndex());
+            for (int i = 0; i < robots.size(); i++) {
+                ImGui.pushID(i);
+                ImGui.tableNextRow();
+
+                // ID column
+                ImGui.tableNextColumn();
+
+                Robot robot = robots.get(i);
+                ImGui.text(robot.getId());
+                // Action column
+                ImGui.tableNextColumn();
+                ImGui.pushStyleColor(ImGuiCol.Button, ImGui.colorConvertFloat4ToU32(0, 0, 0, 0));
+                if (ImGui.smallButton(FontAwesomeIcon.ExternalLinkAlt.getIconCode())) {
+                    // TODO: Implement move robot
+                }
+                ImGui.sameLine();
+
+                if (ImGui.isItemHovered()) {
+                    ImGui.beginTooltip();
+                    ImGui.pushTextWrapPos(ImGui.getFontSize() * 17.5f);
+                    ImGui.textUnformatted("Move this Robot to a new tile");
+                    ImGui.popTextWrapPos();
+                    ImGui.endTooltip();
+                }
+
+                if (ImGui.smallButton(FontAwesomeIcon.TrashAlt.getIconCode())) {
+                    // Remove item button
+                    robotMapper.removeRobot(robot);
+                }
+                if (ImGui.isItemHovered()) {
+                    ImGui.beginTooltip();
+                    ImGui.pushTextWrapPos(ImGui.getFontSize() * 17.5f);
+                    ImGui.textUnformatted("Remove this Robot from the warehouse");
+                    ImGui.popTextWrapPos();
+                    ImGui.endTooltip();
+                }
+
+                ImGui.popStyleColor();
                 ImGui.popID();
             }
             ImGui.endTable();

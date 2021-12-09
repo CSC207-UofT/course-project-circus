@@ -1,111 +1,79 @@
 package warehouse;
 
-import warehouse.tiles.EmptyTile;
-import warehouse.tiles.Tile;
-
-import java.util.ArrayList;
-import java.util.List;
+import warehouse.geometry.WarehouseCoordinateSystem;
+import warehouse.inventory.Item;
+import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
+import warehouse.logistics.assignment.BasicReceiveDepotAssignmentPolicy;
+import warehouse.logistics.assignment.BasicShipDepotAssignmentPolicy;
+import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
+import warehouse.logistics.orders.PlaceOrder;
+import warehouse.tiles.Rack;
+import warehouse.tiles.ReceiveDepot;
+import warehouse.tiles.ShipDepot;
+import warehouse.geometry.WarehouseCoordinate;
 
 /**
- * A 2D representation of a warehouse as a grid of Tiles.
+ * The main level controller for the Warehouse.
  */
-public class Warehouse {
-    private final int width;
-    private final int height;
-    private final Tile[][] tiles;
+public class Warehouse<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> {
+    private final WarehouseState<T, U> state;
+    private final StorageTileAssignmentPolicy<ReceiveDepot> receiveDepotAssignmentPolicy;
+    private final StorageTileAssignmentPolicy<ShipDepot> shipDepotAssignmentPolicy;
+    private final StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy;
 
     /**
-     * Construct an empty layout with the given width and height.
-     * @param width  The width of the layout, in number of cells.
-     * @param height The height of the layout, in number of cells.
+     * Construct a Warehouse.
+     * @param state The warehouse state.
+     * @param receiveDepotAssignmentPolicy The policy for assigning incoming items to a ReceiveDepot.
+     * @param shipDepotAssignmentPolicy The policy for assigning outgoing items to a ShipDepot.
+     * @param rackAssignmentPolicy The policy for assigning items to a Rack.
      */
-    public Warehouse(int width, int height) {
-        this.width = width;
-        this.height = height;
-        this.tiles = new Tile[width][height];
-        // Initialise tiles
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                tiles[x][y] = new EmptyTile(x, y);
-            }
-        }
+    public Warehouse(WarehouseState<T, U> state,
+                     StorageTileAssignmentPolicy<ReceiveDepot> receiveDepotAssignmentPolicy,
+                     StorageTileAssignmentPolicy<ShipDepot> shipDepotAssignmentPolicy,
+                     StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy)
+    {
+        this.state = state;
+        // Assignment policies
+        this.receiveDepotAssignmentPolicy = receiveDepotAssignmentPolicy;
+        this.shipDepotAssignmentPolicy = shipDepotAssignmentPolicy;
+        this.rackAssignmentPolicy = rackAssignmentPolicy;
     }
 
     /**
-     * Get the tile at the specified coordinate.
-     * @param x The horizontal coordinate of the tile.
-     * @param y The vertical coordinate of the tile.
-     * @return The tile at the specified coordinate, or null if the coordinates are invalid.
+     * Construct a Warehouse with basic assignment policies.
+     * @param state The warehouse state to manage.
      */
-    public Tile getTileAt(int x, int y) {
-        if (isTileCoordinateInRange(x, y)) {
-            return tiles[x][y];
-        } else {
+    public Warehouse(WarehouseState<T, U> state) {
+        this(state,
+                new BasicReceiveDepotAssignmentPolicy(),
+                new BasicShipDepotAssignmentPolicy(),
+                new BasicRackAssignmentPolicy());
+    }
+
+    /**
+     * Receive an Item from the outside world. This will place the Item into an available ReceiveDepot, and then issue
+     * an Order for the Item to be moved from that ReceiveDepot to an available StorageUnit in the WarehouseLayout.
+     * @param item The Item to insert.
+     * @return a PlaceOrder representing a request to move the Item to an available StorageUnit in the WarehouseLayout,
+     * or null if the Item cannot be inserted into the WarehouseLayout.
+     */
+    public PlaceOrder receiveItem(Item item) {
+        ReceiveDepot receiveDepot = receiveDepotAssignmentPolicy.assign(state.getLayout(), item);
+        if (receiveDepot == null) {
+            // Item could not be assigned to a ReceiveDepot (source)!
             return null;
+        } else {
+            PlaceOrder order = new PlaceOrder(receiveDepot, item, state.getLayout(), rackAssignmentPolicy);
+            state.getOrderQueue().add(order);
+            return order;
         }
     }
 
     /**
-     * Set a Tile in the Warehouse. The Warehouse tile corresponding to the position of the given Tile will be updated.
-     * @param tile The new Tile.
+     * Get the warehouse state for this Warehouse.
      */
-    public void setTile(Tile tile) {
-        int x = tile.getX();
-        int y = tile.getY();
-        if (isTileCoordinateInRange(x, y)) {
-            tiles[x][y] = tile;
-        }
-    }
-
-    /**
-     * Check whether the given tile coordinate is out of bounds.
-     * @param x The horizontal coordinate of the tile.
-     * @param y The vertical coordinate of the tile.
-     * @return True if the coordinate is within range (not out of bounds), and False otherwise.
-     */
-    public boolean isTileCoordinateInRange(int x, int y) {
-        return x >= 0 && x < width && y >= 0 && y < height;
-    }
-
-    /**
-     * Get the width of this Warehouse.
-     * @return an integer specifying the width of this Warehouse, in number of tiles.
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * Get the height of this Warehouse.
-     * @return an integer specifying the height of this Warehouse, in number of tiles.
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * Find all tiles of Type clazz in this Warehouse.
-     * @param clazz The type of the Tile to find.
-     * @return An Iterable of Tile objects.
-     */
-    public <T extends Tile> Iterable<T> findTilesOfType(Class<T> clazz) {
-        List<T> tiles = new ArrayList<T>();
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                Tile tile = this.tiles[x][y];
-                if (clazz.isInstance(tile)) {
-                    tiles.add(clazz.cast(tile));
-                }
-            }
-        }
-        return tiles;
-    }
-
-    /**
-     * Getter method for tiles
-     * @return tiles
-     */
-    public Tile[][] getTiles() {
-        return tiles;
+    public WarehouseState<T, U> getState() {
+        return state;
     }
 }

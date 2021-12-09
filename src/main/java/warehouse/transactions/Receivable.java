@@ -17,7 +17,7 @@ public interface Receivable {
 
     /**
      * Get the Tile corresponding to this Receivable.
-     * @return a Tile object representing the physical location of this Receivable in the Warehouse.
+     * @return a Tile object representing the physical location of this Receivable in the WarehouseLayout.
      */
     Tile getTile();
 

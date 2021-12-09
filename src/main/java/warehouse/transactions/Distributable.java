@@ -18,7 +18,7 @@ public interface Distributable extends Queryable<Item> {
 
     /**
      * Get the Tile corresponding to this Distributable.
-     * @return a Tile object representing the physical location of this Distributable in the Warehouse.
+     * @return a Tile object representing the physical location of this Distributable in the WarehouseLayout.
      */
     Tile getTile();
 

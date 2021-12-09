@@ -11,10 +11,12 @@ public class TileScorer implements Scorer<TileNode> {
      */
     @Override
     public double computeCost(TileNode from, TileNode to) {
-        int x1 = from.getTile().getX();
-        int y1 = from.getTile().getY();
-        int x2 = to.getTile().getX();
-        int y2 = to.getTile().getY();
-        return Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
+        //TODO:
+//        int x1 = from.getTile().getX();
+//        int y1 = from.getTile().getY();
+//        int x2 = to.getTile().getX();
+//        int y2 = to.getTile().getY();
+//        return Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
+        return 0;
     }
 }

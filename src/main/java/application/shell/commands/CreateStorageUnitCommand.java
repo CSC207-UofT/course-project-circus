@@ -5,7 +5,9 @@ import application.shell.commands.framework.ShellCommand;
 import application.shell.commands.framework.ShellCommandArg;
 import application.shell.commands.framework.ShellCommandArgContainer;
 import application.shell.commands.framework.ShellCommandSpec;
-import warehouse.*;
+import warehouse.WarehouseLayout;
+import warehouse.geometry.WarehouseCoordinate;
+import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.storage.StorageUnit;
 import warehouse.storage.containers.InMemoryStorageUnitContainer;
 import warehouse.storage.strategies.MultiTypeStorageUnitStrategy;
@@ -19,9 +21,7 @@ class CreateStorageUnitArgContainer extends ShellCommandArgContainer {
     @ShellCommandArg
     private String type;
     @ShellCommandArg
-    private int x;
-    @ShellCommandArg
-    private int y;
+    private String coordinate;
     @ShellCommandArg
     private int capacity;
 
@@ -29,12 +29,8 @@ class CreateStorageUnitArgContainer extends ShellCommandArgContainer {
         return type;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
+    public String getCoordinate() {
+        return coordinate;
     }
 
     public int getCapacity() {
@@ -43,47 +39,49 @@ class CreateStorageUnitArgContainer extends ShellCommandArgContainer {
 }
 
 /**
- * A command to create a StorageUnit and add it to the Warehouse.
+ * A command to create a StorageUnit and add it to the WarehouseLayout.
  */
-@ShellCommandSpec(name = "create-storage-unit", description = "Create a StorageUnit and add it to the Warehouse.")
-public class CreateStorageUnitCommand extends ShellCommand {
+@ShellCommandSpec(name = "create-storage-unit", description = "Create a StorageUnit and add it to the WarehouseLayout.")
+public class CreateStorageUnitCommand<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate>
+        extends ShellCommand<T, U> {
     @Override
-    public String execute(ShellApplication application, ShellCommandArgContainer argContainer) {
+    public String execute(ShellApplication<T, U> application, ShellCommandArgContainer argContainer) {
         CreateStorageUnitArgContainer args = (CreateStorageUnitArgContainer) argContainer;
-        Warehouse warehouse = application.getWarehouseController().getState().getWarehouse();
+        U coordinate = application.getCoordinateParser().parse(args.getCoordinate());
+        if (coordinate == null) {
+            return String.format("Could not parse coordinate: %s", args.getCoordinate());
+        }
+
+        WarehouseLayout<U> warehouseLayout = application.getWarehouse().getState().getLayout();
         // Get tile
-        Tile tile = warehouse.getTileAt(args.getX(), args.getY());
+        Tile tile = warehouseLayout.getTileAt(coordinate);
         if (tile != null) {
             // Make sure we can add a StorageUnit to the tile.
             String type = args.getType().toLowerCase();
             if (tile instanceof StorageTile) {
-                return String.format("Cannot add %s at (%d, %d) since the tile already has a storage unit",
+                return String.format("Cannot add %s at %s since the tile already has a storage unit",
                         type,
-                        args.getX(),
-                        args.getY());
+                        coordinate);
             } else {
                 StorageTile newTile;
                 switch (type) {
                     case "ship-depot":
-                        newTile = new ShipDepot(args.getX(), args.getY(), new StorageUnit(args.getCapacity(),
-                                new MultiTypeStorageUnitStrategy(), new InMemoryStorageUnitContainer()));
+                        newTile = new ShipDepot(-1, args.getCapacity());
                         break;
                     case "receive-depot":
-                        newTile = new ReceiveDepot(args.getX(), args.getY(), new StorageUnit(args.getCapacity(),
-                                new MultiTypeStorageUnitStrategy(), new InMemoryStorageUnitContainer()));
+                        newTile = new ReceiveDepot(-1, args.getCapacity());
                         break;
                     case "rack":
-                        newTile = new Rack(args.getX(), args.getY(), new StorageUnit(args.getCapacity(),
-                                new SingleTypeStorageStrategy(), new InMemoryStorageUnitContainer()));
+                        newTile = new Rack(-1, args.getCapacity());
                         break;
                     default:
                         return String.format("Unknown StorageUnit type \"%s\"", type);
                 }
-                warehouse.setTile(newTile);
-                return String.format("Created %s at (%d, %d)", type, args.getX(), args.getY());
+                warehouseLayout.setTileAt(coordinate, newTile);
+                return String.format("Created %s at %s", type, coordinate);
             }
         } else {
-            return String.format("invalid tile coordinates: (%d, %d)", args.getX(), args.getY());
+            return String.format("invalid tile coordinates: %s", coordinate);
         }
     }
 
