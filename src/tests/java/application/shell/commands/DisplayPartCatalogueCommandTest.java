@@ -44,13 +44,11 @@ public class DisplayPartCatalogueCommandTest {
         DisplayPartCatalogue<GridWarehouseCoordinateSystem, Point> command = new DisplayPartCatalogue<>();
         ShellCommandExecutor commandExecutor = new ShellCommandExecutor(application, new ShellCommand[]{command});
         String output = commandExecutor.execute("display-parts");
-        String expected = String.format("""
-                (4) parts in the part catalogue
-                - %s
-                - %s
-                - %s
-                - %s
-                """, partCatalogue.getPartById("1"), partCatalogue.getPartById("2"),
+        String expected = String.format("(4) parts in the part catalogue\n" +
+                                        "- %s\n" +
+                                        "- %s\n" +
+                                        "- %s\n" +
+                                        "- %s\n", partCatalogue.getPartById("1"), partCatalogue.getPartById("2"),
                 partCatalogue.getPartById("3"), partCatalogue.getPartById("4"));
         assertEquals(expected.strip(), output.strip());
     }
