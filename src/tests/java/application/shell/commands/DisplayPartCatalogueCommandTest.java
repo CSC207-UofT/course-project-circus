@@ -1,7 +1,8 @@
-package application.shell.commands.framework;
+package application.shell.commands;
 
 import application.shell.ShellApplication;
-import application.shell.commands.CreatePartCommand;
+import application.shell.commands.framework.ShellCommand;
+import application.shell.commands.framework.ShellCommandExecutor;
 import org.junit.jupiter.api.Test;
 import warehouse.Warehouse;
 import warehouse.WarehouseLayout;
@@ -13,11 +14,14 @@ import warehouse.inventory.PartCatalogue;
 import warehouse.logistics.orders.OrderQueue;
 import warehouse.robots.RobotMapper;
 
+import java.util.Comparator;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CreatePartCommandTest {
+public class DisplayPartCatalogueCommandTest {
     @Test
-    public void testCreatePartCommand() {
+    public void testDisplayPartCatalogueCommand() {
         // Create an empty 10x10 warehouse
         GridWarehouseCoordinateSystem coordinateSystem = new GridWarehouseCoordinateSystem(10, 10);
         Warehouse<GridWarehouseCoordinateSystem, Point> warehouse = new Warehouse<>(new WarehouseState<>(
@@ -27,25 +31,27 @@ public class CreatePartCommandTest {
                 new RobotMapper<>(coordinateSystem),
                 new OrderQueue()
         ));
+        PartCatalogue partCatalogue = warehouse.getState().getPartCatalogue();
+        partCatalogue.addPart(new Part("1","Normal Mango", "A yummy fruit."));
+        partCatalogue.addPart(new Part("2","Ripe Mango", "A really yummy fruit."));
+        partCatalogue.addPart(new Part("3","Rotten Mango", "A not so yummy fruit."));
+        partCatalogue.addPart(new Part("4","iPhone", ""));
+
         // Create shell application and command
         ShellApplication<GridWarehouseCoordinateSystem, Point> application = new ShellApplication<>(
                 warehouse, null, null, null);
 
-        CreatePartCommand<GridWarehouseCoordinateSystem, Point> command = new CreatePartCommand<>();
+        DisplayPartCatalogue<GridWarehouseCoordinateSystem, Point> command = new DisplayPartCatalogue<>();
         ShellCommandExecutor commandExecutor = new ShellCommandExecutor(application, new ShellCommand[]{command});
-        // Create part and execute command
-        Part part1 = new Part("mango_fruit_1234", "Mango", "A yummy fruit");
-        commandExecutor.execute(String.format("create-part '%s' '%s' '%s'", part1.getId(), part1.getName(),
-                part1.getDescription()));
-        // Now the part catalogue should have one part in it!
-        PartCatalogue partCatalogue = warehouse.getState().getPartCatalogue();
-        assertEquals(1, partCatalogue.getParts().size());
-        assertEquals(part1, partCatalogue.getPartById("mango_fruit_1234"));
-
-        // Test part command when a part of the same id already exists!
-        Part part2 = new Part(part1.getId(), "Rotten mango", "A not so yummy fruit");
-        String output = commandExecutor.execute(String.format("create-part '%s' '%s' '%s'", part2.getId(),
-                part2.getName(), part2.getDescription()));
-        assertEquals("Error - Part with same id already exists!", output);
+        String output = commandExecutor.execute("display-parts");
+        String expected = String.format("""
+                (4) parts in the part catalogue
+                - %s
+                - %s
+                - %s
+                - %s
+                """, partCatalogue.getPartById("1"), partCatalogue.getPartById("2"),
+                partCatalogue.getPartById("3"), partCatalogue.getPartById("4"));
+        assertEquals(expected.strip(), output.strip());
     }
 }

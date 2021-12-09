@@ -10,6 +10,7 @@ import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -32,6 +33,8 @@ public class DisplayPartCatalogue<T extends WarehouseCoordinateSystem<U>, U exte
         if (parts.size() > 0) {
             stringBuilder.append("\n");
         }
+
+        parts.sort(Comparator.comparing(Part::getName));
         for (Part item : parts) {
             stringBuilder.append(String.format("- %s\n", item));
         }
