@@ -35,24 +35,23 @@ public class GridWarehousePresenterTest {
         layout.setTileAt(new Point(5, 5), new ReceiveDepot());
         // Create presenter
         GridWarehousePresenter presenter = new GridWarehousePresenter();
-        String expected = """
-                ======================
-                EmptyTile        .
-                Rack             X
-                ReceiveDepot     R
-                ShipDepot        S
-                ======================
-                   0 1 2 3 4 5 6 7 8 9
-                 0 X . . . . X . . . .
-                 1 . . . . . . . . . .
-                 2 . . . . . . . . . .
-                 3 . . . . . . . . . .
-                 4 . . . . . . . . . .
-                 5 . . . . . R . . . .
-                 6 . . . . . . . . . .
-                 7 . . . . . . . . . .
-                 8 . . . . . . . . . .
-                 9 . . . . . . . . . .""";
+        String expected = "======================\n" +
+                          "EmptyTile        .\n" +
+                          "Rack             X\n" +
+                          "ReceiveDepot     R\n" +
+                          "ShipDepot        S\n" +
+                          "======================\n" +
+                          "   0 1 2 3 4 5 6 7 8 9\n" +
+                          " 0 X . . . . X . . . .\n" +
+                          " 1 . . . . . . . . . .\n" +
+                          " 2 . . . . . . . . . .\n" +
+                          " 3 . . . . . . . . . .\n" +
+                          " 4 . . . . . . . . . .\n" +
+                          " 5 . . . . . R . . . .\n" +
+                          " 6 . . . . . . . . . .\n" +
+                          " 7 . . . . . . . . . .\n" +
+                          " 8 . . . . . . . . . .\n" +
+                          " 9 . . . . . . . . . .";
         assertEquals(expected.strip(), presenter.convert(state).strip());
     }
 }
