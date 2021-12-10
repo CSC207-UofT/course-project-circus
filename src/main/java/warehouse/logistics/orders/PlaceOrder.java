@@ -1,5 +1,6 @@
 package warehouse.logistics.orders;
 
+import query.Query;
 import warehouse.WarehouseLayout;
 import warehouse.inventory.Item;
 import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
@@ -36,18 +37,9 @@ public class PlaceOrder extends NavigateOrder {
         this.rackAssignmentPolicy = rackAssignmentPolicy;
 
         getOnAssigned().addListener(this::onAssigned);
+        getOnStarted().addListener(this::onStarted);
         getOnComplete().addListener(this::onComplete);
         this.waypoints.add(getFirstEmptyNeighbour(source.getTile()));
-    }
-
-    /**
-     * Called when this Order is completed.
-     */
-    private void onComplete(Order order) {
-        if (assignedRack != null) {
-            assignedRack.receiveItem(item);
-        }
-        // TODO: We might want to log when assignRack is null
     }
 
     /**
@@ -58,6 +50,24 @@ public class PlaceOrder extends NavigateOrder {
         this.waypoints.add(getFirstEmptyNeighbour(source.getTile()));
         assignedRack = rackAssignmentPolicy.assign(layout, item);
         waypoints.add(getFirstEmptyNeighbour(assignedRack));
+    }
+
+    /**
+     * Called when this Order is started.
+     */
+    private void onStarted(Order order) {
+        source.distributeItem(value -> value.getId().equals(item.getId()));
+    }
+
+
+    /**
+     * Called when this Order is completed.
+     */
+    private void onComplete(Order order) {
+        if (assignedRack != null) {
+            assignedRack.receiveItem(item);
+        }
+        // TODO: We might want to log when assignRack is null
     }
 
     public Distributable getSource() {

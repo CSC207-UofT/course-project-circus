@@ -17,6 +17,7 @@ public abstract class Order {
     private Robot handler;
 
     private final Message<Order> onAssigned;
+    private final Message<Order> onStarted;
     private final Message<Order> onComplete;
 
     /**
@@ -29,6 +30,7 @@ public abstract class Order {
         status = OrderStatus.PENDING;
 
         onAssigned = new Message<>();
+        onStarted = new Message<>();
         onComplete = new Message<>();
     }
 
@@ -60,6 +62,7 @@ public abstract class Order {
      */
     public void setInProgress() {
         status = OrderStatus.IN_PROGRESS;
+        onStarted.execute(this);
     }
 
     /**
@@ -101,6 +104,10 @@ public abstract class Order {
 
     public Message<Order> getOnAssigned() {
         return onAssigned;
+    }
+
+    public Message<Order> getOnStarted() {
+        return onStarted;
     }
 
     public Message<Order> getOnComplete() {
