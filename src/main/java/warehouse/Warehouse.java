@@ -6,6 +6,7 @@ import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
 import warehouse.logistics.assignment.BasicReceiveDepotAssignmentPolicy;
 import warehouse.logistics.assignment.BasicShipDepotAssignmentPolicy;
 import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
+import warehouse.logistics.orders.OrderMatcher;
 import warehouse.logistics.orders.PlaceOrder;
 import warehouse.tiles.Rack;
 import warehouse.tiles.ReceiveDepot;
@@ -17,6 +18,7 @@ import warehouse.geometry.WarehouseCoordinate;
  */
 public class Warehouse<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> {
     private final WarehouseState<T, U> state;
+    private final OrderMatcher orderMatcher;
     private final StorageTileAssignmentPolicy<ReceiveDepot> receiveDepotAssignmentPolicy;
     private final StorageTileAssignmentPolicy<ShipDepot> shipDepotAssignmentPolicy;
     private final StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy;
@@ -34,6 +36,7 @@ public class Warehouse<T extends WarehouseCoordinateSystem<U>, U extends Warehou
                      StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy)
     {
         this.state = state;
+        this.orderMatcher = new OrderMatcher(state.getOrderQueue(), state.getRobotMapper());
         // Assignment policies
         this.receiveDepotAssignmentPolicy = receiveDepotAssignmentPolicy;
         this.shipDepotAssignmentPolicy = shipDepotAssignmentPolicy;
@@ -49,6 +52,13 @@ public class Warehouse<T extends WarehouseCoordinateSystem<U>, U extends Warehou
                 new BasicReceiveDepotAssignmentPolicy(),
                 new BasicShipDepotAssignmentPolicy(),
                 new BasicRackAssignmentPolicy());
+    }
+
+    /**
+     * Update the Warehouse for this timestep.
+     */
+    public void update() {
+        orderMatcher.match();
     }
 
     /**

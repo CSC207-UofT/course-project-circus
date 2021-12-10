@@ -7,6 +7,7 @@ import java.util.*;
  */
 public class OrderQueue {
     private final Queue<Order> orderQueue;
+    private final List<Order> processedOrders;
 
     /**
      * Construct an OrderQueue.
@@ -30,6 +31,7 @@ public class OrderQueue {
                 return 1;
             }
         });
+        processedOrders = new ArrayList<>();
     }
 
     /**
@@ -74,6 +76,7 @@ public class OrderQueue {
             return null;
         } else {
             orderQueue.poll();
+            processedOrders.add(order);
             return order;
         }
     }
@@ -108,6 +111,13 @@ public class OrderQueue {
      */
     public boolean isEmpty() {
         return orderQueue.isEmpty();
+    }
+
+    /**
+     * Get all the Orders that have been processed by this OrderQueue.
+     */
+    public List<Order> getProcessedOrders() {
+        return new ArrayList<>(processedOrders);
     }
 
     public List<Order> peekOrders() {

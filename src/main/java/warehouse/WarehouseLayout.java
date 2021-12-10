@@ -33,7 +33,20 @@ public class WarehouseLayout<T extends WarehouseCoordinate> implements EmptyTile
      */
     public Tile getTileAt(T position) {
         if (coordinateSystem.contains(position)) {
-            return tiles.get(coordinateSystem.projectCoordinateToIndex(position));
+            return getTileAt(coordinateSystem.projectCoordinateToIndex(position));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get the tile at the specified tile index.
+     * @param index The index of the Tile to retrieve.
+     * @return the Tile at the given tile index, or null if the coordinates are invalid.
+     */
+    public Tile getTileAt(int index) {
+        if (index >= 0 && index < getTiles().size()) {
+            return tiles.get(index);
         } else {
             return null;
         }

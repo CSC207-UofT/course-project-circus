@@ -22,6 +22,7 @@ import warehouse.geometry.grid.Point;
 import warehouse.inventory.Item;
 import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
+import warehouse.logistics.orders.OrderMatcher;
 import warehouse.logistics.orders.OrderQueue;
 import warehouse.robots.Robot;
 import warehouse.robots.RobotMapper;
@@ -119,6 +120,7 @@ public class DesktopApplication<T extends WarehouseCoordinateSystem<U>, U extend
      */
     @Override
     public void process() {
+        warehouse.update();
         root.draw();
     }
 
@@ -143,6 +145,7 @@ public class DesktopApplication<T extends WarehouseCoordinateSystem<U>, U extend
      */
     public void setWarehouse(Warehouse<T, U> warehouse) {
         this.warehouse = warehouse;
+        // Re-create ui
         root = new RootAppComponent<>(this);
     }
 

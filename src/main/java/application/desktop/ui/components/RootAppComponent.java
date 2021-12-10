@@ -17,6 +17,7 @@ import org.lwjgl.BufferUtils;
 import utils.Pair;
 import warehouse.geometry.WarehouseCoordinate;
 import warehouse.geometry.WarehouseCoordinateSystem;
+import warehouse.logistics.orders.OrderQueue;
 
 import java.nio.IntBuffer;
 
@@ -44,7 +45,8 @@ public class RootAppComponent<T extends WarehouseCoordinateSystem<U>, U extends 
                 application.getWarehouse().getState(),
                 application.getWarehouseCanvasRenderer()
         );
-        orderEditor = new OrderEditor(application.getWarehouse().getState().getOrderQueue());
+        OrderQueue orderQueue = application.getWarehouse().getState().getOrderQueue();
+        orderEditor = new OrderEditor(orderQueue, warehouseEditor);
     }
 
     /**

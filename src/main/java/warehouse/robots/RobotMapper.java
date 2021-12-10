@@ -2,6 +2,7 @@ package warehouse.robots;
 
 import warehouse.geometry.WarehouseCoordinate;
 import warehouse.geometry.WarehouseCoordinateSystem;
+import warehouse.tiles.Tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;

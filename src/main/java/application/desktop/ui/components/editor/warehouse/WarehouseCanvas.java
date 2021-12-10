@@ -322,6 +322,14 @@ public class WarehouseCanvas<T extends WarehouseCoordinateSystem<U>, U extends W
     }
 
     /**
+     * Set the currently selected Tile.
+     * @param selectedTile The new selected tile.
+     */
+    public void setSelectedTile(Tile selectedTile) {
+        this.selectedTile = selectedTile;
+    }
+
+    /**
      * Get the colour of the tile handle outline.
      */
     private Colour getCurrentTileGizmoColour() {
