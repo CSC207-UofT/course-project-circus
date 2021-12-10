@@ -1,19 +1,24 @@
-package pathfinding.complexPathfinder;
+package warehouse.logistics.optimization.routefinding.algorithms;
 
-public class RouteNode <T extends GraphNode> implements Comparable<RouteNode<T>> {
+import warehouse.logistics.optimization.graph.GraphNode;
+
+/**
+ * A node in the route built by the A* algorithm.
+ */
+public class AStarRouteNode<T extends GraphNode> implements Comparable<AStarRouteNode<T>> {
     private final T current;
     private T previous;
     private double routeScore;
     private double estimatedScore;
 
-    public RouteNode(T current) {
+    public AStarRouteNode(T current) {
         this.current = current;
         this.previous = null;
         this.routeScore = Double.POSITIVE_INFINITY;
         this.estimatedScore = Double.POSITIVE_INFINITY;
     }
 
-    public RouteNode(T current, T previous, double routeScore, double estimatedScore) {
+    public AStarRouteNode(T current, T previous, double routeScore, double estimatedScore) {
         this.current = current;
         this.previous = previous;
         this.routeScore = routeScore;
@@ -21,7 +26,7 @@ public class RouteNode <T extends GraphNode> implements Comparable<RouteNode<T>>
     }
 
     @Override
-    public int compareTo(RouteNode other) {
+    public int compareTo(AStarRouteNode other) {
         return Double.compare(this.estimatedScore, other.estimatedScore);
     }
 

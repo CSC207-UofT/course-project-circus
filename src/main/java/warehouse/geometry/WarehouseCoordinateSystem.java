@@ -1,5 +1,7 @@
 package warehouse.geometry;
 
+import java.util.List;
+
 /**
  * The coordinate system defining a Warehouse. This is a vector space containing all the coordinates that can be used
  * to describe the position of a Tile in the Warehouse.
@@ -53,4 +55,20 @@ public interface WarehouseCoordinateSystem<T extends WarehouseCoordinate> {
      * @return True if the given coordinate is contained in this WarehouseCoordinateSystem, and False otherwise.
      */
     boolean contains(T coordinate);
+
+    /**
+     * Return the neighbouring coordinates to the given coordinate.
+     * @param coordinate The coordinate whose neighbours to find.
+     * @return A list of coordinates containing the neighbours of the given coordinate. Elements of this list may be null!
+     */
+    List<T> getNeighbours(T coordinate);
+
+    /**
+     * Get the distance between the two coordinates. This function should be a metric.
+     * See https://en.wikipedia.org/wiki/Metric_(mathematics) for more details.
+     * @param p1 The start point.
+     * @param p2 The end point.
+     * @return The distance between p1 and p2.
+     */
+    double getDistance(T p1, T p2);
 }

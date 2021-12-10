@@ -1,5 +1,5 @@
-package pathfinding.concretePathfinding;
-import pathfinding.complexPathfinder.*;
+package warehouse.logistics.optimization.graph;
+
 import warehouse.tiles.Tile;
 
 public class TileNode implements GraphNode {
@@ -21,9 +21,7 @@ public class TileNode implements GraphNode {
      */
     @Override
     public String getId() {
-        //TODO:
-        //return tile.getX() + "," + tile.getY();
-        return null;
+        return String.valueOf(tile.getIndex());
     }
 
     /**
@@ -33,4 +31,10 @@ public class TileNode implements GraphNode {
         return tile;
     }
 
+    @Override
+    public String toString() {
+        return "TileNode{" +
+                "tile=" + tile +
+                '}';
+    }
 }

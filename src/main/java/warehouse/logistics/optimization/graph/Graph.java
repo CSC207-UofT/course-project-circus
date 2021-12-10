@@ -1,12 +1,21 @@
-package pathfinding.complexPathfinder;
+package warehouse.logistics.optimization.graph;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a graph (in the "graph theory" sense), e.g. a collection of vertices connected by edges.
+ */
 public class Graph<T extends GraphNode> {
+    /**
+     * A list
+     */
     private final Set<T> nodes;
+    /**
+     * A mapping from a GraphNode (given by its id) to a Set giving all the nodes that it's connected to.
+     */
     private final Map<String, Set<String>> connections;
 
     /**
@@ -21,14 +30,14 @@ public class Graph<T extends GraphNode> {
     }
 
     /**
-     * Returns the target node
+     * Return the GraphNode with the given id.
      * @param id id of intended node
      * @return The node with the given id.
      */
     public T getNode(String id) {
         for (T node: this.nodes){
             if(Objects.equals(node.getId(), id)){
-                return (T) node;
+                return node;
             }
         }
         return null;

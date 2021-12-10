@@ -84,7 +84,7 @@ public class WarehouseLayout<T extends WarehouseCoordinate> implements EmptyTile
      * Project this WarehouseLayout to a single dimension.
      * @return the Tiles of this Warehouse projected to a single dimension.
      */
-    List<Tile> getTiles() {
+    public List<Tile> getTiles() {
         return new ArrayList<>(tiles);
     }
 
