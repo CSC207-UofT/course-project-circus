@@ -139,9 +139,9 @@ public class AppToolbar<T extends WarehouseCoordinateSystem<U>, U extends Wareho
             ImGui.spacing();
 
             if (ImGui.button("OK")) {
-                // TODO: Implement warehouse factor for creating new empty warehouses
-//                application.setWarehouse(DesktopApplication.makeEmptyGridWarehouse(
-//                        newWarehouseWidth.get(), newWarehouseHeight.get()));
+                application.setWarehouse((Warehouse<T, U>)
+                        DesktopApplication.makeEmptyGridWarehouse(
+                        newWarehouseWidth.get(), newWarehouseHeight.get()));
                 ImGui.closeCurrentPopup();
             }
             ImGui.setItemDefaultFocus();
