@@ -3,8 +3,6 @@ package warehouse.robots;
 import warehouse.WarehouseState;
 import warehouse.geometry.WarehouseCoordinate;
 import warehouse.geometry.WarehouseCoordinateSystem;
-import warehouse.robots.Robot;
-import warehouse.robots.RobotAdapter;
 
 import java.util.HashMap;
 
@@ -41,9 +39,16 @@ public class RobotAdapterUpdater<T extends WarehouseCoordinateSystem<U>, U exten
     /**
      * Return the adapter for the given Robot.
      * @param robot The Robot whose adapter to retrieve.
-     * @return the RobotAdapter for the given Robot, or null if the Robot doesn't have one.
+     * @return the RobotAdapter for the given Robot. If it doesn't have one, then this method will create a new one.
      */
     public RobotAdapter<T, U> getRobotAdapter(Robot robot) {
-        return robotAdapters.getOrDefault(robot, null);
+        RobotAdapter<T, U> adapter;
+        if (!robotAdapters.containsKey(robot)) {
+            adapter = adapterFactory.makeRobotAdapter(robot, warehouseState);
+            robotAdapters.put(robot, adapter);
+        } else {
+            adapter = robotAdapters.get(robot);
+        }
+        return adapter;
     }
 }

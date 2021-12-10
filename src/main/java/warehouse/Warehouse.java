@@ -1,5 +1,6 @@
 package warehouse;
 
+import warehouse.geometry.WarehouseCoordinate;
 import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.inventory.Item;
 import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
@@ -8,12 +9,9 @@ import warehouse.logistics.assignment.BasicShipDepotAssignmentPolicy;
 import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
 import warehouse.logistics.orders.OrderMatcher;
 import warehouse.logistics.orders.PlaceOrder;
-import warehouse.robots.RobotAdapterFactory;
-import warehouse.robots.RobotAdapterUpdater;
 import warehouse.tiles.Rack;
 import warehouse.tiles.ReceiveDepot;
 import warehouse.tiles.ShipDepot;
-import warehouse.geometry.WarehouseCoordinate;
 
 /**
  * The main level controller for the Warehouse.
@@ -61,9 +59,6 @@ public class Warehouse<T extends WarehouseCoordinateSystem<U>, U extends Warehou
      * Update the Warehouse for this timestep.
      */
     public void update() {
-        if (state.getRobotAdapterUpdater() != null) {
-            state.getRobotAdapterUpdater().update();
-        }
         orderMatcher.match();
     }
 

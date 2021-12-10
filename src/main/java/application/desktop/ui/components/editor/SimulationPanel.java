@@ -1,6 +1,6 @@
 package application.desktop.ui.components.editor;
 
-import application.desktop.ui.FontAwesomeIcon;
+import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Panel;
 import imgui.ImGui;
 import imgui.flag.ImGuiStyleVar;
@@ -16,26 +16,28 @@ public class SimulationPanel extends Panel {
      */
     private static final String PANEL_ID = "Simulation###simulation_panel";
 
-    private boolean isSimulationActive;
-    private ImInt orderBatchSize;
-    private ImInt partBatchSize;
+    private final DesktopApplication<?, ?> application;
+    private final ImInt orderBatchSize;
+    private final ImInt partBatchSize;
 
     /**
      * Construct a SimulationPanel.
      */
-    public SimulationPanel() {
+    public SimulationPanel(DesktopApplication<?, ?> application) {
         super(PANEL_ID);
+        this.application = application;
         orderBatchSize = new ImInt(0);
         partBatchSize = new ImInt(0);
     }
 
     @Override
     protected void drawContent() {
-        if (ImGui.button(isSimulationActive ?
+        boolean isSimulationEnabled = application.isSimulationEnabled();
+        if (ImGui.button(isSimulationEnabled ?
                 "Stop Simulation" :
                 "Start Simulation",
                 ImGui.getContentRegionAvailX(), 0)) {
-            isSimulationActive = !isSimulationActive;
+            application.setSimulationEnabled(!isSimulationEnabled);
         }
 
         ImGui.spacing();

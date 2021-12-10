@@ -53,6 +53,8 @@ public class DesktopApplication<T extends WarehouseCoordinateSystem<U>, U extend
     private final WarehouseCanvasRenderer<T, U> warehouseCanvasRenderer;
     private RootAppComponent<T, U> root;
 
+    private boolean isSimulationEnabled;
+
     /**
      * The loader for the WarehouseState.
      */
@@ -124,6 +126,10 @@ public class DesktopApplication<T extends WarehouseCoordinateSystem<U>, U extend
     @Override
     public void process() {
         warehouse.update();
+        var state = warehouse.getState();
+        if (state.getRobotAdapterUpdater() != null && isSimulationEnabled) {
+            state.getRobotAdapterUpdater().update();
+        }
         root.draw();
     }
 
@@ -162,6 +168,20 @@ public class DesktopApplication<T extends WarehouseCoordinateSystem<U>, U extend
 
     public FileObjectSaver<WarehouseState<T, U>> getWarehouseStateSaver() {
         return warehouseStateSaver;
+    }
+
+    /**
+     * Return whether simulation is enabled.
+     */
+    public boolean isSimulationEnabled() {
+        return isSimulationEnabled;
+    }
+
+    /**
+     * Set whether simulation is enabled.
+     */
+    public void setSimulationEnabled(boolean simulationEnabled) {
+        isSimulationEnabled = simulationEnabled;
     }
 
     /**

@@ -50,7 +50,7 @@ public class RootAppComponent<T extends WarehouseCoordinateSystem<U>, U extends 
         );
         OrderQueue orderQueue = application.getWarehouse().getState().getOrderQueue();
         orderEditor = new OrderEditor(orderQueue, warehouseEditor);
-        simulationPanel = new SimulationPanel();
+        simulationPanel = new SimulationPanel(application);
     }
 
     /**
