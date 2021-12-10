@@ -1,5 +1,5 @@
 package warehouse.logistics.optimization;
-import warehouse.geometry.WarehouseCoordinate;
+
 import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.logistics.optimization.graph.TileNode;
 import warehouse.logistics.optimization.routefinding.GraphNodeScorer;
@@ -7,15 +7,14 @@ import warehouse.logistics.optimization.routefinding.GraphNodeScorer;
 /**
  * Score metric for Tiles using distance metric.
  */
-public class DistanceTileScorer<T extends WarehouseCoordinateSystem<U>, U extends WarehouseCoordinate> implements
-        GraphNodeScorer<TileNode> {
-    private final WarehouseCoordinateSystem<U> coordinateSystem;
+public class DistanceTileScorer implements GraphNodeScorer<TileNode> {
+    private final WarehouseCoordinateSystem<?> coordinateSystem;
 
     /**
      * Construct a DistanceTileScorer in the given WarehouseCoordinateSystem.
      * @param coordinateSystem The coordinate system to use for the distance metric.
      */
-    public DistanceTileScorer(WarehouseCoordinateSystem<U> coordinateSystem) {
+    public DistanceTileScorer(WarehouseCoordinateSystem<?> coordinateSystem) {
         this.coordinateSystem = coordinateSystem;
     }
 
@@ -27,8 +26,6 @@ public class DistanceTileScorer<T extends WarehouseCoordinateSystem<U>, U extend
      */
     @Override
     public double computeCost(TileNode from, TileNode to) {
-        U p1 = coordinateSystem.projectIndexToCoordinate(from.getTile().getIndex());
-        U p2 = coordinateSystem.projectIndexToCoordinate(to.getTile().getIndex());
-        return coordinateSystem.getDistance(p1, p2);
+        return coordinateSystem.getDistance(from.getTile().getIndex(), to.getTile().getIndex());
     }
 }

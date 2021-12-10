@@ -13,6 +13,9 @@ import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import warehouse.*;
 import warehouse.geometry.WarehouseCoordinateSystem;
+import warehouse.logistics.optimization.DistanceTileScorer;
+import warehouse.logistics.optimization.graph.TileNode;
+import warehouse.logistics.optimization.routefinding.algorithms.AStarRoutefinder;
 import warehouse.robots.Robot;
 import warehouse.robots.RobotMapper;
 import warehouse.tiles.EmptyTile;
@@ -232,7 +235,9 @@ public class WarehouseCanvas<T extends WarehouseCoordinateSystem<U>, U extends W
      */
     private void placeRobotAtSelection() {
         if (selectedTile != null) {
-            warehouseState.getRobotMapper().addRobotAt(new Robot(),selectedTile.getIndex());
+            DistanceTileScorer metric = new DistanceTileScorer(warehouseState.getCoordinateSystem());
+            AStarRoutefinder<TileNode> routefinder = new AStarRoutefinder<>(metric, metric);
+            warehouseState.getRobotMapper().addRobotAt(new Robot(routefinder),selectedTile.getIndex());
         }
     }
 

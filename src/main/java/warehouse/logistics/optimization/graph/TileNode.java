@@ -1,5 +1,6 @@
 package warehouse.logistics.optimization.graph;
 
+import warehouse.tiles.EmptyTile;
 import warehouse.tiles.Tile;
 
 public class TileNode implements GraphNode {
@@ -21,7 +22,15 @@ public class TileNode implements GraphNode {
      */
     @Override
     public String getId() {
-        return String.valueOf(tile.getIndex());
+        return Integer.toString(tile.getIndex());
+    }
+
+    /**
+     * Get the score multiplier. This is binary: 1 if empty, and infinity if non-empty.
+     */
+    @Override
+    public double getScoreMultiplier() {
+        return tile instanceof EmptyTile ? 1 : Double.MAX_VALUE;
     }
 
     /**

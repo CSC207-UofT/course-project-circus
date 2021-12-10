@@ -55,8 +55,8 @@ public class AStarRoutefinderTest {
         SimpleWarehouseGraphConverter<GridWarehouseCoordinateSystem, Point> warehouseGraphConverter =
                 new SimpleWarehouseGraphConverter<>();
 
-        Graph<TileNode> graph = warehouseGraphConverter.convert(warehouse);
-        DistanceTileScorer<GridWarehouseCoordinateSystem, Point> metric = new DistanceTileScorer<>(layout.getCoordinateSystem());
+        Graph<TileNode> graph = warehouseGraphConverter.convert(warehouse.getState());
+        DistanceTileScorer metric = new DistanceTileScorer(layout.getCoordinateSystem());
         // The expected route, stored as a 2D array of tile positions.
         int [][] expected = {
                 {1, 0},
@@ -70,11 +70,11 @@ public class AStarRoutefinderTest {
                 {6, 7}
         };
         // Build the routefinder with euclidean distance metrics
-        AStarRoutefinder<TileNode> routefinder = new AStarRoutefinder<>(graph, metric, metric);
+        AStarRoutefinder<TileNode> routefinder = new AStarRoutefinder<>(metric, metric);
         // Find path between (0, 0) and (6, 7)
         TileNode source = new TileNode(layout.getTileAt(new Point(0, 0)));
         TileNode destination = new TileNode(layout.getTileAt(new Point(6, 7)));
-        List<TileNode> route = routefinder.findRoute(source, destination);
+        List<TileNode> route = routefinder.findRoute(graph, source, destination);
         // NOTE: This is not a reliable way to check if the route is valid, since the A* algorithm
         // might give a different path that has an equivalent cost (i.e. it is not fully deterministic).
         for (int i = 0, pathSize = route.size(); i < pathSize; i++) {

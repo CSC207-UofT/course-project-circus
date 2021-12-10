@@ -97,16 +97,6 @@ public class GridWarehouseCoordinateSystem implements WarehouseCoordinateSystem<
         neighbours.add(contains(south) ? south : null);
         Point west = new Point(coordinate.getX() - 1, coordinate.getY());
         neighbours.add(contains(west) ? west : null);
-        // Add diagonals
-        Point northEast = new Point(coordinate.getX() + 1, coordinate.getY() - 1);
-        neighbours.add(contains(northEast) ? northEast : null);
-        Point southEast = new Point(coordinate.getX() + 1, coordinate.getY() + 1);
-        neighbours.add(contains(southEast) ? southEast : null);
-        Point southWest = new Point(coordinate.getX() - 1, coordinate.getY() + 1);
-        neighbours.add(contains(southWest) ? southWest : null);
-        Point northWest = new Point(coordinate.getX() - 1, coordinate.getY() - 1);
-        neighbours.add(contains(southWest) ? northWest : null);
-        // Done!
         return neighbours;
     }
 

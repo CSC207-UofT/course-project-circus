@@ -4,9 +4,11 @@ import warehouse.WarehouseLayout;
 import warehouse.inventory.Item;
 import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
 import warehouse.tiles.Rack;
+import warehouse.tiles.Tile;
 import warehouse.transactions.Distributable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An Order to place an Item into an available Rack in the WarehouseLayout.
@@ -26,13 +28,13 @@ public class PlaceOrder extends NavigateOrder {
     public PlaceOrder(Distributable source, Item item, WarehouseLayout<?> layout,
                       StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy) {
         super(new ArrayList<>());
-        this.waypoints.add(source.getTile());
         this.source = source;
         this.item = item;
         this.layout = layout;
         this.rackAssignmentPolicy = rackAssignmentPolicy;
 
         getOnAssigned().addListener(this::onAssigned);
+        this.waypoints.add(getFirstEmptyNeighbour(source.getTile()));
     }
 
     /**
@@ -40,8 +42,9 @@ public class PlaceOrder extends NavigateOrder {
      */
     private void onAssigned(Order order) {
         waypoints.clear();
-        waypoints.add(source.getTile());
-        waypoints.add(rackAssignmentPolicy.assign(layout, item));
+        this.waypoints.add(getFirstEmptyNeighbour(source.getTile()));
+        Rack rack = rackAssignmentPolicy.assign(layout, item);
+        waypoints.add(getFirstEmptyNeighbour(rack));
     }
 
     public Distributable getSource() {
@@ -60,5 +63,20 @@ public class PlaceOrder extends NavigateOrder {
     @Override
     public boolean isReady() {
         return rackAssignmentPolicy.isAssignable(layout, item);
+    }
+
+    /**
+     * Get the first empty neighbour of the given Tile.
+     */
+    private Tile getFirstEmptyNeighbour(Tile tile) {
+        List<Integer> neighbours = layout.getCoordinateSystem().getNeighbours(tile.getIndex());
+        for (int index : neighbours) {
+            if (index == -1) continue;
+            Tile neighbourTile = layout.getTileAt(index);
+            if (layout.isEmpty(neighbourTile)) {
+                return neighbourTile;
+            }
+        }
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package application.desktop.ui.components.editor.warehouse.renderers;
 
+import application.desktop.adapters.PhysicalGridRobot;
 import application.desktop.ui.Colour;
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.editor.warehouse.WarehouseCanvasColourScheme;
@@ -19,6 +20,8 @@ import warehouse.robots.Robot;
 import warehouse.robots.RobotMapper;
 import warehouse.tiles.Tile;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +32,8 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
     private final float gridStep;
     private final boolean showGrid;
     private final ImVec2 panOffset;
+
+    private final HashMap<Robot, PhysicalGridRobot> robotAdapters;
 
     /**
      * Construct a new WarehouseCanvas with default options.
@@ -41,6 +46,7 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
         this.gridStep = gridStep;
         this.showGrid = showGrid;
         this.panOffset = new ImVec2();
+        this.robotAdapters = new HashMap<>();
     }
 
     /**
@@ -70,6 +76,7 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
         }
 
         drawWarehouseTiles(drawList, state, transform, colourScheme);
+        updateRobots();
         drawRobots(drawList, state, transform);
         drawList.popClipRect();
     }
@@ -97,6 +104,15 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
     }
 
     /**
+     * Update the robots.
+     */
+    private void updateRobots() {
+        for (PhysicalGridRobot robotAdapter : robotAdapters.values()) {
+            robotAdapter.update();
+        }
+    }
+
+    /**
      * Draw the robots in the warehouse.
      */
     private void drawRobots(ImDrawList drawList, WarehouseState<GridWarehouseCoordinateSystem, Point> state,
@@ -104,26 +120,57 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
         RobotMapper<Point> robotMapper = state.getRobotMapper();
         List<Robot> robots = robotMapper.getRobots();
         for (Robot robot : robots) {
-            Point robotPosition = robotMapper.getRobotPosition(robot);
-            ImVec2 topLeft = getTileTopLeft(getOrigin(transform),
-                    robotPosition.getX(), robotPosition.getY());
-
-            ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
-            // TODO: Move styles to colour scheme
-            DrawingUtils.drawRect(drawList, topLeft, bottomRight,
-                    new Colour(64, 64, 64, 0.2f), new Colour(255, 162, 80, 1.0f),
-                    3.0f, 10.0f, RectBorderType.Inner);
-
-            FontAwesomeIcon icon = FontAwesomeIcon.Robot;
-            int iconColour = new Colour(223, 224, 223).toU32Colour();
-
-            ImVec2 textSize = new ImVec2();
-            ImGui.calcTextSize(textSize, icon.getIconCode());
-            drawList.addText(ImGui.getFont(), 14,
-                    (topLeft.x + bottomRight.x - textSize.x + 3) / 2,
-                    (topLeft.y + bottomRight.y - textSize.y) / 2,
-                    iconColour, icon.getIconCode());
+            if (!robotAdapters.containsKey(robot)) {
+                // Create adapter
+                robotAdapters.put(robot, new PhysicalGridRobot(robot, state));
+            }
+            drawRobot(drawList, state, transform, robotAdapters.get(robot));
         }
+    }
+
+    /**
+     * Draw a single Robot.
+     */
+    private void drawRobot(ImDrawList drawList, WarehouseState<GridWarehouseCoordinateSystem, Point> state,
+                           WarehouseCanvasTransform transform, PhysicalGridRobot robotAdapter) {
+        // Draw robot path
+        if (robotAdapter.getCurrentRouteNodes() != null) {
+            List<Tile> route = new ArrayList<>(robotAdapter.getCurrentRouteNodes());
+            route.add(0, robotAdapter.getCurrentSource());
+            for (int i = 1; i < route.size() ; i++) {
+                Tile previous = route.get(i - 1);
+                Tile current = route.get(i);
+
+                Point currentPosition = state.getCoordinateSystem().projectIndexToCoordinate(current.getIndex());
+                Point previousPosition = state.getCoordinateSystem().projectIndexToCoordinate(previous.getIndex());
+                ImVec2 p1 = getTileTopLeft(getOrigin(transform), previousPosition.getX(), previousPosition.getY());
+                p1.x += 0.5f * gridStep;
+                p1.y += 0.5f * gridStep;
+                ImVec2 p2 = getTileTopLeft(getOrigin(transform), currentPosition.getX(), currentPosition.getY());
+                p2.x += 0.5f * gridStep;
+                p2.y += 0.5f * gridStep;
+                // Draw line between p1 and p2
+                drawList.addLine(p1.x, p1.y, p2.x, p2.y, new Colour(0, 255, 0).toU32Colour());
+            }
+        }
+
+        ImVec2 topLeft = getTileTopLeft(getOrigin(transform),
+                robotAdapter.getX(), robotAdapter.getY());
+        ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
+        // TODO: Move styles to colour scheme
+        DrawingUtils.drawRect(drawList, topLeft, bottomRight,
+                new Colour(64, 64, 64, 0.2f), new Colour(255, 162, 80, 1.0f),
+                3.0f, 10.0f, RectBorderType.Inner);
+
+        FontAwesomeIcon icon = FontAwesomeIcon.Robot;
+        int iconColour = new Colour(223, 224, 223).toU32Colour();
+
+        ImVec2 textSize = new ImVec2();
+        ImGui.calcTextSize(textSize, icon.getIconCode());
+        drawList.addText(ImGui.getFont(), 14,
+                (topLeft.x + bottomRight.x - textSize.x + 3) / 2,
+                (topLeft.y + bottomRight.y - textSize.y) / 2,
+                iconColour, icon.getIconCode());
     }
 
     /**
@@ -168,11 +215,6 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
      * @param topLeft The top left point to draw the tile at.
      */
     private void drawTile(ImDrawList drawList, Tile tile, ImVec2 topLeft, WarehouseCanvasColourScheme colourScheme) {
-//        if (tile == selectedTile && isMovingTile) {
-//            topLeft.x += moveTileDragDelta.x;
-//            topLeft.y += moveTileDragDelta.y;
-//        }
-
         ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
         Class<? extends Tile> clazz = tile.getClass();
         Map<Class<? extends Tile>, Colour> tileColours = colourScheme.getWarehouseTileColours();
@@ -260,7 +302,7 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
      * @param tileY The vertical coordinate of the tile, in warehouse space.
      * @return An ImVec2 representing the top-left coordinate of the tile in screen space.
      */
-    private ImVec2 getTileTopLeft(ImVec2 origin, int tileX, int tileY) {
+    private ImVec2 getTileTopLeft(ImVec2 origin, float tileX, float tileY) {
         return new ImVec2(origin.x + gridStep * tileX, origin.y + gridStep * tileY);
     }
 

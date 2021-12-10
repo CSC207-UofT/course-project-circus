@@ -22,6 +22,10 @@ import warehouse.geometry.grid.Point;
 import warehouse.inventory.Item;
 import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
+import warehouse.logistics.optimization.DistanceTileScorer;
+import warehouse.logistics.optimization.graph.TileNode;
+import warehouse.logistics.optimization.routefinding.Routefinder;
+import warehouse.logistics.optimization.routefinding.algorithms.AStarRoutefinder;
 import warehouse.logistics.orders.OrderMatcher;
 import warehouse.logistics.orders.OrderQueue;
 import warehouse.robots.Robot;
@@ -180,17 +184,22 @@ public class DesktopApplication<T extends WarehouseCoordinateSystem<U>, U extend
         exampleState.getLayout().setTileAt(new Point(0, 9), new ReceiveDepot());
         exampleState.getLayout().setTileAt(new Point(11, 9), new ShipDepot());
         // Add robots
-        exampleState.getRobotMapper().addRobotAt(new Robot(), new Point(5, 5));
-        exampleState.getRobotMapper().addRobotAt(new Robot(), new Point(7, 3));
+        DistanceTileScorer metric = new DistanceTileScorer(exampleWarehouse.getState().getCoordinateSystem());
+        AStarRoutefinder<TileNode> routefinder = new AStarRoutefinder<>(metric, metric);
+        exampleState.getRobotMapper().addRobotAt(new Robot(routefinder), new Point(5, 5));
+        exampleState.getRobotMapper().addRobotAt(new Robot(routefinder), new Point(7, 3));
 
         Part mangoPart = new Part("Mango", "A mango.");
         exampleState.getPartCatalogue().addPart(mangoPart);
-
         // Create and launch DesktopApplication
         // TODO: Fix serialization
         DesktopApplication<GridWarehouseCoordinateSystem, Point> application = new DesktopApplication<>(
                 exampleWarehouse, null, null,
                 new GridWarehouseCanvasRenderer());
+
+        application.getWarehouse().receiveItem(new Item(mangoPart));
+        application.getWarehouse().receiveItem(new Item(mangoPart));
+        application.getWarehouse().receiveItem(new Item(mangoPart));
         application.getWarehouse().receiveItem(new Item(mangoPart));
 
         launch(application);

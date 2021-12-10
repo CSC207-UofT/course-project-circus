@@ -1,6 +1,6 @@
 package warehouse.logistics.optimization.graph.converters;
 
-import warehouse.Warehouse;
+import warehouse.WarehouseState;
 import warehouse.geometry.WarehouseCoordinate;
 import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.tiles.Tile;
@@ -12,11 +12,7 @@ public class SimpleWarehouseGraphConverter<T extends WarehouseCoordinateSystem<U
         extends WarehouseGraphConverter<T, U> {
 
     @Override
-    protected boolean canAddTile(Warehouse<T, U> warehouse, Tile tile) {
-        if (tile == null) {
-            return false;
-        } else {
-            return warehouse.getState().getLayout().isEmpty(tile);
-        }
+    protected boolean canAddTile(WarehouseState<T, U> warehouseState, Tile tile) {
+        return true;
     }
 }

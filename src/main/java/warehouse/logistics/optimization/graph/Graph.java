@@ -1,9 +1,9 @@
 package warehouse.logistics.optimization.graph;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Represents a graph (in the "graph theory" sense), e.g. a collection of vertices connected by edges.
@@ -35,8 +35,8 @@ public class Graph<T extends GraphNode> {
      * @return The node with the given id.
      */
     public T getNode(String id) {
-        for (T node: this.nodes){
-            if(Objects.equals(node.getId(), id)){
+        for (T node : this.nodes){
+            if(node.getId().equals(id)){
                 return node;
             }
         }
@@ -49,8 +49,12 @@ public class Graph<T extends GraphNode> {
      * @return the connections
      */
     public Set<T> getConnections(T node) {
-        return connections.get(node.getId()).stream()
-                .map(this::getNode)
-                .collect(Collectors.toSet());
+
+        Set<T> set = new HashSet<>();
+        for (String id : connections.get(node.getId())) {
+            T t = getNode(id);
+            set.add(t);
+        }
+        return set;
     }
 }

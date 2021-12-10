@@ -1,5 +1,6 @@
 package warehouse.geometry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,6 +63,26 @@ public interface WarehouseCoordinateSystem<T extends WarehouseCoordinate> {
      * @return A list of coordinates containing the neighbours of the given coordinate. Elements of this list may be null!
      */
     List<T> getNeighbours(T coordinate);
+
+
+    /**
+     * Return the neighbouring tile indices to the given tile index
+     * @param index The tile index whose neighbours to find.
+     * @return A list of tile indices containing the neighbours of the given tile index. If a neighbour coordinate is null,
+     * then the corresponding index is -1.
+     */
+    default List<Integer> getNeighbours(int index) {
+        T p = projectIndexToCoordinate(index);
+        List<Integer> neighbours = new ArrayList<>();
+        for (T neighbour : getNeighbours(p)) {
+            if (neighbour == null) {
+                neighbours.add(-1);
+            } else {
+                neighbours.add(projectCoordinateToIndex(neighbour));
+            }
+        }
+        return neighbours;
+    }
 
     /**
      * Get the distance between the two coordinates. This function should be a metric.

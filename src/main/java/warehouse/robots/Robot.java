@@ -1,7 +1,12 @@
 package warehouse.robots;
 
 import utils.RandomUtils;
+import warehouse.logistics.optimization.DistanceTileScorer;
+import warehouse.logistics.optimization.graph.TileNode;
+import warehouse.logistics.optimization.routefinding.Routefinder;
+import warehouse.logistics.optimization.routefinding.algorithms.AStarRoutefinder;
 import warehouse.logistics.orders.Order;
+import warehouse.tiles.Tile;
 
 import java.util.Objects;
 
@@ -10,21 +15,24 @@ import java.util.Objects;
  */
 public class Robot {
     private String id;
+    private Routefinder<TileNode> routefinder;
     private Order order = null;
 
     /**
-     * Construct a Robot with the given id at the given coordinates.
+     * Construct a Robot with the given id and routefinder.
      * @param id The id of the Robot.
+     * @param routefinder The routefinder.
      */
-    public Robot(String id) {
+    public Robot(String id, Routefinder<TileNode> routefinder) {
         this.id = id;
+        this.routefinder = routefinder;
     }
 
     /**
-     * Construct a Robot with a random id located at the given coordinates.
+     * Construct a Robot with a random id and given routefinder.
      */
-    public Robot () {
-        this(RandomUtils.randomId());
+    public Robot (Routefinder<TileNode> routefinder) {
+        this(RandomUtils.randomId(), routefinder);
     }
 
     /**
@@ -39,6 +47,20 @@ public class Robot {
      */
     public void setId(String id) {
         this.id = id;
+    }
+
+    /**
+     * Get the routefinder of this Robot.
+     */
+    public Routefinder<TileNode> getRoutefinder() {
+        return routefinder;
+    }
+
+    /**
+     * Set the routefiner of this Robot.
+     */
+    public void setRoutefinder(Routefinder<TileNode> routefinder) {
+        this.routefinder = routefinder;
     }
 
     /**

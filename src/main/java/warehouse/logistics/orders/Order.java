@@ -56,9 +56,16 @@ public abstract class Order {
     }
 
     /**
+     * Mark this Order as in progress.
+     */
+    public void setInProgress() {
+        status = OrderStatus.IN_PROGRESS;
+    }
+
+    /**
      * Mark this Order as complete.
      */
-    public void complete() {
+    public void setComplete() {
         status = OrderStatus.COMPLETE;
         if (handler != null) {
             handler.setOrder(null);

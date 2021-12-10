@@ -11,19 +11,17 @@ import java.util.*;
  * A Routefinder that implements the A* algorithm. This finds the route such that the sum of scores across the
  * route is minimized.
  */
-public class AStarRoutefinder<T extends GraphNode> extends Routefinder<T> {
+public class AStarRoutefinder<T extends GraphNode> implements Routefinder<T> {
     private final GraphNodeScorer<T> nextNodeScorer;
     private final GraphNodeScorer<T> targetScorer;
 
     /**
      * Construct an AStarRoutefinder.
-     * @param graph The graph to perform routefinding on.
      * @param nextNodeScorer The score metric used for computing the score between connected nodes.
      * @param targetScorer The score metric used for computing the score between the source and destination nodes.
      */
-    public AStarRoutefinder(Graph<T> graph, GraphNodeScorer<T> nextNodeScorer,
+    public AStarRoutefinder(GraphNodeScorer<T> nextNodeScorer,
                             GraphNodeScorer<T> targetScorer) {
-        super(graph);
         this.nextNodeScorer = nextNodeScorer;
         this.targetScorer = targetScorer;
     }
@@ -36,11 +34,12 @@ public class AStarRoutefinder<T extends GraphNode> extends Routefinder<T> {
      * @return the optimal Route, or null if no such Route could be found.
      */
     @Override
-    public List<T> findRoute(T source, T destination) {
+    public List<T> findRoute(Graph<T> graph, T source, T destination) {
         Queue<AStarRouteNode<T>> openSet = new PriorityQueue<>();
         Map<T, AStarRouteNode<T>> allNodes = new HashMap<>();
 
         double targetCost = targetScorer.computeCost(source, destination);
+        //targetCost *= destination.getScoreMultiplier();
         AStarRouteNode<T> start = new AStarRouteNode<>(source, null, 0, targetCost);
         openSet.add(start);
         allNodes.put(destination, start);
@@ -59,6 +58,7 @@ public class AStarRoutefinder<T extends GraphNode> extends Routefinder<T> {
                 allNodes.put(connection, nextNode);
 
                 double newScore = next.getRouteScore() + nextNodeScorer.computeCost(next.getCurrent(), connection);
+                newScore *= connection.getScoreMultiplier();
                 if (newScore < nextNode.getRouteScore()) {
                     nextNode.setPrevious(next.getCurrent());
                     nextNode.setRouteScore(newScore);
