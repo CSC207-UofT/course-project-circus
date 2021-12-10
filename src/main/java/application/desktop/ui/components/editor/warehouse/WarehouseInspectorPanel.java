@@ -3,6 +3,7 @@ package application.desktop.ui.components.editor.warehouse;
 import application.desktop.ui.Colour;
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.common.Panel;
+import application.desktop.ui.components.editor.PartCatalogueEditor;
 import application.desktop.ui.utils.DrawingUtils;
 import imgui.ImGui;
 import imgui.flag.ImGuiCol;
@@ -11,6 +12,7 @@ import imgui.flag.ImGuiTableFlags;
 import warehouse.geometry.WarehouseCoordinate;
 import warehouse.geometry.WarehouseCoordinateSystem;
 import warehouse.inventory.Item;
+import warehouse.inventory.Part;
 import warehouse.robots.Robot;
 import warehouse.robots.RobotMapper;
 import warehouse.storage.StorageUnit;
@@ -39,15 +41,17 @@ public class WarehouseInspectorPanel<T extends WarehouseCoordinateSystem<U>, U e
             FontAwesomeIcon.ExternalLinkAlt.getIconCode());
 
     private final WarehouseEditor<T, U> warehouseEditor;
+    private final PartCatalogueEditor partCatalogueEditor;
 
     /**
      * Construct an WarehouseInspectorPanel.
      */
-    public WarehouseInspectorPanel(WarehouseEditor<T, U> warehouseEditor) {
+    public WarehouseInspectorPanel(WarehouseEditor<T, U> warehouseEditor, PartCatalogueEditor partCatalogueEditor) {
         super(PANEL_ID);
         setCloseable(false);
 
         this.warehouseEditor = warehouseEditor;
+        this.partCatalogueEditor = partCatalogueEditor;
     }
 
     @Override
@@ -128,6 +132,8 @@ public class WarehouseInspectorPanel<T extends WarehouseCoordinateSystem<U>, U e
                         PART_LINK_TOOLTIP,
                         PART_LINK_NORMAL_COLOUR, PART_LINK_ACTIVE_COLOUR)) {
                     // Jump to this part in the part catalogue...
+                    ImGui.setWindowFocus(partCatalogueEditor.getTitle());
+                    partCatalogueEditor.selectPart(item.getPart().getId());
                 }
                 // Action column
                 ImGui.tableNextColumn();

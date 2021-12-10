@@ -121,7 +121,7 @@ public class PartCatalogueEditor extends Panel {
      * Select the Part with the given id.
      * @param partId The id of the Part to select.
      */
-    private void selectPart(String partId) {
+    public void selectPart(String partId) {
         selectedPartId = partId;
         Part part = getSelectedPart();
         if (part != null) {

@@ -4,6 +4,7 @@ import application.desktop.DesktopApplication;
 import application.desktop.ui.components.common.Component;
 import application.desktop.ui.components.editor.OrderEditor;
 import application.desktop.ui.components.editor.PartCatalogueEditor;
+import application.desktop.ui.components.editor.SimulationPanel;
 import application.desktop.ui.components.editor.warehouse.WarehouseEditor;
 import imgui.ImGui;
 import imgui.flag.ImGuiCond;
@@ -37,16 +38,19 @@ public class RootAppComponent<T extends WarehouseCoordinateSystem<U>, U extends 
     private final PartCatalogueEditor partCatalogueEditor;
     private final WarehouseEditor<T, U> warehouseEditor;
     private final OrderEditor orderEditor;
+    private final SimulationPanel simulationPanel;
 
     public RootAppComponent(DesktopApplication<T, U> application) {
         toolbar = new AppToolbar<>(application);
         partCatalogueEditor = new PartCatalogueEditor(application.getWarehouse().getState().getPartCatalogue());
         warehouseEditor = new WarehouseEditor<>(
                 application.getWarehouse().getState(),
-                application.getWarehouseCanvasRenderer()
+                application.getWarehouseCanvasRenderer(),
+                partCatalogueEditor
         );
         OrderQueue orderQueue = application.getWarehouse().getState().getOrderQueue();
         orderEditor = new OrderEditor(orderQueue, warehouseEditor);
+        simulationPanel = new SimulationPanel();
     }
 
     /**
@@ -90,6 +94,7 @@ public class RootAppComponent<T extends WarehouseCoordinateSystem<U>, U extends 
             int dockIdLeftDown = imgui.internal.ImGui.dockBuilderSplitNode(dockIdLeft, ImGuiDir.Down,
                     0.5f, null, dockMainId);
             imgui.internal.ImGui.dockBuilderDockWindow(warehouseEditor.getInspector().getTitle(), dockIdLeftDown);
+            imgui.internal.ImGui.dockBuilderDockWindow(simulationPanel.getTitle(), dockIdLeftDown);
             imgui.internal.ImGui.dockBuilderFinish(dockspaceId);
         }
         ImGui.dockSpace(dockspaceId, 0.0f, 0.0f);
@@ -106,6 +111,7 @@ public class RootAppComponent<T extends WarehouseCoordinateSystem<U>, U extends 
         warehouseEditor.draw();
         partCatalogueEditor.draw();
         orderEditor.draw();
+        simulationPanel.draw();
         // End dockspace window
         ImGui.end();
     }
