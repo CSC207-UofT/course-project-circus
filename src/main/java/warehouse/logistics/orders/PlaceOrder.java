@@ -19,6 +19,8 @@ public class PlaceOrder extends NavigateOrder {
     private final WarehouseLayout<?> layout;
     private final StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy;
 
+    private Rack assignedRack;
+
     /**
      * Construct an Order given a source and Item to move.
      * @param source The source Distributable to move the item from.
@@ -34,7 +36,18 @@ public class PlaceOrder extends NavigateOrder {
         this.rackAssignmentPolicy = rackAssignmentPolicy;
 
         getOnAssigned().addListener(this::onAssigned);
+        getOnComplete().addListener(this::onComplete);
         this.waypoints.add(getFirstEmptyNeighbour(source.getTile()));
+    }
+
+    /**
+     * Called when this Order is completed.
+     */
+    private void onComplete(Order order) {
+        if (assignedRack != null) {
+            assignedRack.receiveItem(item);
+        }
+        // TODO: We might want to log when assignRack is null
     }
 
     /**
@@ -43,8 +56,8 @@ public class PlaceOrder extends NavigateOrder {
     private void onAssigned(Order order) {
         waypoints.clear();
         this.waypoints.add(getFirstEmptyNeighbour(source.getTile()));
-        Rack rack = rackAssignmentPolicy.assign(layout, item);
-        waypoints.add(getFirstEmptyNeighbour(rack));
+        assignedRack = rackAssignmentPolicy.assign(layout, item);
+        waypoints.add(getFirstEmptyNeighbour(assignedRack));
     }
 
     public Distributable getSource() {

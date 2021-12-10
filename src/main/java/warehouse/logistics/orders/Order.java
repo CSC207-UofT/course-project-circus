@@ -69,6 +69,7 @@ public abstract class Order {
         status = OrderStatus.COMPLETE;
         if (handler != null) {
             handler.setOrder(null);
+            handler = null;
         }
         onComplete.execute(this);
     }
