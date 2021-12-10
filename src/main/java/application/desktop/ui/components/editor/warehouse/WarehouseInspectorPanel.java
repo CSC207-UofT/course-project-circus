@@ -139,7 +139,7 @@ public class WarehouseInspectorPanel<T extends WarehouseCoordinateSystem<U>, U e
                 ImGui.tableNextColumn();
                 ImGui.pushStyleColor(ImGuiCol.Button, ImGui.colorConvertFloat4ToU32(0, 0, 0, 0));
                 if (ImGui.smallButton(FontAwesomeIcon.PencilAlt.getIconCode())) {
-                    // Edit item button
+                    // TODO: Edit item button
                     // Tooltips
                     ImGui.beginTooltip();
                     ImGui.pushTextWrapPos(ImGui.getFontSize() * 17.5f);
@@ -150,6 +150,7 @@ public class WarehouseInspectorPanel<T extends WarehouseCoordinateSystem<U>, U e
                 ImGui.sameLine();
                 if (ImGui.smallButton(FontAwesomeIcon.TrashAlt.getIconCode())) {
                     // Remove item button
+                    storageUnit.removeItem(item);
                     // Tooltips
                     ImGui.beginTooltip();
                     ImGui.pushTextWrapPos(ImGui.getFontSize() * 17.5f);

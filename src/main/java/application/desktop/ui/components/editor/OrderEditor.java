@@ -73,10 +73,10 @@ public class OrderEditor extends Panel {
             ImGui.tableHeadersRow();
 
             int rowId = 0;
-            for (Order order : orderQueue.peekOrders()) {
+            for (Order order : orderQueue.getProcessedOrders()) {
                 drawOrderRow(rowId++, order);
             }
-            for (Order order : orderQueue.getProcessedOrders()) {
+            for (Order order : orderQueue.peekOrders()) {
                 drawOrderRow(rowId++, order);
             }
             ImGui.endTable();

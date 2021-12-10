@@ -6,6 +6,13 @@ import imgui.ImGui;
 import imgui.flag.ImGuiStyleVar;
 import imgui.internal.flag.ImGuiItemFlags;
 import imgui.type.ImInt;
+import utils.RandomUtils;
+import warehouse.inventory.Item;
+import warehouse.inventory.Part;
+import warehouse.inventory.PartCatalogue;
+
+import java.util.List;
+import java.util.Random;
 
 /**
  * Panel for controlling simulation options.
@@ -45,33 +52,25 @@ public class SimulationPanel extends Panel {
         ImGui.spacing();
 
         ImGui.inputInt("Order Batch Size", orderBatchSize);
-        if (orderBatchSize.get() == 0) {
+        PartCatalogue partCatalogue = application.getWarehouse().getState().getPartCatalogue();
+        boolean disable = orderBatchSize.get() == 0 || partCatalogue.getParts().isEmpty();
+        if (disable) {
             imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
             ImGui.pushStyleVar(ImGuiStyleVar.Alpha, 0.5f);
         }
-        if (ImGui.button("Batch Add Random Orders",
+        if (ImGui.button("Batch Create PlaceOrders",
                 ImGui.getContentRegionAvailX(), 0)) {
+            List<Part> parts = partCatalogue.getParts();
+
+            Random random = new Random();
+            for (int i = 0; i < orderBatchSize.get(); i++) {
+                // Choose random part from catalogue and try to add it to the warehouse
+                Part part = parts.get(random.nextInt(parts.size()));
+                application.getWarehouse().receiveItem(new Item(part));
+            }
             orderBatchSize.set(0);
         }
-        if (orderBatchSize.get() == 0) {
-            imgui.internal.ImGui.popItemFlag();
-            ImGui.popStyleVar();
-        }
-
-        ImGui.spacing();
-        ImGui.separator();
-        ImGui.spacing();
-
-        ImGui.inputInt("Part Batch Size", partBatchSize);
-        if (partBatchSize.get() == 0) {
-            imgui.internal.ImGui.pushItemFlag(ImGuiItemFlags.Disabled, true);
-            ImGui.pushStyleVar(ImGuiStyleVar.Alpha, 0.5f);
-        }
-        if (ImGui.button("Batch Add Random Parts",
-                ImGui.getContentRegionAvailX(), 0)) {
-            partBatchSize.set(0);
-        }
-        if (partBatchSize.get() == 0) {
+        if (disable) {
             imgui.internal.ImGui.popItemFlag();
             ImGui.popStyleVar();
         }
