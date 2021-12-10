@@ -2,7 +2,7 @@
 
 Circus is a warehouseLayout order routing service.
 
-## Destkop Application
+## Desktop Application
 ![Alt text](https://puu.sh/IvhDi/0af1b4e9fc.gif)
 
 ## Shell Usage
