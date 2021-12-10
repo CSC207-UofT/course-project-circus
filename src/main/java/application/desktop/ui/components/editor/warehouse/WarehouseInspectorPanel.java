@@ -71,8 +71,12 @@ public class WarehouseInspectorPanel<T extends WarehouseCoordinateSystem<U>, U e
         ImGui.spacing();
 
         if (tile instanceof StorageTile) {
+            StorageUnit storageUnit = ((StorageTile) tile).getStorageUnit();
+            int capacity = storageUnit.getCapacity();
+            String capacityLabel = capacity == -1 ? "infinite" : String.valueOf(capacity);
+            ImGui.labelText("Capacity", capacityLabel);
+
             if (ImGui.treeNode("Storage")) {
-                StorageUnit storageUnit = ((StorageTile) tile).getStorageUnit();
                 ImGui.textDisabled(String.format("%d items...", storageUnit.getContainer().getSize()));
                 // Draw table
                 drawStorageTileTable((StorageTile) tile);

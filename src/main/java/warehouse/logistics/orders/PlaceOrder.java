@@ -67,7 +67,6 @@ public class PlaceOrder extends NavigateOrder {
         if (assignedRack != null) {
             assignedRack.receiveItem(item);
         }
-        // TODO: We might want to log when assignRack is null
     }
 
     public Distributable getSource() {
