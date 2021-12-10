@@ -38,6 +38,7 @@ public class OrderMatcherTest {
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null,
                 new OrderQueue()
         ));
         // Create order matcher
@@ -103,7 +104,7 @@ public class OrderMatcherTest {
         // Add robots
         RobotMapper<Point> robotMapper = warehouse.getState().getRobotMapper();
         robotMapper.removeAllRobots();
-        Robot robot = new Robot();
+        Robot robot = new Robot(null);
         robotMapper.addRobotAt(robot, new Point(0, 0));
         new CustomOrder().assign(robot); // Make the robot busy
         // Match
@@ -123,7 +124,7 @@ public class OrderMatcherTest {
         // Add robots
         RobotMapper<Point> robotMapper = warehouse.getState().getRobotMapper();
         robotMapper.removeAllRobots();
-        Robot robot1 = new Robot();
+        Robot robot1 = new Robot(null);
         robotMapper.addRobotAt(robot1, new Point(0, 0));
         // Match
         orderMatcher.match();
@@ -135,7 +136,7 @@ public class OrderMatcherTest {
         assertEquals(2, warehouse.getState().getOrderQueue().size());
         assertEquals(order1, robot1.getOrder()); // Make sure the robot wasn't reassigned...that'd be bad!
         // Let's make a new robot
-        Robot robot2 = new Robot();
+        Robot robot2 = new Robot(null);
         robotMapper.addRobotAt(robot2, new Point(0, 0));
         // Match
         orderMatcher.match();

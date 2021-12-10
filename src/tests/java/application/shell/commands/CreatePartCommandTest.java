@@ -27,6 +27,7 @@ public class CreatePartCommandTest {
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null,
                 new OrderQueue()
         ));
         // Create shell application and command

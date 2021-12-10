@@ -32,12 +32,13 @@ public class AStarRoutefinderTest {
     @Test
     public void testGetPath() {
         // Create an empty 10x10 warehouse
-        GridWarehouseCoordinateSystem coordinateSystem = new GridWarehouseCoordinateSystem(10, 10);
+        GridWarehouseCoordinateSystem coordinateSystem = new GridWarehouseCoordinateSystem(10, 10, true);
         Warehouse<GridWarehouseCoordinateSystem, Point> warehouse = new Warehouse<>(new WarehouseState<>(
                 new PartCatalogue(),
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null,
                 new OrderQueue()
         ));
         WarehouseLayout<Point> layout = warehouse.getState().getLayout();
@@ -77,6 +78,8 @@ public class AStarRoutefinderTest {
         List<TileNode> route = routefinder.findRoute(graph, source, destination);
         // NOTE: This is not a reliable way to check if the route is valid, since the A* algorithm
         // might give a different path that has an equivalent cost (i.e. it is not fully deterministic).
+        //
+        // Sometimes, this will fail, and sometimes it will pass...we haven't been able to think of a better method yet.
         for (int i = 0, pathSize = route.size(); i < pathSize; i++) {
             Tile tile = route.get(i).getTile();
             Point point = coordinateSystem.projectIndexToCoordinate(tile.getIndex());

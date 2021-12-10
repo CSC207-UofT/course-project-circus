@@ -24,6 +24,7 @@ public class GridWarehousePresenterTest {
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null,
                 new OrderQueue()
         );
         WarehouseLayout<Point> layout = state.getLayout();

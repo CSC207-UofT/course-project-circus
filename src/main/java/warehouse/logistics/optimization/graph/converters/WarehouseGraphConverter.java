@@ -57,7 +57,7 @@ public abstract class WarehouseGraphConverter<T extends WarehouseCoordinateSyste
         for (U point : coordinateSystem.getNeighbours(tilePosition)) {
             if (point == null) continue;
             Tile neighbour = layout.getTileAt(point);
-            if (canAddTile(warehouseState, neighbour)) {
+            if (canAddTile(warehouseState, neighbour) && neighbour != null) {
                 neighbours.add(new TileNode(neighbour).getId());
             }
         }

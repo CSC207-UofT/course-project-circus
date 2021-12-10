@@ -9,6 +9,7 @@ import java.util.List;
  * A WarehouseCoordinateSystem that consists of a rectangular grid of tiles.
  */
 public class GridWarehouseCoordinateSystem implements WarehouseCoordinateSystem<Point> {
+    private final boolean allowDiagonalNeighbours;
     private final int width;
     private final int height;
 
@@ -17,9 +18,19 @@ public class GridWarehouseCoordinateSystem implements WarehouseCoordinateSystem<
      * @param width The width of the coordinate system, in number of tiles.
      * @param height The height of the coordinate system, in number of tiles.
      */
-    public GridWarehouseCoordinateSystem(int width, int height) {
+    public GridWarehouseCoordinateSystem(int width, int height, boolean allowDiagonalNeighbours) {
         this.width = width;
         this.height = height;
+        this.allowDiagonalNeighbours = allowDiagonalNeighbours;
+    }
+
+    /**
+     * Construct a GridWarehouseCoordinateSystem with no diagonals neighbours allowed.
+     * @param width The width of the coordinate system, in number of tiles.
+     * @param height The height of the coordinate system, in number of tiles.
+     */
+    public GridWarehouseCoordinateSystem(int width, int height) {
+        this(width, height, false);
     }
 
     /**
@@ -81,9 +92,9 @@ public class GridWarehouseCoordinateSystem implements WarehouseCoordinateSystem<
     /**
      * Return the neighbouring coordinates to the given coordinate.
      * @param coordinate The coordinate whose neighbours to find.
-     * @return A list of coordinates containing the neighbours of the given coordinate, in the other
-     * north, east, south, west, north-east, south-east, south-west, north-west. If a neighbouring coordinate is not
-     * in the coordinate system, then the entry in the returned list is null.
+     * @return A list of coordinates containing the neighbours of the given coordinate, in the
+     * north, east, south, and west directions, and north-east, south-east, south-west, north-west if diagonals is True.
+     * If a neighbouring coordinate is not in the coordinate system, then the entry in the returned list is null.
      */
     @Override
     public List<Point> getNeighbours(Point coordinate) {
@@ -97,6 +108,19 @@ public class GridWarehouseCoordinateSystem implements WarehouseCoordinateSystem<
         neighbours.add(contains(south) ? south : null);
         Point west = new Point(coordinate.getX() - 1, coordinate.getY());
         neighbours.add(contains(west) ? west : null);
+        // Add diagonals
+        if (allowDiagonalNeighbours) {
+            Point northEast = new Point(coordinate.getX() + 1, coordinate.getY() - 1);
+            neighbours.add(contains(northEast) ? northEast : null);
+            Point southEast = new Point(coordinate.getX() + 1, coordinate.getY() + 1);
+            neighbours.add(contains(southEast) ? southEast : null);
+            Point southWest = new Point(coordinate.getX() - 1, coordinate.getY() + 1);
+            neighbours.add(contains(southWest) ? southWest : null);
+            Point northWest = new Point(coordinate.getX() - 1, coordinate.getY() - 1);
+            neighbours.add(contains(southWest) ? northWest : null);
+        }
+
+        // Done!
         return neighbours;
     }
 

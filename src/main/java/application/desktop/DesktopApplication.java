@@ -1,5 +1,6 @@
 package application.desktop;
 
+import application.desktop.adapters.PhysicalGridRobotAdapterFactory;
 import application.desktop.ui.FontAwesomeIcon;
 import application.desktop.ui.components.RootAppComponent;
 import application.desktop.ui.components.editor.warehouse.renderers.GridWarehouseCanvasRenderer;
@@ -24,9 +25,7 @@ import warehouse.inventory.Part;
 import warehouse.inventory.PartCatalogue;
 import warehouse.logistics.optimization.DistanceTileScorer;
 import warehouse.logistics.optimization.graph.TileNode;
-import warehouse.logistics.optimization.routefinding.Routefinder;
 import warehouse.logistics.optimization.routefinding.algorithms.AStarRoutefinder;
-import warehouse.logistics.orders.OrderMatcher;
 import warehouse.logistics.orders.OrderQueue;
 import warehouse.robots.Robot;
 import warehouse.robots.RobotMapper;
@@ -219,6 +218,7 @@ public class DesktopApplication<T extends WarehouseCoordinateSystem<U>, U extend
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                new PhysicalGridRobotAdapterFactory(),
                 new OrderQueue()
         ));
     }

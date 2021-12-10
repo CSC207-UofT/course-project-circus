@@ -1,5 +1,6 @@
 package warehouse.robots;
 
+import utils.Vector3;
 import warehouse.WarehouseState;
 import warehouse.geometry.WarehouseCoordinate;
 import warehouse.geometry.WarehouseCoordinateSystem;
@@ -32,4 +33,5 @@ public abstract class RobotAdapter<T extends WarehouseCoordinateSystem<U>, U ext
     public Robot getRobotModel() {
         return robotModel;
     }
+
 }

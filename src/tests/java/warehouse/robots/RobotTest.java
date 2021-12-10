@@ -10,8 +10,8 @@ public class RobotTest {
     @Test
     public void testRobotConstructor()
     {
-        Robot robot1 = new Robot();
-        Robot robot2 = new Robot("Artem");
+        Robot robot1 = new Robot(null);
+        Robot robot2 = new Robot("Artem", null);
         assertNotEquals("", robot1.getId());
         assertEquals("Artem", robot2.getId());
 
@@ -28,7 +28,7 @@ public class RobotTest {
 
     @Test
     public void testRobotSetId() {
-        Robot robot = new Robot("Artem");
+        Robot robot = new Robot("Artem", null);
         assertEquals(robot.getId(), "Artem");
         robot.setId("Shon");
         assertEquals(robot.getId(), "Shon");

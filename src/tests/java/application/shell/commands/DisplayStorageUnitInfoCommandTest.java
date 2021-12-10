@@ -27,6 +27,7 @@ public class DisplayStorageUnitInfoCommandTest {
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null,
                 new OrderQueue()
         ));
         // Add rack at (5, 5)

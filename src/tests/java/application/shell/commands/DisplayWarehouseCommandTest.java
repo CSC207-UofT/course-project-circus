@@ -28,6 +28,7 @@ public class DisplayWarehouseCommandTest {
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null,
                 new OrderQueue()
         ));
         WarehouseLayout<Point> layout = warehouse.getState().getLayout();

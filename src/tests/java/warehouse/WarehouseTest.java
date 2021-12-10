@@ -25,13 +25,14 @@ public class WarehouseTest {
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null,
                 new OrderQueue()
         ));
         // Add parts to the part catalogue
         Part part = new Part("Cucumber", "A vegetable");
         warehouse.getState().getPartCatalogue().addPart(part);
         // Add a robot at (0, 0)
-        Robot robot = new Robot();
+        Robot robot = new Robot(null);
         warehouse.getState().getRobotMapper().addRobotAt(robot, new Point(0, 0));
         // Try receiving an item into the warehouse. Since we have no receive depots, the returned order should be null!
         assertNull(warehouse.receiveItem(new Item(part)));
@@ -46,6 +47,7 @@ public class WarehouseTest {
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null,
                 new OrderQueue()
         ));
         // Add a receive depot
@@ -55,7 +57,7 @@ public class WarehouseTest {
         Part part = new Part("Cucumber", "A vegetable");
         warehouse.getState().getPartCatalogue().addPart(part);
         // Add a robot at (0, 0)
-        Robot robot = new Robot();
+        Robot robot = new Robot(null);
         warehouse.getState().getRobotMapper().addRobotAt(robot, new Point(0, 0));
         // Try receiving an item into the warehouse
         PlaceOrder order = warehouse.receiveItem(new Item(part));
@@ -72,6 +74,7 @@ public class WarehouseTest {
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null,
                 new OrderQueue()
         ));
         // Add a receive depot
@@ -83,7 +86,7 @@ public class WarehouseTest {
         Part part = new Part("Cucumber", "A vegetable");
         warehouse.getState().getPartCatalogue().addPart(part);
         // Add a robot at (0, 0)
-        Robot robot = new Robot();
+        Robot robot = new Robot(null);
         warehouse.getState().getRobotMapper().addRobotAt(robot, new Point(0, 0));
         // Try receiving an item into the warehouse
         PlaceOrder order1 = warehouse.receiveItem(new Item(part));

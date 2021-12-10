@@ -26,6 +26,7 @@ public class DisplayPartCatalogueCommandTest {
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null,
                 new OrderQueue()
         ));
         PartCatalogue partCatalogue = warehouse.getState().getPartCatalogue();

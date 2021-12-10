@@ -13,7 +13,7 @@ public class RobotMapperTest {
     public void testRobotMapper()
     {
         RobotMapper<Point> robotMapper = new RobotMapper<>(new GridWarehouseCoordinateSystem(10, 10));
-        Robot robot = new Robot();
+        Robot robot = new Robot(null);
         Point point = new Point(0, 0);
 
         robotMapper.addRobotAt(robot, point);

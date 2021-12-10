@@ -137,6 +137,7 @@ public class ShellApplication<T extends WarehouseCoordinateSystem<U>, U extends 
                 coordinateSystem,
                 new WarehouseLayout<>(coordinateSystem),
                 new RobotMapper<>(coordinateSystem),
+                null, // This is not currently used!
                 new OrderQueue()
         ));
 

@@ -17,11 +17,12 @@ import warehouse.WarehouseState;
 import warehouse.geometry.grid.GridWarehouseCoordinateSystem;
 import warehouse.geometry.grid.Point;
 import warehouse.robots.Robot;
+import warehouse.robots.RobotAdapter;
+import warehouse.robots.RobotAdapterUpdater;
 import warehouse.robots.RobotMapper;
 import warehouse.tiles.Tile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +33,6 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
     private final float gridStep;
     private final boolean showGrid;
     private final ImVec2 panOffset;
-
-    private final HashMap<Robot, PhysicalGridRobot> robotAdapters;
 
     /**
      * Construct a new WarehouseCanvas with default options.
@@ -46,7 +45,6 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
         this.gridStep = gridStep;
         this.showGrid = showGrid;
         this.panOffset = new ImVec2();
-        this.robotAdapters = new HashMap<>();
     }
 
     /**
@@ -76,7 +74,6 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
         }
 
         drawWarehouseTiles(drawList, state, transform, colourScheme);
-        updateRobots();
         drawRobots(drawList, state, transform);
         drawList.popClipRect();
     }
@@ -104,27 +101,18 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
     }
 
     /**
-     * Update the robots.
-     */
-    private void updateRobots() {
-        for (PhysicalGridRobot robotAdapter : robotAdapters.values()) {
-            robotAdapter.update();
-        }
-    }
-
-    /**
      * Draw the robots in the warehouse.
      */
     private void drawRobots(ImDrawList drawList, WarehouseState<GridWarehouseCoordinateSystem, Point> state,
                             WarehouseCanvasTransform transform) {
         RobotMapper<Point> robotMapper = state.getRobotMapper();
         List<Robot> robots = robotMapper.getRobots();
+
         for (Robot robot : robots) {
-            if (!robotAdapters.containsKey(robot)) {
-                // Create adapter
-                robotAdapters.put(robot, new PhysicalGridRobot(robot, state));
-            }
-            drawRobot(drawList, state, transform, robotAdapters.get(robot));
+            RobotAdapterUpdater<GridWarehouseCoordinateSystem, Point> robotAdapterUpdater = state.getRobotAdapterUpdater();
+            RobotAdapter<GridWarehouseCoordinateSystem, Point> robotAdapter = robotAdapterUpdater.getRobotAdapter(robot);
+            if (robotAdapter == null) continue;
+            drawRobot(drawList, state, transform, robotAdapter);
         }
     }
 
@@ -132,11 +120,12 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
      * Draw a single Robot.
      */
     private void drawRobot(ImDrawList drawList, WarehouseState<GridWarehouseCoordinateSystem, Point> state,
-                           WarehouseCanvasTransform transform, PhysicalGridRobot robotAdapter) {
+                           WarehouseCanvasTransform transform, RobotAdapter<GridWarehouseCoordinateSystem, Point> robotAdapter) {
         // Draw robot path
-        if (robotAdapter.getCurrentRouteNodes() != null) {
-            List<Tile> route = new ArrayList<>(robotAdapter.getCurrentRouteNodes());
-            route.add(0, robotAdapter.getCurrentSource());
+        PhysicalGridRobot physicalGridRobot = (PhysicalGridRobot) robotAdapter;
+        if (physicalGridRobot.getCurrentRouteNodes() != null) {
+            List<Tile> route = new ArrayList<>(physicalGridRobot.getCurrentRouteNodes());
+            route.add(0, physicalGridRobot.getCurrentSource());
             for (int i = 1; i < route.size() ; i++) {
                 Tile previous = route.get(i - 1);
                 Tile current = route.get(i);
@@ -155,7 +144,7 @@ public class GridWarehouseCanvasRenderer implements WarehouseCanvasRenderer<Grid
         }
 
         ImVec2 topLeft = getTileTopLeft(getOrigin(transform),
-                robotAdapter.getX(), robotAdapter.getY());
+                physicalGridRobot.getX(), physicalGridRobot.getY());
         ImVec2 bottomRight = new ImVec2(topLeft.x + gridStep, topLeft.y + gridStep);
         // TODO: Move styles to colour scheme
         DrawingUtils.drawRect(drawList, topLeft, bottomRight,
