@@ -2,7 +2,10 @@
 
 Circus is a warehouseLayout order routing service.
 
-## Usage
+## Destkop Application
+![Alt text](https://puu.sh/IvhDi/0af1b4e9fc.gif)
+
+## Shell Usage
 
 Running the project opens a command-line interface, which contains an _empty_ warehouseLayout. Use commands to modify the state of the warehouseLayout.
 
@@ -54,6 +57,4 @@ Rack             X
 > receive-item 1
 Placed item into ReceiveDepot at (5 5)
 Order id: 15eccfef-a350-4cb1-9904-8faa461f7985
-> check-order 15eccfef-a350-4cb1-9904-8faa461f7985
-Status: Pending
 ```
