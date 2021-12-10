@@ -6,10 +6,12 @@ import warehouse.logistics.assignment.StorageTileAssignmentPolicy;
 import warehouse.tiles.Rack;
 import warehouse.transactions.Distributable;
 
+import java.util.ArrayList;
+
 /**
  * An Order to place an Item into an available Rack in the WarehouseLayout.
  */
-public class PlaceOrder extends Order {
+public class PlaceOrder extends NavigateOrder {
     private final Distributable source;
     private final Item item;
     private final WarehouseLayout<?> layout;
@@ -23,10 +25,23 @@ public class PlaceOrder extends Order {
      */
     public PlaceOrder(Distributable source, Item item, WarehouseLayout<?> layout,
                       StorageTileAssignmentPolicy<Rack> rackAssignmentPolicy) {
+        super(new ArrayList<>());
+        this.waypoints.add(source.getTile());
         this.source = source;
         this.item = item;
         this.layout = layout;
         this.rackAssignmentPolicy = rackAssignmentPolicy;
+
+        getOnAssigned().addListener(this::onAssigned);
+    }
+
+    /**
+     * Called when this Order is assigned to a Robot.
+     */
+    private void onAssigned(Order order) {
+        waypoints.clear();
+        waypoints.add(source.getTile());
+        waypoints.add(rackAssignmentPolicy.assign(layout, item));
     }
 
     public Distributable getSource() {

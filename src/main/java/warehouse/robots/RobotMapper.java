@@ -79,6 +79,15 @@ public class RobotMapper<T extends WarehouseCoordinate> {
     }
 
     /**
+     * Removes every Robot in this RobotMapper.
+     */
+    public void removeAllRobots() {
+        for (Robot robot : robotMap.keySet()) {
+            removeRobot(robot);;
+        }
+    }
+
+    /**
      * Check whether the given tile index contains a Robot.
      * @param index The tile index to check
      * @return True if there exists a Robot at the given tile index, and False otherwise.
@@ -139,6 +148,17 @@ public class RobotMapper<T extends WarehouseCoordinate> {
      */
     public T getRobotPosition(Robot robot) {
         return coordinateSystem.projectIndexToCoordinate(getRobotTileIndex(robot));
+    }
+
+    /**
+     * Set the position of a Robot.
+     * @param robot The robot whose position to set.
+     * @param position The new position of the Robot.
+     */
+    public void setRobotPosition(Robot robot, T position) {
+        if (!robotMap.containsKey(robot)) return;
+        removeRobot(robot);
+        addRobotAt(robot, position);
     }
 
     /**

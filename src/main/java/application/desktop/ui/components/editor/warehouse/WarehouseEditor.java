@@ -13,7 +13,7 @@ public class WarehouseEditor<T extends WarehouseCoordinateSystem<U>, U extends W
     /**
      * The id of the panel.
      */
-    private static final String PANEL_ID = "WarehouseLayout###warehouse_editor_panel";
+    private static final String PANEL_ID = "Warehouse Layout###warehouse_editor_panel";
 
     private final WarehouseState<T, U> warehouseState;
     private final WarehouseCanvas<T, U> canvas;

@@ -10,28 +10,9 @@ import warehouse.geometry.grid.Point;
 import warehouse.inventory.Item;
 import warehouse.inventory.Part;
 import warehouse.logistics.assignment.BasicRackAssignmentPolicy;
+import warehouse.tiles.Rack;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-/**
- * A custom order used for testing.
- */
-class CustomOrder extends Order {
-    private boolean isReady = false;
-
-    /**
-     * Sets the "readiness" of this Order. This is used in the getNextOrder test to simulate the readiness
-     * of an Order changing dynamically.
-     */
-    public void setReady(boolean isReady) {
-        this.isReady = isReady;
-    }
-
-    @Override
-    public boolean isReady() {
-        return isReady;
-    }
-}
 
 /**
  * Test the OrderQueue.
@@ -58,7 +39,10 @@ public class OrderQueueTest {
             Thread.sleep(1);
 
             WarehouseLayout<Point> warehouseLayout = new WarehouseLayout<>(new GridWarehouseCoordinateSystem(1, 1));
-            order2 = new PlaceOrder(null, new Item(part), warehouseLayout, new BasicRackAssignmentPolicy());
+            Rack rack = new Rack(-1, 0);
+            warehouseLayout.setTileAt(new Point(0, 0), rack);
+            order2 = new PlaceOrder(rack, new Item(part),
+                    warehouseLayout, new BasicRackAssignmentPolicy());
 
             Thread.sleep(1);
             order3 = new CustomOrder();

@@ -71,4 +71,16 @@ public interface WarehouseCoordinateSystem<T extends WarehouseCoordinate> {
      * @return The distance between p1 and p2.
      */
     double getDistance(T p1, T p2);
+
+    /**
+     * Get the distance between the two tile indices.
+     * @param i1 The start tile index.
+     * @param i2 The end tile index.
+     * @return The distance between the coordinates corresponding to i1 and i2.
+     */
+    default double getDistance(int i1, int i2) {
+        T p1 = projectIndexToCoordinate(i1);
+        T p2 = projectIndexToCoordinate(i2);
+        return getDistance(p1, p2);
+    }
 }

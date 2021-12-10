@@ -44,7 +44,7 @@ public class OrderEditor extends Panel {
         if (ImGui.beginTable("order_table", 5, tableFlags, 0, tableHeight, 0)) {
             // Declare columns
             ImGui.tableSetupColumn("ID", ImGuiTableColumnFlags.WidthFixed, 0);
-            ImGui.tableSetupColumn("Created At", ImGuiTableColumnFlags.WidthFixed, 0);
+            ImGui.tableSetupColumn("Created At", ImGuiTableColumnFlags.WidthStretch, 0);
             ImGui.tableSetupColumn("Type", ImGuiTableColumnFlags.WidthFixed, 0);
             ImGui.tableSetupColumn("Status", ImGuiTableColumnFlags.WidthFixed, 0);
             ImGui.tableSetupColumn("Assigned", ImGuiTableColumnFlags.NoSort |
@@ -70,6 +70,7 @@ public class OrderEditor extends Panel {
                 ImGui.tableNextColumn();
                 ImGui.text(order.getStatus().name());
                 // Assigned
+                ImGui.tableNextColumn();
                 if (order.getHandler() == null) {
                     ImGui.text("N/A");
                 } else {

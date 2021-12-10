@@ -1,5 +1,6 @@
 package warehouse.logistics.orders;
 
+import messaging.Message;
 import utils.RandomUtils;
 import warehouse.robots.Robot;
 
@@ -15,6 +16,9 @@ public abstract class Order {
     private OrderStatus status;
     private Robot handler;
 
+    private final Message<Order> onAssigned;
+    private final Message<Order> onComplete;
+
     /**
      * Construct an Order with a random UUID.
      */
@@ -23,6 +27,9 @@ public abstract class Order {
         createdAt = new Date(System.currentTimeMillis());
         handler = null;
         status = OrderStatus.PENDING;
+
+        onAssigned = new Message<>();
+        onComplete = new Message<>();
     }
 
     /**
@@ -33,11 +40,30 @@ public abstract class Order {
 
     /**
      * Assign the given Robot to this order.
-     * @param robot The Robot to assign this order to.
+     * @param robot The Robot to assign this order to. If this Order is already assigned to a Robot, then that Robot
+     *              will be unassigned from this Order first.
      */
-    public void assignTo(Robot robot) {
+    public void assign(Robot robot) {
+        // Unassigned order if handler is not null
+        if (handler != null) {
+            handler.setOrder(null);
+        }
+        // Assign order
         handler = robot;
+        handler.setOrder(this);
         status = OrderStatus.ASSIGNED;
+        onAssigned.execute(this);
+    }
+
+    /**
+     * Mark this Order as complete.
+     */
+    public void complete() {
+        status = OrderStatus.COMPLETE;
+        if (handler != null) {
+            handler.setOrder(null);
+        }
+        onComplete.execute(this);
     }
 
     /**
@@ -63,6 +89,14 @@ public abstract class Order {
 
     public OrderStatus getStatus() {
         return status;
+    }
+
+    public Message<Order> getOnAssigned() {
+        return onAssigned;
+    }
+
+    public Message<Order> getOnComplete() {
+        return onComplete;
     }
 
     @Override

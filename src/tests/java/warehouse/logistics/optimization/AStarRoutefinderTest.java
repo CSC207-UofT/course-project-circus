@@ -75,6 +75,8 @@ public class AStarRoutefinderTest {
         TileNode source = new TileNode(layout.getTileAt(new Point(0, 0)));
         TileNode destination = new TileNode(layout.getTileAt(new Point(6, 7)));
         List<TileNode> route = routefinder.findRoute(source, destination);
+        // NOTE: This is not a reliable way to check if the route is valid, since the A* algorithm
+        // might give a different path that has an equivalent cost (i.e. it is not fully deterministic).
         for (int i = 0, pathSize = route.size(); i < pathSize; i++) {
             Tile tile = route.get(i).getTile();
             Point point = coordinateSystem.projectIndexToCoordinate(tile.getIndex());

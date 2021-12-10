@@ -48,17 +48,52 @@ public class OrderQueue {
     }
 
     /**
-     * Get the next Order in this OrderQueue that can be processed.
+     * Remove and return the next Order in this OrderQueue that can be processed.
+     * @remark Since the ready status of an Order might have changed since we last updated the priority queue,
+     * this operation requires rebuilding the priority queue used to store orders, which is an O(nlog(n)) operation.
      * @return the next processable Order in this queue, or null if the queue is empty or there are no such orders.
      */
     public Order getNextOrder() {
-        Order order = orderQueue.poll();
+        return getNextOrder(true);
+    }
+
+    /**
+     * Remove and return the next Order in this OrderQueue that can be processed.
+     * @param rebuild Whether to rebuild the priority queue. Note that if an order ready status changed and the priority
+     *                queue isn't rebuilt, then the return value of this method may not be accurate.
+     * @return the next processable Order in this queue, or null if the queue is empty or there are no such orders.
+     */
+    public Order getNextOrder(boolean rebuild) {
+        if (rebuild) {
+            rebuild();
+        }
+
+        Order order = orderQueue.peek();
         if (order == null || !order.isReady()) {
             // There are no ready orders yet, so return null.
             return null;
         } else {
+            orderQueue.poll();
             return order;
         }
+    }
+
+    /**
+     * Rebuild the priority queue representing the orders.
+     */
+    public void rebuild() {
+        List<Order> orders = new ArrayList<>();
+        while (!orderQueue.isEmpty()) {
+            orders.add(orderQueue.remove());
+        }
+        orderQueue.addAll(orders);
+    }
+
+    /**
+     * CLear this OrderQueue.
+     */
+    public void clear() {
+        orderQueue.clear();
     }
 
     /**
